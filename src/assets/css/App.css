@@ -1,0 +1,349 @@
+/*===============================================================================================*/
+/*                                                General                                        */
+/*===============================================================================================*/
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+#root {
+    background-color: #0B1016 !important;
+}
+
+html {
+    /*
+    10px / 16px = 0.625 = 62.5%
+    Percentage of user's browser font-size setting
+    */
+    font-size: 62.5%;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    background-color: #0B1016 !important;
+}
+
+.form-box {
+    display: flex;
+    justify-content: center;
+}
+
+.form-input {
+    width: 50% !important;
+    height: 5rem !important;
+    font-size: 2rem !important;
+}
+
+.form-btn-submit {
+    background-color: #E50914 !important;
+    font-size: 2rem !important;
+    border: none !important;
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+}
+
+.form-btn-submit:hover {
+    background-color: #B81D24 !important;
+}
+
+/*===============================================================================================*/
+/*                                                Alert                                          */
+/*===============================================================================================*/
+
+.alert-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+    font-size: 1.4rem;
+    font-weight: bold;
+}
+
+.alert-success {
+    display: flex;
+    justify-content: center;
+    color: #fff !important;
+    background-color: green !important;
+    width: 90% !important;
+    padding: 0.5rem 0;
+}
+
+.alert-error {
+    display: flex;
+    justify-content: center;
+    color: #fff !important;
+    background-color: #E50914 !important;
+    width: 90% !important;
+    padding: 0.5rem 0;
+}
+
+/*===============================================================================================*/
+/*                                                NavBar                                         */
+/*===============================================================================================*/
+
+.navbar {
+    margin-bottom: 4rem;
+    background-color: #0B1016;
+}
+
+.nav-container {
+    padding-left: 5rem !important;
+    padding-right: 5rem !important;
+}
+
+.nav-brand {
+    font-size: 5rem !important;
+    color: #E50914 !important;
+    font-weight: bold !important;
+}
+
+.nav-back-btn {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 4rem;
+    margin-left: 3rem;
+    cursor: pointer;
+}
+
+.nav-back-btn:hover {
+    color: #fff;
+}
+
+.nav-toggle {
+    font-size: 2.5rem !important;
+}
+
+.search-box {
+    width: 40rem !important;
+    padding: 0.5rem 1rem !important;
+    font-size: 1.8rem !important;
+    background-color: rgba(255, 255, 255, 0.5) !important;
+    color: #fff !important;
+    border: none !important;
+}
+
+.search-box::placeholder {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/*===============================================================================================*/
+/*                                            LaunchPage                                         */
+/*===============================================================================================*/
+
+.launch-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20rem;
+    background-color: #292c39 !important;
+}
+
+/*===============================================================================================*/
+/*                                              Settings                                         */
+/*===============================================================================================*/
+
+.settings-container {
+    padding-top: 6rem;
+}
+
+.settings-header-box {
+    display: flex;
+    justify-content: center;
+    color: #F5F5F1;
+    font-size: 2.5rem;
+    padding: 2rem 0;
+}
+
+/*===============================================================================================*/
+/*                                           GettingStarted                                      */
+/*===============================================================================================*/
+
+.get-started-container {
+    padding-top: 6rem;
+}
+
+.get-started-text-box {
+    display: flex;
+    justify-content: center;
+    color: #F5F5F1;
+    font-size: 2rem;
+    padding: 2rem 0;
+}
+
+.get-started-form-box {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 3rem;
+}
+
+.get-started-checkbox {
+    color: #FFF;
+    font-size: 2rem;
+}
+
+/*===============================================================================================*/
+/*                                          DirectorySearchResults                               */
+/*===============================================================================================*/
+
+.main-container {
+    display: grid;
+    grid-template-columns: 28rem 1fr 28rem;
+}
+
+.main-container-closed {
+    display: grid;
+    grid-template-columns: 8rem 1fr 28rem;
+}
+
+.results {
+    grid-column: 2 / 3;
+    width: 100%;
+}
+
+.main-sidebar-right {
+    border-left: 2px solid rgba(255, 255, 255, 0.1);
+    height: 100%;
+    width: 28rem;
+    position: fixed;
+    right: 0;
+    background-color: #0B1016;
+}
+
+.heading {
+    color: #fff;
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-left: 5rem;
+}
+
+/*===============================================================================================*/
+/*                                             DirectoryItem                                     */
+/*===============================================================================================*/
+
+.media-container {
+    position: relative;
+}
+
+.bg-image {
+    width: 80%;
+    height: 50rem;
+    left: 30rem;
+    top: 0;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    box-shadow: 0 -1rem 3rem 0.8rem #0B1016 inset;
+}
+
+.media-info {
+    position: absolute;
+    padding-top: 3rem;
+    padding-left: 5rem;
+    color: #fff;
+    width: 50%;
+    top: 0;
+    left: 0;
+    z-index: 2;
+}
+
+.title {
+    font-size: 4.2rem;
+    padding-bottom: 1rem;
+}
+
+.info-bar {
+    display: flex;
+    flex-direction: row;
+    font-size: 1.8rem;
+    color: rgba(255, 255, 255, 0.5);
+    gap: 2rem;
+    padding-bottom: 1rem;
+}
+
+.overview {
+    font-size: 2rem;
+    padding-bottom: 1rem;
+}
+
+.info-list {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.5);
+    padding-bottom: 4rem;
+}
+
+.genres {
+    padding-left: 1rem;
+    font-weight: 400;
+}
+
+.play-btn {
+    font-size: 3rem;
+    font-weight: 600;
+    padding: 0.5rem 2.5rem;
+    padding-right: 3rem;
+    padding-bottom: 1rem;
+    border-radius: 5px;
+    border: none;
+    background-color: #E50914;
+    color: #FFF;
+}
+
+/*===============================================================================================*/
+/*                                                Sidebar                                        */
+/*===============================================================================================*/
+
+.sidebar,
+.sidebar-closed {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    border-right: 2px solid rgba(255, 255, 255, 0.1);
+    background-color: #0B1016;
+    height: 100%;
+    width: 28rem;
+    position: fixed;
+    z-index: 1;
+}
+
+.sidebar-closed {
+    width: 8rem;
+}
+
+.align-close {
+    text-align: center;
+    padding-right: 0;
+}
+
+.sidebar-link,
+.activeLink {
+    font-size: 3rem;
+    padding-bottom: 5rem;
+    padding-left: 2rem;
+    text-decoration: none;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.activeLink {
+    color: #E50914;
+}
+
+.sidebar-link:hover,
+.activeLink:hover {
+    color: #E50914;
+}
+
+.close-btn {
+    text-align: right;
+    color: #fff;
+    font-size: 3rem;
+    padding-right: 1rem;
+    padding-bottom: 12rem;
+    display: block;
+}
+
+.close-btn >:hover {
+    color: #E50914;
+    cursor: pointer;
+}
