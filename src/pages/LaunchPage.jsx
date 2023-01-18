@@ -1,7 +1,7 @@
 import React, {useContext} from 'react';
 import { useNavigate } from 'react-router-dom';
 import {Button, Container} from 'react-bootstrap';
-import { getDirectoryFiles, getSavedDirectory, createNewMediaList } from '../context/directory/DirectoryActions';
+import { getDirectoryFiles } from '../context/directory/DirectoryActions';
 import DirectoryContext from '../context/directory/DirectoryContext';
 import '../assets/css/App.css';
 
@@ -12,28 +12,25 @@ const LaunchPage = () => {
 
     const handleClick = async () => {
 
-        // const savedDirectory = sessionStorage.getItem('savedDirectory', savedDirectory) || '';
+        const savedDirectory = sessionStorage.getItem('savedDirectory', savedDirectory) || '';
 
-        // if(savedDirectory) {
-        //     dispatch({
-        //         type: 'SET_LOADING'
-        //     });
+        if(savedDirectory) {
+            dispatch({
+                type: 'SET_LOADING'
+            });
 
-        //     const directories = await getDirectoryFiles(savedDirectory);
+            const directories = await getDirectoryFiles(savedDirectory);
 
-        //     dispatch({
-        //         type: 'GET_DIRECTORIES',
-        //         payload: directories
-        //     });
+            dispatch({
+                type: 'GET_DIRECTORIES',
+                payload: directories
+            });
 
-        //     navigate('/results');
-        // }
-        // else {
-        //     navigate('/getStarted');
-        // }
-
-        const list = await createNewMediaList('D:\\Program Files\\Vuze Downloads');
-        console.log(list);
+            navigate('/results');
+        }
+        else {
+            navigate('/getStarted');
+        }
     };
 
     return (

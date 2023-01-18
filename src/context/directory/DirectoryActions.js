@@ -84,10 +84,10 @@ export const getDetailedTmdbData = async (mediaType, id) => {
     let response;
 
     if(mediaType === 'tv') {
-        response = await fetch(`https://api.themoviedb.org/3/tv/${id}?api_key=${tmdbApiKey}&append_to_response=credits,recommendations,content_ratings`);
+        response = await fetch(`https://api.themoviedb.org/3/tv/${id}?api_key=${tmdbApiKey}&append_to_response=credits,recommendations,content_ratings,watch/providers`);
     }
     else if (mediaType === 'movie') {
-        response = await fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${tmdbApiKey}&append_to_response=credits,recommendations,release_dates`);
+        response = await fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${tmdbApiKey}&append_to_response=credits,recommendations,release_dates,watch/providers`);
     }
 
     if(!response) {
@@ -112,14 +112,27 @@ export const addDetailedTmdbData = async (list) => {
                 list.genres = [...info.genres];
                 list.runtime = list.media_type === 'tv' ? info.episode_run_time[0] : info.runtime;
                 list.status = info.status;
+                list.credits = [info.credits.cast[0], info.credits.cast[1], info.credits.cast[2]];
+                list.recommendations = [info.recommendations.results[0], info.recommendations.results[1], info.recommendations.results[2], info.recommendations.results[3], info.recommendations.results[4]];
+                list.vote_average = info.vote_average;
+                list.providers = info["watch/providers"].results.CA.flatrate;
+
+                if(list.media_type === 'movie') {
+                    list.imdb_id = info.imdb_id;
+                    list.rating = info.release_dates.results.find(item => item.iso_3166_1 === "US");
+                }
 
                 if(list.media_type === 'tv') {
                     list.seasons = [...info.seasons];
                     list.number_of_seasons = info.number_of_seasons;
                     list.number_of_episodes = info.number_of_episodes;
+                    list.rating = info.content_ratings.results.find(item => item.iso_3166_1 === "US");
+                    list.last_air_date = info.last_air_date;
+                    list.networks = info.networks;
+                    list.next_episode = info.next_episode_to_air;
                 }
             } catch (error) {
-                console.log('getDetailedMediaInfo Error: ' + error);
+                console.log('getDetailedTmdbData Error: ' + error);
             }
         }
     }
@@ -179,23 +192,21 @@ export const getDirectoryFiles = async (directory) => {
 
     try {
         let mediaList = JSON.parse(fs.readFileSync(mediaListPath));
-        const directoryNames = mediaList.map((file) => file.file_name);
-        const localDirectoryNames = directoryList.map((file) => file.file_name);
+        const mediaListNames = mediaList.map((file) => file.file_name);
+        const directoryListNames = directoryList.map((file) => file.file_name);
 
         // Adds media object from local files array to the existing mediaList array if it doesn't already exist.
         for(let i = 0; i < directoryList.length; i++) {
-            if(directoryNames.indexOf(directoryList[i].file_name) === -1) {
+            if(mediaListNames.indexOf(directoryList[i].file_name) === -1) {
                 mediaList.push(directoryList[i]);
             }
         }
 
+        // Removes media object from existing mediaList array if it is no longer in the new local files array.
         for(let i = 0; i < mediaList.length; i++) {
-
-            // Removes media object from existing mediaList array if it is no longer in the new local files array.
-            if(localDirectoryNames.indexOf(mediaList[i].file_name) === -1) {
+            if(directoryListNames.indexOf(mediaList[i].file_name) === -1) {
                 mediaList.splice(i, 1);
             }
-
             await addTmdbData(mediaList[i], i);
             await addDetailedTmdbData(mediaList[i]);
         }
@@ -205,73 +216,29 @@ export const getDirectoryFiles = async (directory) => {
         return mediaList;
     } 
     catch (error) {   
-
+        console.log('getDirectoryFiles Error: ' + error);
     }
 };
 
 //===================================================================================================================================================================//
 
-export const replaceMediaItem = async (mediaObject, id) => {
+// Returns the media object that is found in the media list based on the passed in id.
+export const getMediaObject = (id) => {
 
     const mediaListPath = sessionStorage.getItem('mediaListPath');
     const mediaList = JSON.parse(fs.readFileSync(mediaListPath));
-    const directory = mediaList.find((file) => file.id === Number(id));
-    const detailedInfo = await getDetailedTmdbData(mediaObject.media_type, mediaObject.id);
+    const mediaObject = mediaList.find((file) => file.id === Number(id));
 
-    if(mediaObject) {
-        directory.tmdb_data = 'Yes';
-        directory.media_type = mediaObject.media_type;
-        directory.title = mediaObject.media_type === 'movie' ? mediaObject.title : mediaObject.name;
-        directory.id = mediaObject.id;
-        directory.poster_path = mediaObject.poster_path;
-        directory.backdrop_path = mediaObject.backdrop_path;
-        directory.release = mediaObject.media_type === 'tv' ? mediaObject.first_air_date : mediaObject.release_date;
-        directory.overview = mediaObject.overview;
-        directory.popularity = mediaObject.popularity;
-    }
-
-    if(detailedInfo) {
-        directory.detailed_info = true;
-        directory.genres = [...detailedInfo.genres];
-        directory.runtime = directory.media_type === 'tv' ? detailedInfo.episode_run_time[0] : detailedInfo.runtime;
-        directory.tagline = detailedInfo.tagline;
-        directory.status = detailedInfo.status;
-
-        if(directory.media_type === 'tv') {
-            directory.seasons = [...detailedInfo.seasons];
-            directory.number_of_seasons = detailedInfo.number_of_seasons;
-            directory.number_of_episodes = detailedInfo.number_of_episodes;
-        }
-    }
-
-    for(let i = 0; i < mediaList.length; i++) {
-        if(mediaList[i].id === Number(id)) {
-            mediaList.splice(i, 1, directory);
-        }
-    }
-
-    fs.writeFileSync(mediaListPath, JSON.stringify(mediaList));
-    sessionStorage.setItem('directories', JSON.stringify(mediaList));
-    return mediaList;
-};
-
-//===================================================================================================================================================================//
-
-export const getDirectory = (id) => {
-
-    const mediaListPath = sessionStorage.getItem('mediaListPath');
-    const mediaList = JSON.parse(fs.readFileSync(mediaListPath));
-    const directory = mediaList.find((file) => file.id === Number(id));
-
-    if(!directory) {
+    if(!mediaObject) {
         console.log('No File Found.');
     }
 
-    return directory;
+    return mediaObject;
 };
 
 //===================================================================================================================================================================//
 
+// Returns an array of media objects sorted in various ways.
 export const sortList = (directory, method) => {
 
     let sortedList = Object.values(directory);

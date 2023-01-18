@@ -2,7 +2,7 @@ import React, {useEffect, useContext} from 'react';
 import {useParams, useNavigate} from 'react-router-dom';
 import {Button, Container, Row, Col} from 'react-bootstrap';
 import DirectoryContext from '../context/directory/DirectoryContext';
-import { getDirectory } from '../context/directory/DirectoryActions';
+import { getMediaObject } from '../context/directory/DirectoryActions';
 import {ipcRenderer} from 'electron';
 import { IoPlaySharp } from "react-icons/io5";
 import fs from 'fs';
@@ -15,7 +15,7 @@ const DirectoryItem = () => {
     useEffect(() => {
         dispatch({ type: 'SET_LOADING' });
 
-        const directoryItem = getDirectory(params.id);
+        const directoryItem = getMediaObject(params.id);
 
         dispatch({ 
             type: 'GET_DIRECTORY',
