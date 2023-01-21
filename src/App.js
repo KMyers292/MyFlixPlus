@@ -2,7 +2,6 @@ import React,{useState} from 'react';
 import {HashRouter as Router, Routes, Route} from "react-router-dom";
 import NavBar from "./components/layout/NavBar.jsx";
 import Sidebar from './components/layout/Sidebar.jsx';
-import RightSideBar from './components/layout/RightSideBar.jsx';
 import GettingStarted from './pages/GettingStarted.jsx';
 import DirectorySearchResults from './pages/DirectorySearchResults.jsx';
 import DirectoryItem from './pages/DirectoryItem.jsx';
@@ -42,7 +41,6 @@ const App = () => {
 								<Route exact path="/:id" element={<DirectoryItem />} />
 							</Routes>
 						</div>
-						<RightSideBar />
 					</div>
 				</Router>
 			</AlertProvider>

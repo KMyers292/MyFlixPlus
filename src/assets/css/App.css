@@ -197,12 +197,12 @@ html {
 
 .main-container {
     display: grid;
-    grid-template-columns: 28rem 1fr 28rem;
+    grid-template-columns: 28rem 1fr;
 }
 
 .main-container-closed {
     display: grid;
-    grid-template-columns: 8rem 1fr 28rem;
+    grid-template-columns: 8rem 1fr;
 }
 
 .results {
