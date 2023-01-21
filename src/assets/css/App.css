@@ -130,9 +130,22 @@ html {
 
 .launch-container {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
     margin-top: 20rem;
-    background-color: #292c39 !important;
+}
+
+.launch-title {
+    font-size: 8rem;
+    color: #E50914;
+    padding-bottom: 6rem;
+}
+
+.launch-btn {
+    border: none;
+    font-size: 2rem;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
 }
 
 /*===============================================================================================*/
@@ -346,4 +359,28 @@ html {
 .close-btn >:hover {
     color: #E50914;
     cursor: pointer;
+}
+
+/*===============================================================================================*/
+/*                                                Loader                                         */
+/*===============================================================================================*/
+
+.loader {
+    width: 4.8rem;
+    height: 4.8rem;
+    border: 5px solid #FFF;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }

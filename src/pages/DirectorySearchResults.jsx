@@ -25,7 +25,8 @@ const DirectorySearchResults = () => {
     else {
         return (
             <div>
-                Loading...
+                <span className="loader"></span>
+                <p>Reading Directory...</p>
             </div>
         )
     }
