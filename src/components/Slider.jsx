@@ -33,10 +33,6 @@ const Slider = ({directoryList}) => {
                         <div className="blaze-card" key={i} style={ directory.poster_path ? { backgroundImage: "url(" + `http://image.tmdb.org/t/p/w400/${directory.poster_path}` + ")", backgroundSize: "100% 100%"} : {backgroundImage: "url(" + "D:/Projects/Electron/MyFlix_javascript/assets/no_image.jpg" + ")", backgroundSize: "100% 100%"}}>
                             <Link to={`/${directory.id}`} className="card-link">
                             </Link>
-                            {/* <div className="card-title">
-                                <div>{directory.title}</div>
-                                {directory.release && <div>{directory.release.slice(0,4)} | {directory.runtime} minutes</div>}
-                            </div> */}
                         </div>
                     ))}
                 </div>

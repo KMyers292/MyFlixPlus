@@ -24,11 +24,11 @@
     "postpackage": "electron-packager ./ --out=./builds"
   },
   "dependencies": {
-    "blaze-slider": "^1.8.0",
+    "blaze-slider": "^1.9.1",
     "bootstrap": "^5.2.0",
     "dotenv": "^16.0.3",
     "react": "^17.0.2",
-    "react-blaze-slider": "^1.7.1",
+    "react-blaze-slider": "^1.7.2",
     "react-bootstrap": "^2.5.0",
     "react-dom": "^17.0.2",
     "react-router-bootstrap": "^0.26.2",
