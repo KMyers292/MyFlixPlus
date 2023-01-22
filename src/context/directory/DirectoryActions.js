@@ -117,6 +117,7 @@ export const addDetailedTmdbData = async (list) => {
                 list.vote_average = info.vote_average;
                 list.providers = info["watch/providers"].results.CA.flatrate;
 
+
                 if(list.media_type === 'movie') {
                     list.imdb_id = info.imdb_id;
                     list.rating = info.release_dates.results.find(item => item.iso_3166_1 === "US");
@@ -216,7 +217,8 @@ export const getDirectoryFiles = async (directory) => {
         return mediaList;
     } 
     catch (error) {   
-        console.log('getDirectoryFiles Error: ' + error);
+        const newList = await createNewMediaList(directory);
+        return newList;
     }
 };
 

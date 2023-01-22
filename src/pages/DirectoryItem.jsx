@@ -3,8 +3,10 @@ import {useParams, useNavigate} from 'react-router-dom';
 import {Button, Container, Row, Col} from 'react-bootstrap';
 import DirectoryContext from '../context/directory/DirectoryContext';
 import { getMediaObject } from '../context/directory/DirectoryActions';
+import Slider from '../components/Slider.jsx';
 import {ipcRenderer} from 'electron';
 import { IoPlaySharp } from "react-icons/io5";
+import { BsPlusCircle } from "react-icons/bs";
 import fs from 'fs';
 
 const DirectoryItem = () => {
@@ -61,19 +63,24 @@ const DirectoryItem = () => {
         return (
             <div>
                 <div className="media-container">
-                    <div className='bg-image' style={{backgroundImage: "linear-gradient(to right, rgb(11, 16, 22), rgba(0, 0, 0, 0.5)), url("+`http://image.tmdb.org/t/p/w500/${directory.backdrop_path}`+")"}}></div>
+                    <div className='bg-image' style={{backgroundImage: "linear-gradient(to right, rgb(11, 16, 22), rgba(0, 0, 0, 0.5)), url("+`https://image.tmdb.org/t/p/w500/${directory.backdrop_path}`+")"}}></div>
                     <div className="media-info">
                         <h1 className="title">{directory.title}</h1>
                         <div className="info-bar">
-                            <p>*IMBD Rating*</p>
+                            <p>{Math.round(directory.vote_average * 10)}%</p>
                             <p>{directory.release ? directory.release.substring(0,4) : "N/A"}</p>
                             <p>{directory.runtime} min</p>
-                            <p>*Age Rating*</p>
+                            <p>{directory.rating.release_dates[1].certification}</p>
                         </div>
                         <p className="overview">{directory.overview}</p>
                         <div className="info-list">
-                            <p>*Directors: *</p>
-                            <p>*Starring: *</p>
+                            <p>Starring:
+                                <span className="genres">
+                                    {directory.credits[0] ? directory.credits[0].name : null}
+                                    {directory.credits[1] ? ", " + directory.credits[1].name : null}
+                                    {directory.credits[2] ? ", " + directory.credits[2].name : null}
+                                </span>
+                            </p>
                             <p>Genres: 
                                 <span className="genres">
                                     {directory.genres[0] ? directory.genres[0].name : null}
@@ -81,12 +88,17 @@ const DirectoryItem = () => {
                                     {directory.genres[2] ? ", " + directory.genres[2].name : null}
                                 </span>
                             </p>
+                            <p>Watch On: 
+                                <img className='provider_logo' src={`https://image.tmdb.org/t/p/w200/${directory.providers[0].logo_path}`}/>
+                            </p>
                         </div>
                         <button className="play-btn" onClick={handleClick}><IoPlaySharp/>Play</button>
+                        <button className="add-btn"><BsPlusCircle/></button>
                     </div>
-                </div>
-                <div>
-                    <h2>Suggested</h2>
+                    <div className="recommendations">
+                        <h3 className="recommendations-title">Recommendations</h3>
+                        <Slider directoryList={directory.recommendations} type="static" />
+                    </div>
                 </div>
             </div>
         )

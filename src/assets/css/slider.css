@@ -5,6 +5,9 @@
     position: relative;
     width: 97%;
     margin: 0 auto;
+}
+
+.slider-scrolling {
     margin-bottom: 6rem;
 }
 
@@ -36,13 +39,20 @@
 }
 
 .blaze-container {
-    overflow:hidden;
     width: 96%;
     margin: 0 auto;
-    min-height: 34rem;
+    overflow:hidden;
     display: flex;
     flex-direction: column;
     justify-content: center;
+}
+
+.blaze-container-scrolling {
+    min-height: 34rem;
+}
+
+.blaze-container-static {
+    min-height: 20rem;
 }
 
 .blaze-track {
@@ -56,10 +66,7 @@
 }
 
 .blaze-card {
-    width: var(--slide-width);
     flex-shrink: 0;
-
-    min-height: 28rem;
     border: 2px solid #50627C;
     border-radius: 8px;
     transition: width 300ms ease;
@@ -74,6 +81,16 @@
     align-items: center;
     background: #1E252F;
     color: #FFF;
+}
+
+.blaze-card-scrolling {
+    width: var(--slide-width);
+    min-height: 28rem;
+}
+
+.blaze-card-static {
+    width: 20rem;
+    min-height: 16rem;
 }
 
 .blaze-card:hover {

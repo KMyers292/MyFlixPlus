@@ -5,7 +5,7 @@ const DirectoryContext = createContext();
 
 export const DirectoryProvider = ({children}) => {
 
-    const directoriesFromStorage = sessionStorage.getItem('directories') ? JSON.parse(sessionStorage.getItem('directories')) : {};
+    const directoriesFromStorage = sessionStorage.getItem('directories') ? JSON.parse(sessionStorage.getItem('directories')) : [];
 
     const initialState = {
         directories: directoriesFromStorage,

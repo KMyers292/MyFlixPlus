@@ -5,7 +5,7 @@ import {useBlazeSlider} from 'react-blaze-slider';
 import '../assets/css/App.css';
 import '../assets/css/slider.css';
 
-const Slider = ({directoryList}) => {
+const Slider = ({directoryList, type}) => {
 
     const ref = useBlazeSlider({
         all: {
@@ -23,22 +23,42 @@ const Slider = ({directoryList}) => {
         }
     })
 
-    return (
-        <div ref={ref} className="blaze-slider">
-            <a className="blaze-prev"><IoIosArrowBack/></a>
-            <a className="blaze-next"><IoIosArrowForward/></a>
-            <div className="blaze-container">
-                <div className="blaze-track">
-                    {Object.values(directoryList).map((directory, i) => (
-                        <div className="blaze-card" key={i} style={ directory.poster_path ? { backgroundImage: "url(" + `http://image.tmdb.org/t/p/w400/${directory.poster_path}` + ")", backgroundSize: "100% 100%"} : {backgroundImage: "url(" + "D:/Projects/Electron/MyFlix_javascript/assets/no_image.jpg" + ")", backgroundSize: "100% 100%"}}>
-                            <Link to={`/${directory.id}`} className="card-link">
-                            </Link>
-                        </div>
-                    ))}
+    if(type === 'scrolling') {
+        return (
+            <div ref={ref} className="blaze-slider slider-scrolling">
+                <a className="blaze-prev"><IoIosArrowBack/></a>
+                <a className="blaze-next"><IoIosArrowForward/></a>
+                <div className="blaze-container blaze-container-scrolling">
+                    <div className="blaze-track">
+                        {Object.values(directoryList).map((directory, i) => (
+                            <div className="blaze-card blaze-card-scrolling" key={i} style={ directory.poster_path ? { backgroundImage: "url(" + `https://image.tmdb.org/t/p/w400/${directory.poster_path}` + ")", backgroundSize: "100% 100%"} : {backgroundImage: "url(" + "D:/Projects/Electron/MyFlix_javascript/assets/no_image.jpg" + ")", backgroundSize: "100% 100%"}}>
+                                <Link to={`/${directory.id}`} className="card-link">
+                                </Link>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
-        </div>
-    )
+        )
+    }
+    else if (type === 'static') {
+        return (
+            <div ref={ref} className="blaze-slider">
+                <div className="blaze-container blaze-container-static">
+                    <div className="blaze-track">
+                        {Object.values(directoryList).map((directory, i) => (
+                            <div className="blaze-card blaze-card-static" key={i} style={ directory.backdrop_path ? { backgroundImage: "url(" + `https://image.tmdb.org/t/p/w400/${directory.backdrop_path}` + ")", backgroundSize: "100% 100%"} : {backgroundImage: "url(" + "D:/Projects/Electron/MyFlix_javascript/assets/no_image.jpg" + ")", backgroundSize: "100% 100%"}}>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        )
+    }
 };
+
+Slider.defaultProps = {
+    type: "scrolling"
+}
 
 export default Slider;
