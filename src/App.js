@@ -38,6 +38,7 @@ const App = () => {
 								<Route exact path="/getStarted" element={<GettingStarted />} />
 								<Route exact path="/settings" element={<Settings />} />
 								<Route exact path="/results" element={<DirectorySearchResults />} />
+								<Route exact path="/:id/:mediaType" element={<DirectoryItem />} />
 								<Route exact path="/:id" element={<DirectoryItem />} />
 							</Routes>
 						</div>

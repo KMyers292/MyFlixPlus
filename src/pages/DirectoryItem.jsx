@@ -2,11 +2,12 @@ import React, {useEffect, useContext} from 'react';
 import {useParams, useNavigate} from 'react-router-dom';
 import {Button, Container, Row, Col} from 'react-bootstrap';
 import DirectoryContext from '../context/directory/DirectoryContext';
-import { getMediaObject } from '../context/directory/DirectoryActions';
+import { getMediaObject, getDetailedTmdbData } from '../context/directory/DirectoryActions';
 import Slider from '../components/Slider.jsx';
 import {ipcRenderer} from 'electron';
 import { IoPlaySharp } from "react-icons/io5";
 import { BsPlusCircle } from "react-icons/bs";
+import { MdEdit } from "react-icons/md";
 import fs from 'fs';
 
 const DirectoryItem = () => {
@@ -15,9 +16,10 @@ const DirectoryItem = () => {
     const {directory, dispatch, loading} = useContext(DirectoryContext);
 
     useEffect(() => {
+
         dispatch({ type: 'SET_LOADING' });
 
-        const directoryItem = getMediaObject(params.id);
+        let directoryItem = getMediaObject(params.id);
 
         dispatch({ 
             type: 'GET_DIRECTORY',
@@ -28,7 +30,9 @@ const DirectoryItem = () => {
 
     }, [dispatch, params.id]);
 
-    const handleClick = () => {
+
+
+    const handlePlayBtnClick = () => {
         const files = fs.readdirSync(directory.path);
         const name = directory.path + "\\" + files[0];
         ipcRenderer.send('vlc:open', name);
@@ -63,14 +67,14 @@ const DirectoryItem = () => {
         return (
             <div>
                 <div className="media-container">
-                    <div className='bg-image' style={{backgroundImage: "linear-gradient(to right, rgb(11, 16, 22), rgba(0, 0, 0, 0.5)), url("+`https://image.tmdb.org/t/p/w500/${directory.backdrop_path}`+")"}}></div>
+                    {directory.backdrop_path ? <div className='bg-image' style={{backgroundImage: "linear-gradient(to right, rgb(11, 16, 22), rgba(0, 0, 0, 0.5)), url("+`https://image.tmdb.org/t/p/w500/${directory.backdrop_path}`+")"}}></div> : null}
                     <div className="media-info">
-                        <h1 className="title">{directory.title}</h1>
+                        <h1 className="title">{directory.title} <button className="edit-btn" title="Edit Entry"><MdEdit /></button></h1>
                         <div className="info-bar">
-                            <p>{Math.round(directory.vote_average * 10)}%</p>
-                            <p>{directory.release ? directory.release.substring(0,4) : "N/A"}</p>
-                            <p>{directory.runtime} min</p>
-                            <p>{directory.rating.release_dates[1].certification}</p>
+                            <p>{directory.vote_average ? Math.round(directory.vote_average * 10)+ '%' : null}</p>
+                            <p>{directory.release ? directory.release.substring(0,4) : null}</p>
+                            <p>{directory.runtime ? directory.runtime + 'min' : null}</p>
+                            <p className='rating'>{directory.rating.release_dates[1] ? directory.rating.release_dates[1].certification : null}</p>
                         </div>
                         <p className="overview">{directory.overview}</p>
                         <div className="info-list">
@@ -89,16 +93,20 @@ const DirectoryItem = () => {
                                 </span>
                             </p>
                             <p>Watch On: 
-                                <img className='provider_logo' src={`https://image.tmdb.org/t/p/w200/${directory.providers[0].logo_path}`}/>
+                                {directory.providers[0] ? <img className='provider_logo' title={directory.providers[0].provider_name} src={`https://image.tmdb.org/t/p/w200/${directory.providers[0].logo_path}`}/> : null}
                             </p>
                         </div>
-                        <button className="play-btn" onClick={handleClick}><IoPlaySharp/>Play</button>
-                        <button className="add-btn"><BsPlusCircle/></button>
+                        <button className="play-btn" onClick={handlePlayBtnClick}><IoPlaySharp/>Play</button>
+                        <button className="add-btn" title='Add to Watch List'><BsPlusCircle/></button>
                     </div>
-                    <div className="recommendations">
-                        <h3 className="recommendations-title">Recommendations</h3>
-                        <Slider directoryList={directory.recommendations} type="static" />
-                    </div>
+                    {directory.recommendations ? 
+                        <div className="recommendations">
+                            <h3 className="recommendations-title">Recommendations</h3>
+                            <div className='slider-container'>
+                                <Slider directoryList={directory.recommendations} type="static" />
+                            </div>
+                        </div> 
+                    : null}
                 </div>
             </div>
         )
@@ -110,7 +118,7 @@ const DirectoryItem = () => {
                     <Col><h3>{directory.title}</h3></Col>
                     <Col><img src='D:\Projects\Electron\MyFlix_javascript\assets\no_image.jpg'/></Col>
                 </Row>
-                <Button onClick={handleClick}>Play</Button>
+                <Button onClick={handlePlayBtnClick}>Play</Button>
             </Container>
         )
     }

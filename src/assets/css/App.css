@@ -81,7 +81,6 @@ html {
 /*===============================================================================================*/
 
 .navbar {
-    margin-bottom: 4rem;
     background-color: #0B1016;
 }
 
@@ -295,22 +294,33 @@ html {
     padding-right: 3rem;
     padding-bottom: 1rem;
     border-radius: 5px;
-    border: none;
+    border: 3px solid transparent;
     background-color: #E50914;
     color: #FFF;
+    transition: all 0.3s;
+}
+
+.play-btn:hover {
+    border: 3px solid #FFF;
 }
 
 .add-btn {
     border: none;
     font-size: 4rem;
     background: none;
-    padding-left: 4rem;
+    margin-left: 4rem;
+    color: rgba(255, 255, 255, 0.5);
+    transition: all 0.3s;
+}
+
+.add-btn:hover {
     color: #FFF;
 }
 
 .provider_logo {
     width: 5rem;
     margin-left: 2rem;
+    border-radius: 5px;
 }
 
 .recommendations {
@@ -321,6 +331,29 @@ html {
 .recommendations-title {
     color: #fff;
     font-size: 2.5rem;
+}
+
+.slider-container {
+    width: 100%;
+    margin: 0 auto;
+}
+
+.rating {
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 3px;
+    padding: 0.1rem 0.4rem;
+}
+
+.edit-btn {
+    font-size: 3rem;
+    margin-left: 2rem;
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.edit-btn:hover {
+    color: #FFF;
 }
 
 /*===============================================================================================*/
@@ -407,3 +440,29 @@ html {
         transform: rotate(360deg);
     }
 }
+
+/*===============================================================================================*/
+/*                                               Tooltip                                         */
+/*===============================================================================================*/
+
+.tooltip {
+    position: relative;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 1.2rem;
+    background-color: black;
+    color: #FFF;
+    text-align: center;
+    padding: 0.5rem 0;
+    border-radius: 6px;
+
+    position: absolute;
+    z-index: 4;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+

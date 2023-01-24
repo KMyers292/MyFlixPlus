@@ -36,6 +36,7 @@ export const getTmdbData = async (title) => {
 
     if(!response) {
       console.log('No Response');
+      return null;
     }
 
     const {results} = await response.json();
@@ -54,18 +55,18 @@ export const addTmdbData = async (list, index) => {
         if(data) {
             list.tmdb_data = 'Yes';
             list.media_type = data.media_type;
-            list.title = data.media_type === 'movie' ? data.title : data.name;
-            list.id = data.id;
+            list.title = data.media_type === 'movie' ? data.title : data.media_type === 'tv' ? data.name : "No Title Found";
+            list.id = data.id ? data.id : index;
             list.poster_path = data.poster_path;
             list.backdrop_path = data.backdrop_path;
-            list.release = data.media_type === 'tv' ? data.first_air_date : data.release_date;
-            list.overview = data.overview;
-            list.popularity = data.popularity;
+            list.release = data.media_type === 'movie' ? data.release_date : data.media_type === 'tv' ? data.first_air_date : null;
+            list.overview = data.overview ? data.overview : null;
+            list.popularity = data.popularity ? data.popularity : null;
         }
         else {
             list.tmdb_data = 'No Data';
             list.media_type = null;
-            list.title = list.file_name;
+            list.title = list.file_name ? list.file_name : 'No Title Found';
             list.id = index;
             list.poster_path = null;
             list.backdrop_path = null;
@@ -92,6 +93,7 @@ export const getDetailedTmdbData = async (mediaType, id) => {
 
     if(!response) {
         console.log('No Response');
+        return null;
     }
 
     const jsonResponse = await response.json();
@@ -109,28 +111,27 @@ export const addDetailedTmdbData = async (list) => {
                 const info = await getDetailedTmdbData(list.media_type, list.id);
 
                 list.detailed_info = true;
-                list.genres = [...info.genres];
-                list.runtime = list.media_type === 'tv' ? info.episode_run_time[0] : info.runtime;
-                list.status = info.status;
-                list.credits = [info.credits.cast[0], info.credits.cast[1], info.credits.cast[2]];
-                list.recommendations = [info.recommendations.results[0], info.recommendations.results[1], info.recommendations.results[2], info.recommendations.results[3], info.recommendations.results[4]];
-                list.vote_average = info.vote_average;
-                list.providers = info["watch/providers"].results.CA.flatrate;
+                list.genres = info.genres? [...info.genres] : null;
+                list.runtime = list.media_type === 'movie' ? info.runtime : list.media_type === 'tv' ? info.episode_run_time[0] : null;
+                list.status = info.status ? info.status : null;
+                list.credits = info.credits.cast ? [info.credits.cast[0], info.credits.cast[1], info.credits.cast[2]] : null;
+                list.recommendations = info.recommendations ? [info.recommendations.results[0], info.recommendations.results[1], info.recommendations.results[2], info.recommendations.results[3], info.recommendations.results[4]] : null;
+                list.vote_average = info.vote_average ? info.vote_average : null;
+                list.providers = info["watch/providers"].results ? info["watch/providers"].results.CA.flatrate : null;
 
 
                 if(list.media_type === 'movie') {
-                    list.imdb_id = info.imdb_id;
-                    list.rating = info.release_dates.results.find(item => item.iso_3166_1 === "US");
+                    list.rating = info.release_dates.results ? info.release_dates.results.find(item => item.iso_3166_1 === "US") : null;
                 }
 
                 if(list.media_type === 'tv') {
-                    list.seasons = [...info.seasons];
-                    list.number_of_seasons = info.number_of_seasons;
-                    list.number_of_episodes = info.number_of_episodes;
-                    list.rating = info.content_ratings.results.find(item => item.iso_3166_1 === "US");
-                    list.last_air_date = info.last_air_date;
-                    list.networks = info.networks;
-                    list.next_episode = info.next_episode_to_air;
+                    list.seasons = info.seasons ? [...info.seasons] : null;
+                    list.number_of_seasons = info.number_of_seasons ? info.number_of_seasons : null;
+                    list.number_of_episodes = info.number_of_episodes ? info.number_of_episodes : null;
+                    list.rating = info.content_ratings.results ? info.content_ratings.results.find(item => item.iso_3166_1 === "US") : null;
+                    list.last_air_date = info.last_air_date ? info.last_air_date : null;
+                    list.networks = info.networks ? info.networks : null;
+                    list.next_episode = info.next_episode_to_air ? info.next_episode_to_air : null;
                 }
             } catch (error) {
                 console.log('getDetailedTmdbData Error: ' + error);
@@ -233,6 +234,7 @@ export const getMediaObject = (id) => {
 
     if(!mediaObject) {
         console.log('No File Found.');
+        return null;
     }
 
     return mediaObject;
