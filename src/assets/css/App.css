@@ -442,27 +442,21 @@ html {
 }
 
 /*===============================================================================================*/
-/*                                               Tooltip                                         */
+/*                                            SearchedItem                                       */
 /*===============================================================================================*/
 
-.tooltip {
-    position: relative;
+.provider-container {
+    display: flex;
+    flex-direction: row;
+    gap: 3rem;
+    padding-top: 4rem;
 }
 
-.tooltip .tooltiptext {
-    visibility: hidden;
-    width: 1.2rem;
-    background-color: black;
-    color: #FFF;
-    text-align: center;
-    padding: 0.5rem 0;
-    border-radius: 6px;
-
-    position: absolute;
-    z-index: 4;
+.provider_logo-searched {
+    width: 6rem;
+    border-radius: 3px;
 }
 
-.tooltip:hover .tooltiptext {
-    visibility: visible;
+.recommendations-searched {
+    padding-left: 5rem;
 }
-

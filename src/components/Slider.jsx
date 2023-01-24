@@ -1,11 +1,14 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { Link } from 'react-router-dom';
-import {IoIosArrowForward, IoIosArrowBack, IoMdMore, IoMdCreate} from 'react-icons/io';
+import DirectoryContext from '../context/directory/DirectoryContext';
+import {IoIosArrowForward, IoIosArrowBack, IoIosCheckmarkCircle} from 'react-icons/io';
 import {useBlazeSlider} from 'react-blaze-slider';
 import '../assets/css/App.css';
 import '../assets/css/slider.css';
 
 const Slider = ({directoryList, type}) => {
+
+    const {directories} = useContext(DirectoryContext);
 
     if(type === 'scrolling') {
 
@@ -57,8 +60,9 @@ const Slider = ({directoryList, type}) => {
                     <div className="blaze-track">
                         {Object.values(directoryList).map((directory, i) => (
                             <div key={i}>
-                                <Link to={`/${directory.id}/${directory.media_type}`} className="card-link">
+                                <Link to={directories.find((file) => file.id === Number(directory.id)) ? `/${directory.id}` : `/${directory.id}/${directory.media_type}`} className="card-link">
                                     <div className="blaze-card blaze-card-static" style={ directory.backdrop_path ? { backgroundImage: "url(" + `https://image.tmdb.org/t/p/w400/${directory.backdrop_path}` + ")", backgroundSize: "100% 100%"} : {backgroundImage: "url(" + "D:/Projects/Electron/MyFlix_javascript/assets/no_image.jpg" + ")", backgroundSize: "100% 100%"}}>
+                                        {directories.find((file) => file.id === Number(directory.id)) ? <IoIosCheckmarkCircle className='checkmark' title='Ready To Play'/> : null}
                                     </div>
                                 </Link>
                                 <div className='card-info'>

@@ -5,6 +5,7 @@ import Sidebar from './components/layout/Sidebar.jsx';
 import GettingStarted from './pages/GettingStarted.jsx';
 import DirectorySearchResults from './pages/DirectorySearchResults.jsx';
 import DirectoryItem from './pages/DirectoryItem.jsx';
+import SearchedItem from './pages/SearchedItem.jsx';
 import Settings from './pages/Settings.jsx';
 import LaunchPage from './pages/LaunchPage.jsx';
 import { DirectoryProvider } from './context/directory/DirectoryContext';
@@ -38,7 +39,7 @@ const App = () => {
 								<Route exact path="/getStarted" element={<GettingStarted />} />
 								<Route exact path="/settings" element={<Settings />} />
 								<Route exact path="/results" element={<DirectorySearchResults />} />
-								<Route exact path="/:id/:mediaType" element={<DirectoryItem />} />
+								<Route exact path="/:id/:mediaType" element={<SearchedItem />} />
 								<Route exact path="/:id" element={<DirectoryItem />} />
 							</Routes>
 						</div>

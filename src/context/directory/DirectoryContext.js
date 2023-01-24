@@ -10,6 +10,7 @@ export const DirectoryProvider = ({children}) => {
     const initialState = {
         directories: directoriesFromStorage,
         directory: {},
+        searchedItem: {},
         loading: false
     }
 

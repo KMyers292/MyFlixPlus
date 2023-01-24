@@ -12,10 +12,21 @@ const directoryReducer = (state, action) => {
                 directory: action.payload,
                 loading: false
             }
+        case 'GET_SEARCHED_ITEM':
+            return {
+                ...state,
+                searchedItem: action.payload,
+                loading: false
+            }
         case 'SET_LOADING':
             return {
                 ...state,
                 loading: true
+            }
+        case 'SET_LOADING_FALSE':
+            return {
+                ...state,
+                loading: false
             }
         default:
             return state

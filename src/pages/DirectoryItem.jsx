@@ -2,7 +2,7 @@ import React, {useEffect, useContext} from 'react';
 import {useParams, useNavigate} from 'react-router-dom';
 import {Button, Container, Row, Col} from 'react-bootstrap';
 import DirectoryContext from '../context/directory/DirectoryContext';
-import { getMediaObject, getDetailedTmdbData } from '../context/directory/DirectoryActions';
+import { getMediaObject } from '../context/directory/DirectoryActions';
 import Slider from '../components/Slider.jsx';
 import {ipcRenderer} from 'electron';
 import { IoPlaySharp } from "react-icons/io5";
@@ -19,7 +19,7 @@ const DirectoryItem = () => {
 
         dispatch({ type: 'SET_LOADING' });
 
-        let directoryItem = getMediaObject(params.id);
+        const directoryItem = getMediaObject(params.id);
 
         dispatch({ 
             type: 'GET_DIRECTORY',
@@ -29,8 +29,6 @@ const DirectoryItem = () => {
         console.log(directoryItem);
 
     }, [dispatch, params.id]);
-
-
 
     const handlePlayBtnClick = () => {
         const files = fs.readdirSync(directory.path);
