@@ -1,5 +1,5 @@
-import React, {useEffect, useContext} from 'react';
-import {useParams, useNavigate} from 'react-router-dom';
+import React, { useEffect, useContext } from 'react';
+import { useParams } from 'react-router-dom';
 import DirectoryContext from '../context/directory/DirectoryContext';
 import { getDetailedTmdbData } from '../context/directory/DirectoryActions';
 import Slider from '../components/Slider.jsx';
@@ -7,8 +7,7 @@ import { BsPlusCircle } from "react-icons/bs";
 
 const SearchedItem = () => {
     const params = useParams();
-    const navigate = useNavigate();
-    const {searchedItem, dispatch, loading} = useContext(DirectoryContext);
+    const {searchedItem, dispatch} = useContext(DirectoryContext);
 
     useEffect(() => {
 
@@ -17,7 +16,12 @@ const SearchedItem = () => {
         const getData = async () => {
             const data = await getDetailedTmdbData(params.mediaType, params.id);
             data.media_type = params.mediaType;
-            data.rating = data.release_dates.results ? data.release_dates.results.find(item => item.iso_3166_1 === "US") : null;
+            if(params.mediaType === 'movie') {
+                data.rating = data.release_dates.results ? data.release_dates.results.find(item => item.iso_3166_1 === "US") : null;
+            }
+            if(params.mediaType === 'tv') {
+                data.rating = data.content_ratings.results ? data.content_ratings.results.find(item => item.iso_3166_1 === "US") : null;
+            }
             data.providers = data["watch/providers"].results ? data["watch/providers"].results.CA.flatrate : null;
             data.recommendations = data.recommendations ? [data.recommendations.results[0], data.recommendations.results[1], data.recommendations.results[2], data.recommendations.results[3], data.recommendations.results[4]] : null;
 
@@ -33,46 +37,30 @@ const SearchedItem = () => {
 
     }, [dispatch, params.id, params.mediaType]);
 
-    if(loading) {
-        return (
-            <div>
-                Loading...
-            </div>
-        )
-    }
-
-    if(searchedItem.media_type === 'tv') {
-        return (
-            <div>
-                hi
-            </div>
-            // <Container className="directory-container">
-            //     <Row>
-            //         <Col className="directory-col">
-            //             <h3 className="directory-name">{searchedItem.title}</h3>
-            //             <Row>
-            //                 <p>{searchedItem.release ? searchedItem.release.substring(0,4) : "N/A"}</p>
-            //                 <p>{searchedItem.genres ? searchedItem.genres[0].name : "N/A"}</p>
-            //             </Row>
-            //         </Col>
-            //         <Col><img src={`http://image.tmdb.org/t/p/w500/${searchedItem.backdrop_path}`}/></Col>
-            //     </Row>
-            //     <p>{searchedItem.overview}</p>
-            // </Container>
-        )
-    }
-    else if (searchedItem.media_type === 'movie'){
+    if (searchedItem.media_type === 'movie' || searchedItem.media_type === 'tv') {
         return (
             <div>
                 <div className="media-container">
                     {searchedItem.backdrop_path ? <div className='bg-image' style={{backgroundImage: "linear-gradient(to right, rgb(11, 16, 22), rgba(0, 0, 0, 0.5)), url("+`https://image.tmdb.org/t/p/w500/${searchedItem.backdrop_path}`+")"}}></div> : null}
                     <div className="media-info">
-                        <h1 className="title">{searchedItem.title}</h1>
+                        <h1 className="title">{searchedItem.media_type === 'movie' ? searchedItem.title : searchedItem.name}</h1>
                         <div className="info-bar">
                             <p>{searchedItem.vote_average ? Math.round(searchedItem.vote_average * 10)+ '%' : null}</p>
-                            <p>{searchedItem.release_date ? searchedItem.release_date.substring(0,4) : null}</p>
-                            <p>{searchedItem.runtime ? searchedItem.runtime + 'min' : null}</p>
-                            <p className='rating'>{searchedItem.rating.release_dates[1] ? searchedItem.rating.release_dates[1].certification : null}</p>
+                            {searchedItem.media_type === 'movie' ? (
+                                <p>{searchedItem.release_date ? searchedItem.release_date.substring(0,4) : null}</p>
+                            ) : (
+                                <p>{searchedItem.first_air_date ? searchedItem.first_air_date.substring(0,4) : null}</p>
+                            )}
+                            {searchedItem.media_type === 'movie' ? (
+                                <p>{searchedItem.runtime ? searchedItem.runtime + 'min' : null}</p>
+                            ) : (
+                                <p>{searchedItem.episode_run_time ? searchedItem.episode_run_time[0] + 'min' : null}</p>
+                            )}
+                            {searchedItem.media_type === 'movie' ? (
+                                <p className='rating'>{searchedItem.rating.release_dates[1] ? searchedItem.rating.release_dates[1].certification : null}</p>
+                            ) : (
+                                <p className='rating'>{searchedItem.rating ? searchedItem.rating.rating : null}</p>
+                            )}
                         </div>
                         <p className="overview">{searchedItem.overview}</p>
                         <div className="info-list">
@@ -115,7 +103,7 @@ const SearchedItem = () => {
     else {
         return (
             <div>
-                {searchedItem.title}
+                Loading...
             </div>
         )
     }

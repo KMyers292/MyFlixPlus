@@ -66,7 +66,11 @@ const Slider = ({directoryList, type}) => {
                                     </div>
                                 </Link>
                                 <div className='card-info'>
-                                    <p title={directory.title}>{directory.title.length > 25 ? directory.title.substring(0,25) + "..." : directory.title}</p>
+                                    {directory.media_type === 'movie' ? (
+                                        <p title={directory.title}>{directory.title.length > 25 ? directory.title.substring(0,25) + "..." : directory.title}</p>
+                                    ) : (
+                                        <p title={directory.name}>{directory.name.length > 25 ? directory.name.substring(0,25) + "..." : directory.name}</p>
+                                    )}
                                     <p>{Math.round(directory.vote_average * 10)}%</p>
                                 </div>
                             </div>

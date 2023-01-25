@@ -1,18 +1,17 @@
-import React, {useEffect, useContext} from 'react';
-import {useParams, useNavigate} from 'react-router-dom';
+import React, { useEffect, useContext } from 'react';
+import { useParams } from 'react-router-dom';
+import {ipcRenderer} from 'electron';
+import fs from 'fs';
 import {Button, Container, Row, Col} from 'react-bootstrap';
 import DirectoryContext from '../context/directory/DirectoryContext';
 import { getMediaObject } from '../context/directory/DirectoryActions';
 import Slider from '../components/Slider.jsx';
-import {ipcRenderer} from 'electron';
 import { IoPlaySharp } from "react-icons/io5";
 import { BsPlusCircle } from "react-icons/bs";
 import { MdEdit } from "react-icons/md";
-import fs from 'fs';
 
 const DirectoryItem = () => {
     const params = useParams();
-    const navigate = useNavigate();
     const {directory, dispatch, loading} = useContext(DirectoryContext);
 
     useEffect(() => {
@@ -44,24 +43,7 @@ const DirectoryItem = () => {
         )
     }
 
-    if(directory.media_type === 'tv') {
-        return (
-            <Container className="directory-container">
-                <Row>
-                    <Col className="directory-col">
-                        <h3 className="directory-name">{directory.title}</h3>
-                        <Row>
-                            <p>{directory.release ? directory.release.substring(0,4) : "N/A"}</p>
-                            <p>{directory.genres ? directory.genres[0].name : "N/A"}</p>
-                        </Row>
-                    </Col>
-                    <Col><img src={`http://image.tmdb.org/t/p/w500/${directory.backdrop_path}`}/></Col>
-                </Row>
-                <p>{directory.overview}</p>
-            </Container>
-        )
-    }
-    else if (directory.media_type === 'movie'){
+    if (directory.media_type === 'movie' || directory.media_type === 'tv') {
         return (
             <div>
                 <div className="media-container">
@@ -72,7 +54,11 @@ const DirectoryItem = () => {
                             <p>{directory.vote_average ? Math.round(directory.vote_average * 10)+ '%' : null}</p>
                             <p>{directory.release ? directory.release.substring(0,4) : null}</p>
                             <p>{directory.runtime ? directory.runtime + 'min' : null}</p>
-                            <p className='rating'>{directory.rating.release_dates[1] ? directory.rating.release_dates[1].certification : null}</p>
+                            {directory.media_type === 'movie' ? (
+                                <p className='rating'>{directory.rating.release_dates[1] ? directory.rating.release_dates[1].certification : null}</p>
+                            ) : (
+                                <p className='rating'>{directory.rating ? directory.rating.rating : null}</p>
+                            )}
                         </div>
                         <p className="overview">{directory.overview}</p>
                         <div className="info-list">
