@@ -59,21 +59,19 @@ const Slider = ({directoryList, type}) => {
                 <div className="blaze-container blaze-container-static">
                     <div className="blaze-track">
                         {Object.values(directoryList).map((directory, i) => (
-                            <div key={i}>
-                                <Link to={directories.find((file) => file.id === Number(directory.id)) ? `/${directory.id}` : `/${directory.id}/${directory.media_type}`} className="card-link">
-                                    <div className="blaze-card blaze-card-static" style={ directory.backdrop_path ? { backgroundImage: "url(" + `https://image.tmdb.org/t/p/w400/${directory.backdrop_path}` + ")", backgroundSize: "100% 100%"} : {backgroundImage: "url(" + "D:/Projects/Electron/MyFlix_javascript/assets/no_image.jpg" + ")", backgroundSize: "100% 100%"}}>
-                                        {directories.find((file) => file.id === Number(directory.id)) ? <IoIosCheckmarkCircle className='checkmark' title='Ready To Play'/> : null}
-                                    </div>
-                                </Link>
-                                <div className='card-info'>
-                                    {directory.media_type === 'movie' ? (
+                            directory ? (
+                                <div key={i}>
+                                    <Link to={directories.find((file) => file.id === Number(directory.id)) ? `/${directory.id}` : `/${directory.id}/${directory.media_type}`} className="card-link">
+                                        <div className="blaze-card blaze-card-static" style={ directory.backdrop_path ? { backgroundImage: "url(" + `https://image.tmdb.org/t/p/w400/${directory.backdrop_path}` + ")", backgroundSize: "100% 100%"} : {backgroundImage: "url(" + "D:/Projects/Electron/MyFlix_javascript/assets/no_image.jpg" + ")", backgroundSize: "100% 100%"}}>
+                                            {directories.find((file) => file.id === Number(directory.id)) ? <IoIosCheckmarkCircle className='checkmark' title='Ready To Play'/> : null}
+                                        </div>
+                                    </Link>
+                                    <div className='card-info'>
                                         <p title={directory.title}>{directory.title.length > 22 ? directory.title.substring(0,22) + "..." : directory.title}</p>
-                                    ) : (
-                                        <p title={directory.name}>{directory.name.length > 22 ? directory.name.substring(0,22) + "..." : directory.name}</p>
-                                    )}
-                                    <p>{Math.round(directory.vote_average * 10)}%</p>
+                                        <p>{Math.round(directory.vote_average * 10)}%</p>
+                                    </div>
                                 </div>
-                            </div>
+                            ) : null
                         ))}
                     </div>
                 </div>

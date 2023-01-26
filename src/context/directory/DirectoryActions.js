@@ -105,11 +105,19 @@ export const getDetailedTmdbData = async (mediaType, id) => {
 // Fetches detailed info and adds it to array for each file in the directory that doesn't already have it.
 export const addDetailedTmdbData = async (list) => {
 
-    if(list.tmdb_data === 'Yes' && !list.detailed_info) {
+    if((list.tmdb_data === 'Yes' && !list.detailed_info) || list.searchedItem) {
         if(list.media_type === 'movie' || list.media_type === 'tv') {
             try {
                 const info = await getDetailedTmdbData(list.media_type, list.id);
-        
+                
+                if(list.searchedItem) {
+                    console.log(info);
+                    list.title = list.media_type === 'movie' ? info.title : list.media_type === 'tv' ? info.name : "No Title Found";
+                    list.backdrop_path = info.backdrop_path;
+                    list.release = list.media_type === 'movie' ? info.release_date : list.media_type === 'tv' ? info.first_air_date : null;
+                    list.overview = info.overview ? info.overview : null;
+                }
+
                 list.detailed_info = true;
                 list.genres = info.genres? [...info.genres] : null;
                 list.runtime = list.media_type === 'movie' ? info.runtime : list.media_type === 'tv' ? info.episode_run_time[0] : null;
@@ -118,25 +126,29 @@ export const addDetailedTmdbData = async (list) => {
                 for(let i = 0; i < 3; i++) {
                     list.credits[i] = info.credits.cast[i] ? info.credits.cast[i].name : null;
                 }
-                list.recommendations = info.recommendations ? [info.recommendations.results[0], info.recommendations.results[1], info.recommendations.results[2], info.recommendations.results[3], info.recommendations.results[4], info.recommendations.results[5]] : null;
-                for(let i = 0; i < list.recommendations.length; i++) {
-                    if(list.recommendations[i]) {
-                        list.recommendations[i] = {
-                            backdrop_path: list.recommendations[i].backdrop_path ? list.recommendations[i].backdrop_path : null,
-                            id: list.recommendations[i].id ? list.recommendations[i].id : null,
-                            media_type: list.recommendations[i].media_type ? list.recommendations[i].media_type : null,
-                            vote_average: list.recommendations[i].vote_average ? list.recommendations[i].vote_average : null,
-                            title: list.recommendations[i].media_type === 'movie' ? list.recommendations[i].title : list.recommendations[i].media_type === 'tv' ? list.recommendations[i].name : null
+                list.recommendations = info.recommendations.results.length > 0 ? [info.recommendations.results[0], info.recommendations.results[1], info.recommendations.results[2], info.recommendations.results[3], info.recommendations.results[4], info.recommendations.results[5]] : null;
+                if(list.recommendations) {
+                    for(let i = 0; i < list.recommendations.length; i++) {
+                        if(list.recommendations[i]) {
+                            list.recommendations[i] = {
+                                backdrop_path: list.recommendations[i].backdrop_path ? list.recommendations[i].backdrop_path : null,
+                                id: list.recommendations[i].id ? list.recommendations[i].id : null,
+                                media_type: list.recommendations[i].media_type ? list.recommendations[i].media_type : null,
+                                vote_average: list.recommendations[i].vote_average ? list.recommendations[i].vote_average : null,
+                                title: list.recommendations[i].media_type === 'movie' ? list.recommendations[i].title : list.recommendations[i].media_type === 'tv' ? list.recommendations[i].name : null
+                            }
                         }
                     }
                 }
                 list.vote_average = info.vote_average ? info.vote_average : null;
-                list.providers = info["watch/providers"].results ? info["watch/providers"].results.CA.flatrate : null;
+                list.providers = info["watch/providers"].results.CA ? info["watch/providers"].results.CA.flatrate : null;
                 list.providers = list.providers ? {logo_path: list.providers[0].logo_path, provider_name: list.providers[0].provider_name} : null;
         
                 if(list.media_type === 'movie') {
-                    list.rating = info.release_dates.results ? info.release_dates.results.find(item => item.iso_3166_1 === "US") : null;
-                    list.rating = list.rating ? list.rating.release_dates[1].certification : null;
+                    if(info.release_dates.results) {
+                        const rating = info.release_dates.results.find(item => item.iso_3166_1 === "US");
+                        list.rating = rating ? rating.release_dates[1] ? rating.release_dates[1].certification : null : null;
+                    }
                 }
         
                 if(list.media_type === 'tv') {

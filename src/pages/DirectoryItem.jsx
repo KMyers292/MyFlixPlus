@@ -54,7 +54,7 @@ const DirectoryItem = () => {
                             <p>{Math.round(directory.vote_average * 10)+ '%'}</p>
                             <p>{directory.release.substring(0,4)}</p>
                             <p>{directory.runtime + 'min'}</p>
-                            <p className='rating'>{directory.rating}</p>
+                            {directory.rating ? <p className='rating'>{directory.rating}</p> : null}
                         </div>
                         <p className="overview">{directory.overview}</p>
                         <div className="info-list">

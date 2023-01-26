@@ -1,7 +1,7 @@
 import React, { useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import DirectoryContext from '../context/directory/DirectoryContext';
-import { getDetailedTmdbData } from '../context/directory/DirectoryActions';
+import { getDetailedTmdbData, addDetailedTmdbData } from '../context/directory/DirectoryActions';
 import Slider from '../components/Slider.jsx';
 import { BsPlusCircle } from "react-icons/bs";
 
@@ -14,20 +14,15 @@ const SearchedItem = () => {
         dispatch({ type: 'SET_LOADING' });
 
         const getData = async () => {
-            const data = await getDetailedTmdbData(params.mediaType, params.id);
-            data.media_type = params.mediaType;
+            let data = {
+                media_type: params.mediaType,
+                id: params.id,
+                searchedItem: true
+            }
+            
+            await addDetailedTmdbData(data);
 
             console.log(data);
-
-            if(params.mediaType === 'movie') {
-                data.rating = data.release_dates.results ? data.release_dates.results.find(item => item.iso_3166_1 === "US") : null;
-            }
-            if(params.mediaType === 'tv') {
-                data.rating = data.content_ratings.results ? data.content_ratings.results.find(item => item.iso_3166_1 === "US") : null;
-                data.title = data.name;
-            }
-            data.providers = data["watch/providers"].results.CA ? data["watch/providers"].results.CA.flatrate : null;
-            data.recommendations = data.recommendations.results ? [data.recommendations.results[0], data.recommendations.results[1], data.recommendations.results[2], data.recommendations.results[3], data.recommendations.results[4], data.recommendations.results[5]] : null;
 
             dispatch({ 
                 type: 'GET_SEARCHED_ITEM',
@@ -45,32 +40,20 @@ const SearchedItem = () => {
                 <div className="media-container">
                     {searchedItem.backdrop_path ? <div className='bg-image' style={{backgroundImage: "linear-gradient(to right, rgb(11, 16, 22), rgba(0, 0, 0, 0.5)), url("+`https://image.tmdb.org/t/p/w500/${searchedItem.backdrop_path}`+")"}}></div> : null}
                     <div className="media-info">
-                        <h1 className="title">{searchedItem.media_type === 'movie' ? searchedItem.title : searchedItem.name}</h1>
+                        <h1 className="title">{searchedItem.title}</h1>
                         <div className="info-bar">
                             <p>{searchedItem.vote_average ? Math.round(searchedItem.vote_average * 10)+ '%' : null}</p>
-                            {searchedItem.media_type === 'movie' ? (
-                                <p>{searchedItem.release_date ? searchedItem.release_date.substring(0,4) : null}</p>
-                            ) : (
-                                <p>{searchedItem.first_air_date ? searchedItem.first_air_date.substring(0,4) : null}</p>
-                            )}
-                            {searchedItem.media_type === 'movie' ? (
-                                <p>{searchedItem.runtime ? searchedItem.runtime + 'min' : null}</p>
-                            ) : (
-                                <p>{searchedItem.episode_run_time[0] ? searchedItem.episode_run_time[0] + 'min' : null}</p>
-                            )}
-                            {searchedItem.media_type === 'movie' ? (
-                                <p className='rating'>{searchedItem.rating.release_dates[1] ? searchedItem.rating.release_dates[1].certification : null}</p>
-                            ) : (
-                                <p className='rating'>{searchedItem.rating ? searchedItem.rating.rating : null}</p>
-                            )}
+                            <p>{searchedItem.release.substring(0,4)}</p>
+                            <p>{searchedItem.runtime + 'min'}</p>
+                            {searchedItem.rating ? <p className='rating'>{searchedItem.rating}</p> : null}
                         </div>
                         <p className="overview">{searchedItem.overview}</p>
                         <div className="info-list">
                             <p>Starring:
                                 <span className="genres">
-                                    {searchedItem.credits.cast[0] ? searchedItem.credits.cast[0].name : null}
-                                    {searchedItem.credits.cast[1] ? ", " + searchedItem.credits.cast[1].name : null}
-                                    {searchedItem.credits.cast[2] ? ", " + searchedItem.credits.cast[2].name : null}
+                                    {searchedItem.credits[0] ? searchedItem.credits[0] : null}
+                                    {searchedItem.credits[1] ? ", " + searchedItem.credits[1] : null}
+                                    {searchedItem.credits[2] ? ", " + searchedItem.credits[2] : null}
                                 </span>
                             </p>
                             <p>Genres: 
@@ -80,18 +63,20 @@ const SearchedItem = () => {
                                     {searchedItem.genres[2] ? ", " + searchedItem.genres[2].name : null}
                                 </span>
                             </p>
-                            <div className='provider-container'>
-                                {searchedItem.providers[0] ? <img className='provider_logo-searched' title={searchedItem.providers[0].provider_name} src={`https://image.tmdb.org/t/p/w200/${searchedItem.providers[0].logo_path}`}/> : null}
-                                <p>
-                                    Stream It Now <br/>
-                                    On {searchedItem.providers[0] ? searchedItem.providers[0].provider_name : null}
-                                </p>
-                                <button className="add-btn" title='Add to Watch List'><BsPlusCircle/></button>
-                            </div>
+                            {searchedItem.providers ? (
+                                <div className='provider-container'>
+                                    <img className='provider_logo-searched' title={searchedItem.providers.provider_name} src={`https://image.tmdb.org/t/p/w200/${searchedItem.providers.logo_path}`}/>
+                                    <p>
+                                        Stream It Now <br/>
+                                        On {searchedItem.providers.provider_name}
+                                    </p>
+                                    <button className="add-btn" title='Add to Watch List'><BsPlusCircle/></button>
+                                </div>
+                            ) : null}
                         </div>
                     </div>
                     {searchedItem.recommendations ? 
-                        <div className="recommendations-searched">
+                        <div className="recommendations">
                             <h3 className="recommendations-title">Recommendations</h3>
                             <div className='slider-container'>
                                 <Slider directoryList={searchedItem.recommendations} type="static" />

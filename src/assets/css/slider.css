@@ -41,7 +41,7 @@
 .blaze-container {
     width: 96%;
     margin: 0 auto;
-    overflow:hidden;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     justify-content: center;
