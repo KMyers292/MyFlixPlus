@@ -49,8 +49,8 @@ const Slider = ({directoryList, type}) => {
 
         const ref = useBlazeSlider({
             all: {
-                slidesToScroll: 5,
-                slidesToShow: 5
+                slidesToScroll: 6,
+                slidesToShow: 6
                 }
         });
 
@@ -67,9 +67,9 @@ const Slider = ({directoryList, type}) => {
                                 </Link>
                                 <div className='card-info'>
                                     {directory.media_type === 'movie' ? (
-                                        <p title={directory.title}>{directory.title.length > 25 ? directory.title.substring(0,25) + "..." : directory.title}</p>
+                                        <p title={directory.title}>{directory.title.length > 22 ? directory.title.substring(0,22) + "..." : directory.title}</p>
                                     ) : (
-                                        <p title={directory.name}>{directory.name.length > 25 ? directory.name.substring(0,25) + "..." : directory.name}</p>
+                                        <p title={directory.name}>{directory.name.length > 22 ? directory.name.substring(0,22) + "..." : directory.name}</p>
                                     )}
                                     <p>{Math.round(directory.vote_average * 10)}%</p>
                                 </div>

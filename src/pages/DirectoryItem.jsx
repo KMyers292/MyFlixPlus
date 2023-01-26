@@ -51,22 +51,18 @@ const DirectoryItem = () => {
                     <div className="media-info">
                         <h1 className="title">{directory.title} <button className="edit-btn" title="Edit Entry"><MdEdit /></button></h1>
                         <div className="info-bar">
-                            <p>{directory.vote_average ? Math.round(directory.vote_average * 10)+ '%' : null}</p>
-                            <p>{directory.release ? directory.release.substring(0,4) : null}</p>
-                            <p>{directory.runtime ? directory.runtime + 'min' : null}</p>
-                            {directory.media_type === 'movie' ? (
-                                <p className='rating'>{directory.rating.release_dates[1] ? directory.rating.release_dates[1].certification : null}</p>
-                            ) : (
-                                <p className='rating'>{directory.rating ? directory.rating.rating : null}</p>
-                            )}
+                            <p>{Math.round(directory.vote_average * 10)+ '%'}</p>
+                            <p>{directory.release.substring(0,4)}</p>
+                            <p>{directory.runtime + 'min'}</p>
+                            <p className='rating'>{directory.rating}</p>
                         </div>
                         <p className="overview">{directory.overview}</p>
                         <div className="info-list">
                             <p>Starring:
                                 <span className="genres">
-                                    {directory.credits[0] ? directory.credits[0].name : null}
-                                    {directory.credits[1] ? ", " + directory.credits[1].name : null}
-                                    {directory.credits[2] ? ", " + directory.credits[2].name : null}
+                                    {directory.credits[0] ? directory.credits[0] : null}
+                                    {directory.credits[1] ? ", " + directory.credits[1] : null}
+                                    {directory.credits[2] ? ", " + directory.credits[2] : null}
                                 </span>
                             </p>
                             <p>Genres: 
@@ -76,9 +72,11 @@ const DirectoryItem = () => {
                                     {directory.genres[2] ? ", " + directory.genres[2].name : null}
                                 </span>
                             </p>
-                            <p>Watch On: 
-                                {directory.providers[0] ? <img className='provider_logo' title={directory.providers[0].provider_name} src={`https://image.tmdb.org/t/p/w200/${directory.providers[0].logo_path}`}/> : null}
-                            </p>
+                            {directory.providers ? (
+                                <p>Watch On: 
+                                    <img className='provider_logo' title={directory.providers.provider_name} src={`https://image.tmdb.org/t/p/w200/${directory.providers.logo_path}`}/>
+                                </p>
+                            ) : null}
                         </div>
                         <button className="play-btn" onClick={handlePlayBtnClick}><IoPlaySharp/>Play</button>
                         <button className="add-btn" title='Add to Watch List'><BsPlusCircle/></button>

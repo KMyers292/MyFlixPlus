@@ -109,26 +109,42 @@ export const addDetailedTmdbData = async (list) => {
         if(list.media_type === 'movie' || list.media_type === 'tv') {
             try {
                 const info = await getDetailedTmdbData(list.media_type, list.id);
-
+        
                 list.detailed_info = true;
                 list.genres = info.genres? [...info.genres] : null;
                 list.runtime = list.media_type === 'movie' ? info.runtime : list.media_type === 'tv' ? info.episode_run_time[0] : null;
                 list.status = info.status ? info.status : null;
-                list.credits = info.credits.cast ? [info.credits.cast[0], info.credits.cast[1], info.credits.cast[2]] : null;
-                list.recommendations = info.recommendations ? [info.recommendations.results[0], info.recommendations.results[1], info.recommendations.results[2], info.recommendations.results[3], info.recommendations.results[4]] : null;
+                list.credits = [];
+                for(let i = 0; i < 3; i++) {
+                    list.credits[i] = info.credits.cast[i] ? info.credits.cast[i].name : null;
+                }
+                list.recommendations = info.recommendations ? [info.recommendations.results[0], info.recommendations.results[1], info.recommendations.results[2], info.recommendations.results[3], info.recommendations.results[4], info.recommendations.results[5]] : null;
+                for(let i = 0; i < list.recommendations.length; i++) {
+                    if(list.recommendations[i]) {
+                        list.recommendations[i] = {
+                            backdrop_path: list.recommendations[i].backdrop_path ? list.recommendations[i].backdrop_path : null,
+                            id: list.recommendations[i].id ? list.recommendations[i].id : null,
+                            media_type: list.recommendations[i].media_type ? list.recommendations[i].media_type : null,
+                            vote_average: list.recommendations[i].vote_average ? list.recommendations[i].vote_average : null,
+                            title: list.recommendations[i].media_type === 'movie' ? list.recommendations[i].title : list.recommendations[i].media_type === 'tv' ? list.recommendations[i].name : null
+                        }
+                    }
+                }
                 list.vote_average = info.vote_average ? info.vote_average : null;
                 list.providers = info["watch/providers"].results ? info["watch/providers"].results.CA.flatrate : null;
-
-
+                list.providers = list.providers ? {logo_path: list.providers[0].logo_path, provider_name: list.providers[0].provider_name} : null;
+        
                 if(list.media_type === 'movie') {
                     list.rating = info.release_dates.results ? info.release_dates.results.find(item => item.iso_3166_1 === "US") : null;
+                    list.rating = list.rating ? list.rating.release_dates[1].certification : null;
                 }
-
+        
                 if(list.media_type === 'tv') {
                     list.seasons = info.seasons ? [...info.seasons] : null;
                     list.number_of_seasons = info.number_of_seasons ? info.number_of_seasons : null;
                     list.number_of_episodes = info.number_of_episodes ? info.number_of_episodes : null;
                     list.rating = info.content_ratings.results ? info.content_ratings.results.find(item => item.iso_3166_1 === "US") : null;
+                    list.rating = list.rating ? list.rating.rating : null;
                     list.last_air_date = info.last_air_date ? info.last_air_date : null;
                     list.networks = info.networks ? info.networks : null;
                     list.next_episode = info.next_episode_to_air ? info.next_episode_to_air : null;

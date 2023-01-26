@@ -53,6 +53,7 @@
 
 .blaze-container-static {
     min-height: 18rem;
+    width: 99%;
 }
 
 .blaze-track {
@@ -90,8 +91,8 @@
 }
 
 .blaze-card-static {
-    width: 20rem;
-    min-height: 13rem;
+    width: 18rem;
+    min-height: 12rem;
 }
 
 .blaze-card:hover {

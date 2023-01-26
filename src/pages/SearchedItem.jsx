@@ -16,21 +16,23 @@ const SearchedItem = () => {
         const getData = async () => {
             const data = await getDetailedTmdbData(params.mediaType, params.id);
             data.media_type = params.mediaType;
+
+            console.log(data);
+
             if(params.mediaType === 'movie') {
                 data.rating = data.release_dates.results ? data.release_dates.results.find(item => item.iso_3166_1 === "US") : null;
             }
             if(params.mediaType === 'tv') {
                 data.rating = data.content_ratings.results ? data.content_ratings.results.find(item => item.iso_3166_1 === "US") : null;
+                data.title = data.name;
             }
-            data.providers = data["watch/providers"].results ? data["watch/providers"].results.CA.flatrate : null;
-            data.recommendations = data.recommendations ? [data.recommendations.results[0], data.recommendations.results[1], data.recommendations.results[2], data.recommendations.results[3], data.recommendations.results[4]] : null;
+            data.providers = data["watch/providers"].results.CA ? data["watch/providers"].results.CA.flatrate : null;
+            data.recommendations = data.recommendations.results ? [data.recommendations.results[0], data.recommendations.results[1], data.recommendations.results[2], data.recommendations.results[3], data.recommendations.results[4], data.recommendations.results[5]] : null;
 
             dispatch({ 
                 type: 'GET_SEARCHED_ITEM',
                 payload: data
             });
-
-            console.log(data);
         }
 
         getData();
@@ -54,7 +56,7 @@ const SearchedItem = () => {
                             {searchedItem.media_type === 'movie' ? (
                                 <p>{searchedItem.runtime ? searchedItem.runtime + 'min' : null}</p>
                             ) : (
-                                <p>{searchedItem.episode_run_time ? searchedItem.episode_run_time[0] + 'min' : null}</p>
+                                <p>{searchedItem.episode_run_time[0] ? searchedItem.episode_run_time[0] + 'min' : null}</p>
                             )}
                             {searchedItem.media_type === 'movie' ? (
                                 <p className='rating'>{searchedItem.rating.release_dates[1] ? searchedItem.rating.release_dates[1].certification : null}</p>
@@ -82,7 +84,7 @@ const SearchedItem = () => {
                                 {searchedItem.providers[0] ? <img className='provider_logo-searched' title={searchedItem.providers[0].provider_name} src={`https://image.tmdb.org/t/p/w200/${searchedItem.providers[0].logo_path}`}/> : null}
                                 <p>
                                     Stream It Now <br/>
-                                    On {searchedItem.providers[0].provider_name}
+                                    On {searchedItem.providers[0] ? searchedItem.providers[0].provider_name : null}
                                 </p>
                                 <button className="add-btn" title='Add to Watch List'><BsPlusCircle/></button>
                             </div>
