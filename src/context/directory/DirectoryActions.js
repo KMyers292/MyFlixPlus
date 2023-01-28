@@ -85,7 +85,7 @@ export const getDetailedTmdbData = async (mediaType, id) => {
     let response;
 
     if(mediaType === 'tv') {
-        response = await fetch(`https://api.themoviedb.org/3/tv/${id}?api_key=${tmdbApiKey}&append_to_response=credits,recommendations,content_ratings,watch/providers`);
+        response = await fetch(`https://api.themoviedb.org/3/tv/${id}?api_key=${tmdbApiKey}&append_to_response=credits,recommendations,content_ratings,watch/providers,season/1`);
     }
     else if (mediaType === 'movie') {
         response = await fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${tmdbApiKey}&append_to_response=credits,recommendations,release_dates,watch/providers`);
@@ -111,7 +111,6 @@ export const addDetailedTmdbData = async (list) => {
                 const info = await getDetailedTmdbData(list.media_type, list.id);
                 
                 if(list.searchedItem) {
-                    console.log(info);
                     list.title = list.media_type === 'movie' ? info.title : list.media_type === 'tv' ? info.name : "No Title Found";
                     list.backdrop_path = info.backdrop_path;
                     list.release = list.media_type === 'movie' ? info.release_date : list.media_type === 'tv' ? info.first_air_date : null;
@@ -152,7 +151,38 @@ export const addDetailedTmdbData = async (list) => {
                 }
         
                 if(list.media_type === 'tv') {
-                    list.seasons = info.seasons ? [...info.seasons] : null;
+
+                    const seasons = [];
+                    if(info.seasons) {
+                        for(let i = 0; i < info.seasons.length; i++) {
+                            seasons[i] = {
+                                name: info.seasons[i].name,
+                                id: info.seasons[i].id,
+                                overview: info.seasons[i].overview,
+                                poster_path: info.seasons[i].poster_path,
+                                season_number: info.seasons[i].season_number
+                            }
+                        }
+                    }
+
+                    const seasonsFiltered = seasons ? seasons.filter((season) => season.season_number > 0) : null;
+                    list.seasons = seasonsFiltered ? [...seasonsFiltered] : null;
+
+                    const episodes = [];
+                    if(info['season/1']){
+                        for(let i = 0; i < info['season/1'].episodes.length; i++) {
+                            episodes[i] = {
+                                air_date: info['season/1'].episodes[i].air_date,
+                                episode_number: info['season/1'].episodes[i].episode_number,
+                                name: info['season/1'].episodes[i].name,
+                                overview: info['season/1'].episodes[i].overview,
+                                runtime: info['season/1'].episodes[i].runtime,
+                                still_path: info['season/1'].episodes[i].still_path,
+                                vote_average: info['season/1'].episodes[i].vote_average
+                            }
+                        }
+                    }
+                    list.seasons[0].episodes = episodes ? [...episodes] : null; 
                     list.number_of_seasons = info.number_of_seasons ? info.number_of_seasons : null;
                     list.number_of_episodes = info.number_of_episodes ? info.number_of_episodes : null;
                     list.rating = info.content_ratings.results ? info.content_ratings.results.find(item => item.iso_3166_1 === "US") : null;

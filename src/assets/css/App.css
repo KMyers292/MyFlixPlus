@@ -356,6 +356,44 @@ html {
     color: #FFF;
 }
 
+.seasons-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-right: 5rem;
+}
+
+.season-info-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.season-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.episode-container {
+    display: flex;
+    flex-direction: row;
+    padding-bottom: 4rem;
+    color: #fff;
+    font-size: 1.4rem;
+}
+
+.episode-title {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    margin-right: 4rem;
+    margin-left: 2rem;
+}
+
+.episode-info {
+    display: flex;
+    flex-direction: column;
+}
+
 /*===============================================================================================*/
 /*                                                Sidebar                                        */
 /*===============================================================================================*/
