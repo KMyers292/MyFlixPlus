@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import {Form, Button, Container} from 'react-bootstrap';
 import DirectoryContext from '../context/directory/DirectoryContext';
 import AlertContext from '../context/alert/AlertContext';
-import { getDirectoryFiles } from '../context/directory/DirectoryActions';
+import { getFileDataInDirectory } from '../context/directory/DirectoryActions';
 import '../assets/css/App.css';
 
 const GettingStarted = () => {
@@ -25,7 +25,7 @@ const GettingStarted = () => {
             setAlert('Please Enter A Directory!', 'error');
         }
         else {
-            const directories = await getDirectoryFiles(text);
+            const directories = await getFileDataInDirectory(text);
 
             dispatch({
                 type: 'GET_DIRECTORIES',

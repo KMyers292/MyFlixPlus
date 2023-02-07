@@ -1,7 +1,7 @@
 const {ipcRenderer} = require('electron');
 import React, {useState, useContext} from 'react';
 import {Form, Button, Container} from 'react-bootstrap';
-import { getDirectoryFiles } from '../context/directory/DirectoryActions';
+import { getFileDataInDirectory } from '../context/directory/DirectoryActions';
 import DirectoryContext from '../context/directory/DirectoryContext';
 import AlertContext from '../context/alert/AlertContext';
 import '../assets/css/App.css';
@@ -23,7 +23,7 @@ const Settings = () => {
             setAlert('Please Enter a Directory', 'error');
         }
         else {
-            const directories = await getDirectoryFiles(text);
+            const directories = await getFileDataInDirectory(text);
 
             dispatch({
                 type: 'GET_DIRECTORIES',

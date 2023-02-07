@@ -1,6 +1,6 @@
 import React, {useContext} from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getDirectoryFiles } from '../context/directory/DirectoryActions';
+import { getFileDataInDirectory } from '../context/directory/DirectoryActions';
 import DirectoryContext from '../context/directory/DirectoryContext';
 import '../assets/css/App.css';
 
@@ -17,7 +17,7 @@ const LaunchPage = () => {
 
         dispatch({type: 'SET_LOADING'});
 
-        const directories = await getDirectoryFiles(savedDirectory);
+        const directories = await getFileDataInDirectory(savedDirectory);
 
         dispatch({
             type: 'GET_DIRECTORIES',

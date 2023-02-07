@@ -4,45 +4,42 @@ import {ipcRenderer} from 'electron';
 import fs from 'fs';
 import {Button, Container, Row, Col} from 'react-bootstrap';
 import DirectoryContext from '../context/directory/DirectoryContext';
-import { getMediaObject } from '../context/directory/DirectoryActions';
+import { getMediaObjectFromList, minutesToHours, addSeasonsInDirectoryToList, addEpisodesToList } from '../context/directory/DirectoryActions';
 import Slider from '../components/Slider.jsx';
-import Card from '../components/Card.jsx';
+import EpisodesList from '../components/EpisodesList.jsx';
 import { IoPlaySharp } from "react-icons/io5";
 import { BsPlusCircle } from "react-icons/bs";
 import { MdEdit } from "react-icons/md";
 
 const DirectoryItem = () => {
     const params = useParams();
-    const {directory, dispatch, loading} = useContext(DirectoryContext);
-    const [season, setSeason] = useState(1);
-    const [numSeasons, setNumSeasons] = useState([]);
+    const {directories, directory, dispatch, loading} = useContext(DirectoryContext);
+    const [seasonNum, setSeasonNum] = useState(1);
+    const [seasonsOptions, setSeasonsOptions] = useState([]);
+    const [episodesList, setEpisodesList] = useState([]);
 
     useEffect(() => {
 
         dispatch({ type: 'SET_LOADING' });
 
-        const directoryItem = getMediaObject(params.id);
+        const directoryItem = getMediaObjectFromList(params.id);
 
         dispatch({ 
             type: 'GET_DIRECTORY',
             payload: directoryItem
         });
 
-        console.log(directoryItem);
+        let seasons = [];
 
-        let array = [];
-
-        for(let i = 1; i <= directoryItem.number_of_seasons; i++) {
-            array.push(<option value={i} key={i}>Season {i}</option>);
+        for (let i = 1; i <= directoryItem.number_of_seasons; i++) {
+            seasons.push(<option value={i} key={i}>Season {i}</option>);
         }
 
-        setNumSeasons(array);
+        setSeasonsOptions(seasons);
+        addSeasonsInDirectoryToList(directoryItem, directories);
+        setEpisodesList(directoryItem.seasons[seasonNum - 1]);
 
     }, [dispatch, params.id]);
-
-    if(directory.media_type === 'tv') {
-
-    }
 
     const handlePlayBtnClick = () => {
         const files = fs.readdirSync(directory.path);
@@ -50,7 +47,15 @@ const DirectoryItem = () => {
         ipcRenderer.send('vlc:open', name);
     }
 
-    if(loading) {
+    const handleChange = async (e) => {
+        setSeasonNum(e.target.value);
+        const episodesList = await addEpisodesToList(e.target.value, directory, directories);
+        if (episodesList) {
+            setEpisodesList(episodesList);
+        }
+    }
+
+    if (loading) {
         return (
             <div>
                 Loading...
@@ -58,9 +63,10 @@ const DirectoryItem = () => {
         )
     }
 
-    if (directory.media_type === 'movie' || directory.media_type === 'tv') {
+    if (directory.media_type === 'movie' || directory.media_type === 'tv' && !loading && Object.keys(episodesList).length !== 0) {
         return (
             <div>
+                {console.log(episodesList)}
                 <div className="media-container">
                     {directory.backdrop_path ? <div className='bg-image' style={{backgroundImage: "linear-gradient(to right, rgb(11, 16, 22), rgba(0, 0, 0, 0.5)), url("+`https://image.tmdb.org/t/p/w500/${directory.backdrop_path}`+")"}}></div> : null}
                     <div className="media-info">
@@ -68,7 +74,7 @@ const DirectoryItem = () => {
                         <div className="info-bar">
                             <p>{Math.round(directory.vote_average * 10)+ '%'}</p>
                             <p>{directory.release.substring(0,4)}{directory.media_type === 'tv' ? '-' + directory.last_air_date.substring(0,4) : null}</p>
-                            <p>{directory.runtime + 'min'}</p>
+                            {directory.media_type === 'movie' ? <p>{minutesToHours(directory.runtime)}</p> : null}
                             {directory.rating ? <p className='rating'>{directory.rating}</p> : null}
                             {directory.media_type === 'tv' ? <p>{directory.number_of_seasons}{directory.number_of_seasons > 1 ? ' Seasons' : ' Season'}</p> : null}
                         </div>
@@ -98,23 +104,17 @@ const DirectoryItem = () => {
                         <button className="play-btn" onClick={handlePlayBtnClick}><IoPlaySharp/>Play</button>
                         <button className="add-btn" title='Add to Watch List'><BsPlusCircle/></button>
                     </div>
-                    <div className="recommendations">
-                        <div className="seasons-header">
-                            <h3 className="recommendations-title">Seasons</h3>
-                            <select value={season} onChange={(e) => setSeason(e.target.value)}>
-                                {numSeasons}
-                            </select>
-                        </div>
-                        <div className='season-info-container'>
-                            {directory.seasons[season - 1].poster_path ? <img src={`https://image.tmdb.org/t/p/w200/${directory.seasons[season - 1].poster_path}`}/> : null}
-                            <div className='season-info'>
-                                {directory.seasons[season - 1].name ? <p>{directory.seasons[season - 1].name}</p> : null}
-                                {directory.seasons[season - 1].overview ? <p>{directory.seasons[season - 1].overview}</p> : null}
+                    {directory.media_type === 'tv' ? (
+                        <div className="season-container">
+                            <div className="seasons-header">
+                                <h3 className="recommendations-title">Seasons</h3>
+                                <select value={seasonNum} onChange={handleChange}>
+                                    {seasonsOptions}
+                                </select>
                             </div>
+                            <EpisodesList episodesList={episodesList} />
                         </div>
-                        <h4>Episodes</h4>
-                        <Card episodes={directory.seasons[season - 1].episodes} />
-                    </div>
+                    ) : null}
                     {directory.recommendations ? 
                         <div className="recommendations">
                             <h3 className="recommendations-title">Recommendations</h3>

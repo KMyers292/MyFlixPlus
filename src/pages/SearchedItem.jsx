@@ -1,7 +1,7 @@
 import React, { useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import DirectoryContext from '../context/directory/DirectoryContext';
-import { getDetailedTmdbData, addDetailedTmdbData } from '../context/directory/DirectoryActions';
+import { fetchDetailedData, addDetailedDataToList } from '../context/directory/DirectoryActions';
 import Slider from '../components/Slider.jsx';
 import { BsPlusCircle } from "react-icons/bs";
 
@@ -44,7 +44,7 @@ const SearchedItem = () => {
                         <div className="info-bar">
                             <p>{searchedItem.vote_average ? Math.round(searchedItem.vote_average * 10)+ '%' : null}</p>
                             <p>{searchedItem.release.substring(0,4)}</p>
-                            <p>{searchedItem.runtime + 'min'}</p>
+                            <p>{searchedItem.runtime}</p>
                             {searchedItem.rating ? <p className='rating'>{searchedItem.rating}</p> : null}
                         </div>
                         <p className="overview">{searchedItem.overview}</p>
