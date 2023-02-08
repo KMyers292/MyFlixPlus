@@ -29,6 +29,8 @@ const DirectoryItem = () => {
             payload: directoryItem
         });
 
+        console.log(directoryItem);
+
         let seasons = [];
 
         for (let i = 1; i <= directoryItem.number_of_seasons; i++) {
@@ -66,7 +68,6 @@ const DirectoryItem = () => {
     if (directory.media_type === 'movie' || directory.media_type === 'tv' && !loading && Object.keys(episodesList).length !== 0) {
         return (
             <div>
-                {console.log(episodesList)}
                 <div className="media-container">
                     {directory.backdrop_path ? <div className='bg-image' style={{backgroundImage: "linear-gradient(to right, rgb(11, 16, 22), rgba(0, 0, 0, 0.5)), url("+`https://image.tmdb.org/t/p/w500/${directory.backdrop_path}`+")"}}></div> : null}
                     <div className="media-info">
@@ -112,7 +113,7 @@ const DirectoryItem = () => {
                                     {seasonsOptions}
                                 </select>
                             </div>
-                            <EpisodesList episodesList={episodesList} />
+                            <EpisodesList episodesList={episodesList} id={params.id} />
                         </div>
                     ) : null}
                     {directory.recommendations ? 

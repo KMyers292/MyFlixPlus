@@ -406,54 +406,106 @@ html {
 }
 
 /*===============================================================================================*/
-/*                                                  Card                                         */
+/*                                             EpisodesList                                      */
 /*===============================================================================================*/
 
-.episode-container {
+.checkmark-seasons {
+    font-size: 2.5rem;
+    color: #E50914;
+    margin-left: 0.5rem;
+}
+
+/*===============================================================================================*/
+/*                                             EpisodeCard                                       */
+/*===============================================================================================*/
+
+.card-container {
     display: flex;
     flex-direction: row;
-    margin-bottom: 4rem;
-    color: #fff;
+    margin-bottom: 2rem;
     font-size: 1.4rem;
-    border: 1px solid rgba(255, 255, 255, 0.5);
+    border: 2px solid transparent;
     border-radius: 5px;
-    width: 90%;
+    width: 96%;
+    min-height: 12rem;
+    background-color: #161F2B;
+}
+
+.hasDirectory {
+    transition: all 0.3s;
+}
+
+.hasDirectory:hover {
+    cursor: pointer;
+    border: 2px solid #FFF;
+}
+
+.hasDirectory:hover .episode-play-icon {
+    opacity: 1;
+}
+
+.episode-image-container {
     position: relative;
+}
+
+.episode-image {
+    border-radius: 5px 0 0 5px;
+    height: 100%;
+    width: 18rem;
+}
+
+.no-image {
+    width: 20rem;
+    height: 10rem;
+}
+
+.episode-play-icon {
+    position: absolute;
+    top: 15%;
+    left: 28%;
+    font-size: 8rem;
+    color: #FFF;
+    opacity: 0;
+    transition: all 0.3s;
+}
+
+.episode-info-container {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 1rem 0;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.episode-main-info {
+    width: 75%;
+    margin: 0 2rem;
 }
 
 .episode-title-container {
     display: flex;
-    flex-direction: column;
-    width: 60%;
-    margin-right: 4rem;
-    margin-left: 2rem;
-    padding-top: 1rem;
+    flex-direction: row;
     padding-bottom: 1rem;
 }
 
 .episode-title {
     font-weight: 600;
     font-size: 1.6rem;
+    color: #FFF;
 }
 
-.episode-info {
+.episode-checkmark-icon {
     display: flex;
-    flex-direction: column;
-    color: rgba(255, 255, 255, 0.5);
-    padding-top: 1rem;
-    top: 0;
-    right: 1rem;
-    position: absolute;
+    font-size: 2.5rem;
+    color: #E50914;
+    font-weight: 700;
+    margin-left: 1rem;
+}
+
+.episode-extra-info {
     text-align: right;
-}
-
-.img-still {
-    border-radius: 3px;
-}
-
-.no-img-still {
-    width: 20rem;
-    height: 10rem;
+    margin-right: 1rem;
 }
 
 /*===============================================================================================*/
