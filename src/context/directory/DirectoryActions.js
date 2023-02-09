@@ -94,30 +94,31 @@ export const dateNumbersToWords = (date) => {
 
 //===================================================================================================================================================================//
 
-export const getUnknownFilesInDirectory = (seasonObject) => {
+export const getUnknownFilesInDirectory = (seasonObject, checkedEpisodes) => {
     try {
-        const regex = /\d+/; // regex for getting the first group of digits in a string.
-        const episodesInDirectory = fs.readdirSync(seasonObject.directory.path)
+        let filesInDirectory = fs.readdirSync(seasonObject.directory.path)
         .map((file) => {
-            const stats = fs.statSync(path.join(seasonObject.directory.path, file))
+            const stats = fs.statSync(path.join(seasonObject.directory.path, file));
             return {
                 file_name: file.toLowerCase(),
                 path: path.join(seasonObject.directory.path, file),
                 is_directory: stats.isDirectory(),
-                episode_number: file.match(regex) ? file.match(regex)[0] : "0"
             }
         });
 
-        for (let i = 0; i < seasonObject.episodes.length; i++) {
-            for (let j = 0; j < episodesInDirectory.length; j++) {
-                if (seasonObject.episodes[i].episode_number === Number(episodesInDirectory[j].episode_number)) {
-                    episodesInDirectory.splice(j,1);
+        const episodesInDirectory = checkedEpisodes.filter((file) => file.hasOwnProperty('directory'));
+        const episodeFileNames = episodesInDirectory.map((file) => file.directory.file_name);
+
+        for (let i = 0; i < filesInDirectory.length; i++) {
+            for (let j = 0; j < episodeFileNames.length; j++) {
+                if (filesInDirectory[i].file_name === episodeFileNames[j]) {
+                    filesInDirectory.splice(i, 1);
                 }
             }
         }
 
-        if(Object.keys(episodesInDirectory).length !== 0) {
-            return episodesInDirectory;
+        if (Object.keys(filesInDirectory).length !== 0) {
+            return filesInDirectory;
         }
         else {
             return null;
@@ -144,19 +145,21 @@ export const addEpisodesInDirectoryToList = (seasonObject, directories, id) => {
                 episode_number: file.match(regex) ? file.match(regex)[0] : "0"
             }
         });
-        
+
+        episodesInDirectory.sort((a, b) => a.file_name.length - b.file_name.length);
+        const uniqueEpisodes = episodesInDirectory.filter((set => file => !set.has(file.episode_number) && set.add(file.episode_number))(new Set));
         for (let i = 0; i < seasonObject.episodes.length; i++) {
-            for (let j = 0; j < episodesInDirectory.length; j++) {
-                if (seasonObject.episodes[i].episode_number === Number(episodesInDirectory[j].episode_number)) {
+            for (let j = 0; j < uniqueEpisodes.length; j++) {
+                if (seasonObject.episodes[i].episode_number === Number(uniqueEpisodes[j].episode_number)) {
                     if (!seasonObject.episodes[i].directory){
                         needSave = true;
-                        seasonObject.episodes[i].directory = {...episodesInDirectory[j]};
+                        seasonObject.episodes[i].directory = {...uniqueEpisodes[j]};
                     }
                 }
             }
 
             // Checks if a season directory object exists in json file but has been deleted in directory and if so, deletes that object property.
-            const index = episodesInDirectory.findIndex(element => Number(element.episode_number) === seasonObject.episodes[i].episode_number);
+            const index = uniqueEpisodes.findIndex(element => Number(element.episode_number) === seasonObject.episodes[i].episode_number);
             if (index === -1 && seasonObject.episodes[i].hasOwnProperty('directory')) {
                 needSave = true;
                 delete seasonObject.episodes[i].directory;

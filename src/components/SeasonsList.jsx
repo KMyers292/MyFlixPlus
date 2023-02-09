@@ -16,7 +16,7 @@ const SeasonsList = ({episodesList, id}) => {
         if (episodesList.hasOwnProperty('directory')) {
             const list = addEpisodesInDirectoryToList(episodesList, directories, id);
             setEpisodes(list);
-            const unknownFiles = getUnknownFilesInDirectory(episodesList);
+            const unknownFiles = getUnknownFilesInDirectory(episodesList, list);
             setUnknownEpisodes(unknownFiles);
         }
         else {
