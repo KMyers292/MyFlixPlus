@@ -94,6 +94,42 @@ export const dateNumbersToWords = (date) => {
 
 //===================================================================================================================================================================//
 
+export const getUnknownFilesInDirectory = (seasonObject) => {
+    try {
+        const regex = /\d+/; // regex for getting the first group of digits in a string.
+        const episodesInDirectory = fs.readdirSync(seasonObject.directory.path)
+        .map((file) => {
+            const stats = fs.statSync(path.join(seasonObject.directory.path, file))
+            return {
+                file_name: file.toLowerCase(),
+                path: path.join(seasonObject.directory.path, file),
+                is_directory: stats.isDirectory(),
+                episode_number: file.match(regex) ? file.match(regex)[0] : "0"
+            }
+        });
+
+        for (let i = 0; i < seasonObject.episodes.length; i++) {
+            for (let j = 0; j < episodesInDirectory.length; j++) {
+                if (seasonObject.episodes[i].episode_number === Number(episodesInDirectory[j].episode_number)) {
+                    episodesInDirectory.splice(j,1);
+                }
+            }
+        }
+
+        if(Object.keys(episodesInDirectory).length !== 0) {
+            return episodesInDirectory;
+        }
+        else {
+            return null;
+        }
+    }
+    catch (error) {
+        console.log('getUnknownFilesInDirectory Error: ' + error);
+        return null;
+    }
+};
+
+//===================================================================================================================================================================//
 
 export const addEpisodesInDirectoryToList = (seasonObject, directories, id) => {
     try {
@@ -105,7 +141,7 @@ export const addEpisodesInDirectoryToList = (seasonObject, directories, id) => {
             return {
                 file_name: file.toLowerCase(),
                 path: path.join(seasonObject.directory.path, file),
-                episode_number: file.match(regex)[0]
+                episode_number: file.match(regex) ? file.match(regex)[0] : "0"
             }
         });
         

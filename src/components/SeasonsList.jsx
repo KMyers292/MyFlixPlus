@@ -1,13 +1,14 @@
 import React, { useEffect, useContext, useState } from 'react';
 import DirectoryContext from '../context/directory/DirectoryContext';
-import { addEpisodesInDirectoryToList } from '../context/directory/DirectoryActions';
+import { addEpisodesInDirectoryToList, getUnknownFilesInDirectory } from '../context/directory/DirectoryActions';
 import EpisodeCard from './EpisodeCard.jsx';
 import {IoIosCheckmarkCircle} from 'react-icons/io';
-import '../assets/css/App.css';
 
-const EpisodesList = ({episodesList, id}) => {
+const SeasonsList = ({episodesList, id}) => {
 
     const [episodes, setEpisodes] = useState([]);
+    const [unknownEpisodes, setUnknownEpisodes] = useState([]);
+    const [active, setActive] = useState(0);
     const {directories} = useContext(DirectoryContext);
 
     useEffect(() => {
@@ -15,11 +16,18 @@ const EpisodesList = ({episodesList, id}) => {
         if (episodesList.hasOwnProperty('directory')) {
             const list = addEpisodesInDirectoryToList(episodesList, directories, id);
             setEpisodes(list);
+            const unknownFiles = getUnknownFilesInDirectory(episodesList);
+            setUnknownEpisodes(unknownFiles);
         }
         else {
             setEpisodes(episodesList.episodes);
         }
     }, [episodesList]);
+
+    const getEpisodesAvailable = (list) => {
+        const available = list.filter((episode) => episode.hasOwnProperty('directory'));
+        return available.length;
+    }
 
     if (Object.keys(episodesList).length !== 0) {
         return (
@@ -33,8 +41,24 @@ const EpisodesList = ({episodesList, id}) => {
                         {episodesList.overview ? <p className='season-overview'>{episodesList.overview}</p> : null}
                     </div>
                 </div>
-                <h4 className='episodes-header'>Episodes ({episodesList.episodes.length})</h4>
-                <EpisodeCard episodes={episodes} />
+                <div className='tabs'>
+                    <a className={active === 0 ? 'episodes-header active' : 'episodes-header'} onClick={(e) => setActive(0)}>Episodes</a>
+                    {Object.keys(unknownEpisodes).length !== 0 ? <a className={active === 1 ? 'episodes-header active' : 'episodes-header'} onClick={(e) => setActive(1)}>Unknown Files</a> : null}
+                </div>
+                {active === 0 && (
+                    <div>
+                        <div className='episodes-list-info'>
+                            <p>Total Episodes: {episodesList.episodes.length}</p>
+                            <p>Available To Play: {getEpisodesAvailable(episodesList.episodes)}</p>
+                        </div>
+                        <EpisodeCard episodes={episodes} />
+                    </div>
+                )}
+                {active === 1 && (
+                    <div>
+                        <EpisodeCard episodes={unknownEpisodes} type="files" />
+                    </div>
+                )}
             </div>
         )
     }
@@ -47,4 +71,4 @@ const EpisodesList = ({episodesList, id}) => {
     }
 };
 
-export default EpisodesList;
+export default SeasonsList;

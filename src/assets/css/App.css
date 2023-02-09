@@ -403,10 +403,36 @@ html {
     font-size: 2.5rem;
     font-weight: 600;
     padding-bottom: 2rem;
+    text-decoration: 2px underline transparent;
+    transition: all 0.3s;
+}
+
+.episodes-header:hover {
+    color: #FFF;
+    text-decoration: 2px underline #E50914;
+    cursor: pointer;
+}
+
+.tabs {
+    display: flex;
+    gap: 2rem;
+}
+
+.episodes-list-info {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 1.4rem;
+    padding-bottom: 2rem;
+}
+
+.active {
+    text-decoration: 2px underline #FFF;
 }
 
 /*===============================================================================================*/
-/*                                             EpisodesList                                      */
+/*                                              SeasonsList                                      */
 /*===============================================================================================*/
 
 .checkmark-seasons {
@@ -506,6 +532,28 @@ html {
 .episode-extra-info {
     text-align: right;
     margin-right: 1rem;
+}
+
+.files-container {
+    background-color: #161F2B;
+    width: 20rem;
+    min-height: 8rem;
+    border: 2px solid transparent;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.files-container:hover {
+    border: 2px solid #FFF;
+}
+
+.files-title {
+    color: #FFF;
+    font-size: 1.8rem;
+    font-weight: 600;
+    text-align: center;
+    padding-top: 2rem;
 }
 
 /*===============================================================================================*/

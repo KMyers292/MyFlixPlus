@@ -6,7 +6,7 @@ import {Button, Container, Row, Col} from 'react-bootstrap';
 import DirectoryContext from '../context/directory/DirectoryContext';
 import { getMediaObjectFromList, minutesToHours, addSeasonsInDirectoryToList, addEpisodesToList } from '../context/directory/DirectoryActions';
 import Slider from '../components/Slider.jsx';
-import EpisodesList from '../components/EpisodesList.jsx';
+import SeasonsList from '../components/SeasonsList.jsx';
 import { IoPlaySharp } from "react-icons/io5";
 import { BsPlusCircle } from "react-icons/bs";
 import { MdEdit } from "react-icons/md";
@@ -113,7 +113,7 @@ const DirectoryItem = () => {
                                     {seasonsOptions}
                                 </select>
                             </div>
-                            <EpisodesList episodesList={episodesList} id={params.id} />
+                            <SeasonsList episodesList={episodesList} id={params.id} />
                         </div>
                     ) : null}
                     {directory.recommendations ? 
