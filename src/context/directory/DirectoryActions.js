@@ -94,6 +94,7 @@ export const dateNumbersToWords = (date) => {
 
 //===================================================================================================================================================================//
 
+// Returns files in a directory that are not associated with a shows episode.
 export const getUnknownFilesInDirectory = (seasonObject, checkedEpisodes) => {
     try {
         let filesInDirectory = fs.readdirSync(seasonObject.directory.path)
@@ -106,9 +107,12 @@ export const getUnknownFilesInDirectory = (seasonObject, checkedEpisodes) => {
             }
         });
 
+        // Finds episodes with a directory property and then maps the directory file names to a new array.
         const episodesInDirectory = checkedEpisodes.filter((file) => file.hasOwnProperty('directory'));
         const episodeFileNames = episodesInDirectory.map((file) => file.directory.file_name);
 
+        // Removes indexes from list that match the file name of the episodes in the json file.
+        // Leaves only files that are not connected to an episode.
         for (let i = 0; i < filesInDirectory.length; i++) {
             for (let j = 0; j < episodeFileNames.length; j++) {
                 if (filesInDirectory[i].file_name === episodeFileNames[j]) {
@@ -132,6 +136,7 @@ export const getUnknownFilesInDirectory = (seasonObject, checkedEpisodes) => {
 
 //===================================================================================================================================================================//
 
+// Adds an object with directory info as a property to a matching episode in the json list.
 export const addEpisodesInDirectoryToList = (seasonObject, directories, id) => {
     try {
         let needSave = false;
@@ -184,6 +189,7 @@ export const addEpisodesInDirectoryToList = (seasonObject, directories, id) => {
     }
 };
 
+//===================================================================================================================================================================//
 
 // Compares all seasons of a tv show to the seasons stored in the directory.
 // If a season is in the directory, create an object with the file name and path and add it to the directory json file.

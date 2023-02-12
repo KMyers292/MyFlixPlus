@@ -61,9 +61,9 @@ const Slider = ({directoryList, type}) => {
                         {Object.values(directoryList).map((directory, i) => (
                             directory ? (
                                 <div key={i}>
-                                    <Link to={directories.find((file) => file.id === Number(directory.id)) ? `/${directory.id}` : `/${directory.id}/${directory.media_type}`} className="card-link">
+                                    <Link to={directories.find((file) => file.id === Number(directory.id)) ? `/${directory.id}` : `/searched/${directory.id}/${directory.media_type}`} className="card-link">
                                         <div className="blaze-card blaze-card-static" title={directory.title} style={ directory.backdrop_path ? { backgroundImage: "url(" + `https://image.tmdb.org/t/p/w400/${directory.backdrop_path}` + ")", backgroundSize: "100% 100%"} : {backgroundImage: "url(" + "D:/Projects/MyFlix+/myflix+/src/assets/images/no_image.png" + ")", backgroundSize: "100% 100%"}}>
-                                            {directories.find((file) => file.id === Number(directory.id)) ? <IoIosCheckmarkCircle className='checkmark' title='Ready To Play'/> : null}
+                                            {directories.find((file) => file.id === Number(directory.id)) ? <IoIosCheckmarkCircle className='checkmark' title='Available To Play'/> : null}
                                         </div>
                                     </Link>
                                     <div className='card-info'>

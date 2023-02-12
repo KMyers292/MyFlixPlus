@@ -43,7 +43,7 @@ const SeasonsList = ({episodesList, id}) => {
                 </div>
                 <div className='tabs'>
                     <a className={active === 0 ? 'episodes-header active' : 'episodes-header'} onClick={(e) => setActive(0)}>Episodes</a>
-                    {Object.keys(unknownEpisodes).length !== 0 ? <a className={active === 1 ? 'episodes-header active' : 'episodes-header'} onClick={(e) => setActive(1)}>Unknown Files</a> : null}
+                    {unknownEpisodes ? <a className={active === 1 ? 'episodes-header active' : 'episodes-header'} onClick={(e) => setActive(1)}>Unknown Files</a> : null}
                 </div>
                 {active === 0 && (
                     <div>

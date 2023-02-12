@@ -238,7 +238,7 @@ html {
     height: 50rem;
     left: 30rem;
     top: 0;
-    position: relative;
+    position: absolute;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -246,13 +246,12 @@ html {
 }
 
 .media-info {
-    position: absolute;
+    position: relative;
     padding-top: 3rem;
     padding-left: 5rem;
     color: #fff;
     width: 50%;
-    top: 0;
-    left: 0;
+    min-height: 40rem;
     z-index: 2;
 }
 
@@ -279,7 +278,7 @@ html {
     font-size: 1.8rem;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.5);
-    padding-bottom: 3rem;
+    padding-bottom: 2rem;
 }
 
 .genres {
@@ -293,6 +292,7 @@ html {
     padding: 0.5rem 2.5rem;
     padding-right: 3rem;
     padding-bottom: 1rem;
+    margin-right: 3rem;
     border-radius: 5px;
     border: 3px solid transparent;
     background-color: #E50914;
@@ -308,7 +308,6 @@ html {
     border: none;
     font-size: 4rem;
     background: none;
-    margin-left: 4rem;
     color: rgba(255, 255, 255, 0.5);
     transition: all 0.3s;
 }
@@ -324,13 +323,13 @@ html {
 }
 
 .recommendations {
-    padding-left: 5rem;
-    padding-top: 10rem;
+    padding-top: 2rem;
 }
 
 .recommendations-title {
     color: #fff;
     font-size: 2.5rem;
+    padding-left: 5rem;
 }
 
 .slider-container {
@@ -358,21 +357,22 @@ html {
 
 .season-container {
     padding-left: 5rem;
-    padding-top: 18rem;
+    padding-top: 4rem;
 }
 
-.seasons-header {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    padding-right: 5rem;
-    padding-bottom: 2rem;
+.seasons-select {
+    width: 10rem;
+    height: 3rem;
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin-bottom: 5rem;
 }
 
 .season-info-container {
     display: flex;
     flex-direction: row;
     padding-bottom: 4rem;
+    padding-right: 5rem;
 }
 
 .season-info {
@@ -416,6 +416,11 @@ html {
 .tabs {
     display: flex;
     gap: 2rem;
+}
+
+.tabs-seasons {
+    padding-left: 5rem;
+    padding-top: 5rem;
 }
 
 .episodes-list-info {
@@ -542,6 +547,7 @@ html {
     border-radius: 5px;
     cursor: pointer;
     transition: all 0.3s;
+    margin-bottom: 2rem;
 }
 
 .files-container:hover {
