@@ -12,8 +12,8 @@ const MovieItemView = ({directoryItem}) => {
     const {loading} = useContext(DirectoryContext);
 
     const handlePlayBtnClick = () => {
-        const files = fs.readdirSync(directoryItem.path);
-        const name = directoryItem.path + "\\" + files[0];
+        const files = fs.readdirSync(directoryItem.directory.path);
+        const name = directoryItem.directory.path + "\\" + files[0];
         ipcRenderer.send('vlc:open', name);
     }
 

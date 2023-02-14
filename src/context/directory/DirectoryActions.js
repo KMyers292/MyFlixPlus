@@ -94,10 +94,32 @@ export const dateNumbersToWords = (date) => {
 
 //===================================================================================================================================================================//
 
-// Returns files in a directory that are not associated with a shows episode.
-export const getUnknownFilesInDirectory = (seasonObject, checkedEpisodes) => {
+export const getOtherFiles = (selectedFolder) => {
     try {
-        let filesInDirectory = fs.readdirSync(seasonObject.directory.path)
+        const files = fs.readdirSync(selectedFolder)
+        .map((file) => {
+            const stats = fs.statSync(path.join(selectedFolder, file));
+            return {
+                file_name: file.toLowerCase(),
+                path: path.join(selectedFolder, file),
+                is_directory: stats.isDirectory(),
+            }
+        });
+
+        return files;
+    } 
+    catch (error) {
+        console.log('getOtherFiles Error: ' + error);
+        return null;
+    }
+};
+
+//===================================================================================================================================================================//
+
+// Returns files in a directory that are not associated with a shows episode.
+export const getOtherFilesInDirectory = (seasonObject, checkedEpisodes) => {
+    try {
+        const filesInDirectory = fs.readdirSync(seasonObject.directory.path)
         .map((file) => {
             const stats = fs.statSync(path.join(seasonObject.directory.path, file));
             return {
@@ -109,7 +131,13 @@ export const getUnknownFilesInDirectory = (seasonObject, checkedEpisodes) => {
 
         // Finds episodes with a directory property and then maps the directory file names to a new array.
         const episodesInDirectory = checkedEpisodes.filter((file) => file.hasOwnProperty('directory'));
+
+        if (Object.keys(episodesInDirectory).length === Object.keys(checkedEpisodes).length) {
+            return null;
+        }
+
         const episodeFileNames = episodesInDirectory.map((file) => file.directory.file_name);
+        episodeFileNames.sort();
 
         // Removes indexes from list that match the file name of the episodes in the json file.
         // Leaves only files that are not connected to an episode.
@@ -129,7 +157,7 @@ export const getUnknownFilesInDirectory = (seasonObject, checkedEpisodes) => {
         }
     }
     catch (error) {
-        console.log('getUnknownFilesInDirectory Error: ' + error);
+        console.log('getOtherFilesInDirectory Error: ' + error);
         return null;
     }
 };
@@ -151,8 +179,12 @@ export const addEpisodesInDirectoryToList = (seasonObject, directories, id) => {
             }
         });
 
+        // Sorts the episodes by file name size and then filters only unique episode numbers.
+        // In circumstances where the regex produces multiple of the same episode number (eg. '1hello' & '1' will both have an episode number of 1),
+        // I have decided to choose the shortest file name as the 'correct' file. This should only come up in cases where the users naming conventions are not correct.
         episodesInDirectory.sort((a, b) => a.file_name.length - b.file_name.length);
         const uniqueEpisodes = episodesInDirectory.filter((set => file => !set.has(file.episode_number) && set.add(file.episode_number))(new Set));
+        
         for (let i = 0; i < seasonObject.episodes.length; i++) {
             for (let j = 0; j < uniqueEpisodes.length; j++) {
                 if (seasonObject.episodes[i].episode_number === Number(uniqueEpisodes[j].episode_number)) {
@@ -193,50 +225,53 @@ export const addEpisodesInDirectoryToList = (seasonObject, directories, id) => {
 
 // Compares all seasons of a tv show to the seasons stored in the directory.
 // If a season is in the directory, create an object with the file name and path and add it to the directory json file.
-export const addSeasonsInDirectoryToList = (directory, directories) => {
+export const addSeasonsInDirectoryToList = (directoryObject, directories, id) => {
     try {
         let needSave = false;
         const regex = /\d+/; // regex for getting the first group of digits in a string.
-        const seasonsInDirectory = fs.readdirSync(directory.path)
+        const index = directories.findIndex(element => element.id === Number(id));
+        const seasonsInDirectory = fs.readdirSync(directoryObject.directory.path)
         .map((file) => {
             return {
                 file_name: file.toLowerCase(),
-                path: path.join(directory.path, file),
-                season_number: file.match(regex)[0]
+                path: path.join(directoryObject.directory.path, file),
+                season_number: file.match(regex) ? file.match(regex)[0] : "0"
             }
         });
 
-        for (let i = 0; i < directory.seasons.length; i++) {
-            for (let j = 0; j < seasonsInDirectory.length; j++) {
-                if (directory.seasons[i].season_number === Number(seasonsInDirectory[j].season_number)) {
-                    if (!directory.seasons[i].directory){
+        seasonsInDirectory.sort((a, b) => a.file_name.length - b.file_name.length);
+        const uniqueSeasons = seasonsInDirectory.filter((set => file => !set.has(file.season_number) && set.add(file.season_number))(new Set));
+
+        for (let i = 0; i < directoryObject.seasons.length; i++) {
+            for (let j = 0; j < uniqueSeasons.length; j++) {
+                if (directoryObject.seasons[i].season_number === Number(uniqueSeasons[j].season_number)) {
+                    if (!Object.hasOwn(directoryObject.seasons[i], 'directory')) {
                         needSave = true;
-                        directory.seasons[i].directory = {...seasonsInDirectory[j]};
+                        directoryObject.seasons[i].directory = {...uniqueSeasons[j]};
                     }
                 }
             }
 
             // Checks if a season directory object exists in json file but has been deleted in directory and if so, deletes that object property.
-            const index = seasonsInDirectory.findIndex(element => Number(element.season_number) === directory.seasons[i].season_number);
-            if (index === -1 && directory.seasons[i].hasOwnProperty('directory')) {
+            const index = uniqueSeasons.findIndex(element => Number(element.season_number) === directoryObject.seasons[i].season_number);
+            if (index === -1 && Object.hasOwn(directoryObject.seasons[i], 'directory')) {
                 needSave = true;
-                delete directory.seasons[i].directory;
+                delete directoryObject.seasons[i].directory;
             }
         }
 
         if (needSave) {
             const mediaListPath = sessionStorage.getItem('mediaListPath');
-            const index = directories.findIndex(element => element.file_name === directory.file_name);
 
             if(index !== -1) {
-                directories[index] = directory;
+                directories[index] = directoryObject;
             }
 
             fs.writeFileSync(mediaListPath, JSON.stringify(directories));
             sessionStorage.setItem('directories', JSON.stringify(directories));
         }
 
-        return directories;
+        return directories[index].seasons;
     } 
     catch (error) {
         console.log('addSeasonsInDirectoryToList Error: ' + error);
@@ -354,7 +389,7 @@ export const fetchBasicData = async (title) => {
 export const addBasicDataToList = async (list, index) => {
     try {
         if (list.tmdb_data === 'No') {
-            let data = await fetchBasicData(list.file_name);
+            let data = await fetchBasicData(list.directory.file_name);
             data = data[0];
     
             if (data) {
@@ -371,7 +406,7 @@ export const addBasicDataToList = async (list, index) => {
             else {
                 list.tmdb_data = 'No Data';
                 list.media_type = null;
-                list.title = list.file_name ? list.file_name : 'No Title Found';
+                list.title = list.directory.file_name ? list.directory.file_name : 'No Title Found';
                 list.id = index;
                 list.poster_path = null;
                 list.backdrop_path = null;
@@ -512,9 +547,11 @@ export const getDirectoryData = (directory) => {
         .map((file) => {
             const stats = fs.statSync(path.join(directory, file))
             return {
-                file_name: file.toLowerCase(),
-                is_directory: stats.isDirectory(),
-                path: path.join(directory, file),
+                directory: {
+                    file_name: file.toLowerCase(),
+                    is_directory: stats.isDirectory(),
+                    path: path.join(directory, file),
+                },
                 tmdb_data: 'No',
                 date_added: Date.now(),
                 detailed_info: false,
@@ -562,12 +599,12 @@ export const getFileDataInDirectory = async (directory) => {
         const directoryList = getDirectoryData(directory);
         let mediaList = JSON.parse(fs.readFileSync(mediaListPath));
 
-        const mediaListNames = mediaList.map((file) => file.file_name);
-        const directoryListNames = directoryList.map((file) => file.file_name);
+        const mediaListNames = mediaList.map((file) => file.directory.file_name);
+        const directoryListNames = directoryList.map((file) => file.directory.file_name);
 
         // Adds media object from local files array to the existing mediaList array if it doesn't already exist.
         for (let i = 0; i < directoryList.length; i++) {
-            if (mediaListNames.indexOf(directoryList[i].file_name) === -1) {
+            if (mediaListNames.indexOf(directoryList[i].directory.file_name) === -1) {
                 mediaList.push(directoryList[i]);
             }
         }
@@ -575,7 +612,7 @@ export const getFileDataInDirectory = async (directory) => {
         // Removes media object from existing mediaList array if it is no longer in the new local files array.
         // Then fetches data for any newly added media objects.
         for (let i = 0; i < mediaList.length; i++) {
-            if (directoryListNames.indexOf(mediaList[i].file_name) === -1) {
+            if (directoryListNames.indexOf(mediaList[i].directory.file_name) === -1) {
                 mediaList.splice(i, 1);
             }
             await addBasicDataToList(mediaList[i], i);
@@ -635,27 +672,6 @@ export const sortList = (directory, method) => {
     }
     catch (error) {
         console.log("sortList Error: " + error);
-        return null;
-    }
-};
-
-//===================================================================================================================================================================//
-
-export const getEpisodesInDirectory = (directory) => {
-    try {
-        const episodesList = fs.readdirSync(directory)
-        .map((episode) => {
-            return {
-                file_name: episode.toLowerCase(),
-                path: path.join(directory, episode),
-                date_added: Date.now(),
-                tmdb_data: 'No',
-            }
-        })
-        return episodesList;
-    } 
-    catch (error) {
-        console.log('getEpisodesInDirectory Error: ' + error);
         return null;
     }
 };

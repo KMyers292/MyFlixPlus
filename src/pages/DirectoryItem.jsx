@@ -4,11 +4,11 @@ import DirectoryContext from '../context/directory/DirectoryContext';
 import MovieItemView from '../components/layout/MovieItemView.jsx';
 import SeriesItemView from '../components/layout/SeriesItemView.jsx';
 import UnknownFileView from '../components/layout/UnknownFileView.jsx';
-import { getMediaObjectFromList } from '../context/directory/DirectoryActions';
+import { addSeasonsInDirectoryToList, getUnknownFilesInDirectory, getMediaObjectFromList } from '../context/directory/DirectoryActions';
 
 const DirectoryItem = () => {
     const params = useParams();
-    const {directory, dispatch, loading} = useContext(DirectoryContext);
+    const {directory, directories, dispatch, loading} = useContext(DirectoryContext);
 
     useEffect(() => {
 
@@ -22,7 +22,7 @@ const DirectoryItem = () => {
         });
 
         console.log(directoryItem);
-
+        
     }, [dispatch, params.id]);
 
     if (directory.media_type === 'movie' && !loading) {

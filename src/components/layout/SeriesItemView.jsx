@@ -1,9 +1,10 @@
 import React, { useEffect, useContext, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import DirectoryContext from '../../context/directory/DirectoryContext';
-import { addSeasonsInDirectoryToList, addEpisodesToList } from '../../context/directory/DirectoryActions';
+import { addSeasonsInDirectoryToList, addEpisodesToList, getOtherFilesInDirectory } from '../../context/directory/DirectoryActions';
 import Slider from '../Slider.jsx';
 import SeasonsList from '../SeasonsList.jsx';
+import OtherFilesList from '../OtherFilesList.jsx';
 import { BsPlusCircle } from "react-icons/bs";
 import { MdEdit } from "react-icons/md";
 
@@ -14,9 +15,9 @@ const SeriesItemView = ({directoryItem}) => {
     const [seasonNum, setSeasonNum] = useState(1);
     const [seasonsOptions, setSeasonsOptions] = useState([]);
     const [episodesList, setEpisodesList] = useState([]);
+    const [otherFilesList, setOtherFilesList] = useState({});
 
     useEffect(() => {
-
         let seasons = [];
 
         for (let i = 1; i <= directoryItem.number_of_seasons; i++) {
@@ -24,8 +25,18 @@ const SeriesItemView = ({directoryItem}) => {
         }
 
         setSeasonsOptions(seasons);
-        addSeasonsInDirectoryToList(directoryItem, directories);
         setEpisodesList(directoryItem.seasons[seasonNum - 1]);
+
+        const seasonsList = addSeasonsInDirectoryToList(directoryItem, directories, params.id);
+        const otherFiles = getOtherFilesInDirectory(directoryItem, seasonsList);
+        if(otherFiles) {
+            const otherFilesFiltered = otherFiles.filter((file) => file.is_directory);
+            setOtherFilesList(otherFilesFiltered);
+        }
+
+        return () => {
+            setOtherFilesList({});
+        }
 
     }, [directoryItem]);
 
@@ -43,7 +54,7 @@ const SeriesItemView = ({directoryItem}) => {
                 <div className='media-container'>
                     {directoryItem.backdrop_path ? <div className='bg-image' style={{backgroundImage: "linear-gradient(to right, rgb(11, 16, 22), rgba(0, 0, 0, 0.5)), url("+`https://image.tmdb.org/t/p/w500/${directoryItem.backdrop_path}`+")"}}></div> : null}
                     <div className="media-info">
-                        <h1 className="title">{directoryItem.title} {directoryItem.path ? <button className="edit-btn" title="Edit Entry"><MdEdit /></button> : null}</h1>
+                        <h1 className="title">{directoryItem.title} {directoryItem.directory && directoryItem.directory.path ? <button className="edit-btn" title="Edit Entry"><MdEdit /></button> : null}</h1>
                         <div className="info-bar">
                             {directoryItem.vote_average ? <p>{Math.round(directoryItem.vote_average * 10)+ '%'}</p> : null}
                             {directoryItem.release && directoryItem.last_air_date ? <p>{directoryItem.release.substring(0,4)} - {directoryItem.last_air_date.substring(0,4)}</p> : null}
@@ -79,6 +90,7 @@ const SeriesItemView = ({directoryItem}) => {
                 <div className='tabs tabs-seasons'>
                     <a className={active === 0 ? 'episodes-header active' : 'episodes-header'} onClick={(e) => setActive(0)}>Seasons</a>
                     {directoryItem.recommendations ? <a className={active === 1 ? 'episodes-header active' : 'episodes-header'} onClick={(e) => setActive(1)}>Recommendations</a> : null}
+                    {Object.keys(otherFilesList).length !== 0 ? <a className={active === 2 ? 'episodes-header active' : 'episodes-header'} onClick={(e) => setActive(2)}>Other Folders</a> : null}
                 </div>
                 {active === 0 && (
                     <div className="season-container">
@@ -94,6 +106,11 @@ const SeriesItemView = ({directoryItem}) => {
                             <Slider directoryList={directoryItem.recommendations} type="static" />
                         </div>
                     </div> 
+                )}
+                {active === 2 && (
+                    <div className="season-container">
+                        <OtherFilesList otherFiles={otherFilesList}/>
+                    </div>
                 )}
             </div>
         )

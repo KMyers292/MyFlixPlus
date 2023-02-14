@@ -1,26 +1,32 @@
 import React, { useEffect, useContext, useState } from 'react';
 import DirectoryContext from '../context/directory/DirectoryContext';
-import { addEpisodesInDirectoryToList, getUnknownFilesInDirectory } from '../context/directory/DirectoryActions';
+import { addEpisodesInDirectoryToList, getOtherFilesInDirectory } from '../context/directory/DirectoryActions';
 import EpisodeCard from './EpisodeCard.jsx';
 import {IoIosCheckmarkCircle} from 'react-icons/io';
 
 const SeasonsList = ({episodesList, id}) => {
 
     const [episodes, setEpisodes] = useState([]);
-    const [unknownEpisodes, setUnknownEpisodes] = useState([]);
+    const [otherEpisodes, setOtherEpisodes] = useState({});
     const [active, setActive] = useState(0);
     const {directories} = useContext(DirectoryContext);
 
     useEffect(() => {
-        console.log(episodesList);
         if (episodesList.hasOwnProperty('directory')) {
             const list = addEpisodesInDirectoryToList(episodesList, directories, id);
             setEpisodes(list);
-            const unknownFiles = getUnknownFilesInDirectory(episodesList, list);
-            setUnknownEpisodes(unknownFiles);
+            const otherFiles = getOtherFilesInDirectory(episodesList, list);
+            if (otherFiles) {
+                const otherFilesFiltered = otherFiles.filter((file) => !file.is_directory);
+                setOtherEpisodes(otherFilesFiltered);
+            }
         }
         else {
             setEpisodes(episodesList.episodes);
+        }
+
+        return () => {
+            setOtherEpisodes({});
         }
     }, [episodesList]);
 
@@ -43,7 +49,7 @@ const SeasonsList = ({episodesList, id}) => {
                 </div>
                 <div className='tabs'>
                     <a className={active === 0 ? 'episodes-header active' : 'episodes-header'} onClick={(e) => setActive(0)}>Episodes</a>
-                    {unknownEpisodes ? <a className={active === 1 ? 'episodes-header active' : 'episodes-header'} onClick={(e) => setActive(1)}>Unknown Files</a> : null}
+                    {Object.keys(otherEpisodes).length !== 0 ? <a className={active === 1 ? 'episodes-header active' : 'episodes-header'} onClick={(e) => setActive(1)}>Other Files</a> : null}
                 </div>
                 {active === 0 && (
                     <div>
@@ -56,7 +62,7 @@ const SeasonsList = ({episodesList, id}) => {
                 )}
                 {active === 1 && (
                     <div>
-                        <EpisodeCard episodes={unknownEpisodes} type="files" />
+                        <EpisodeCard episodes={otherEpisodes} type="files" />
                     </div>
                 )}
             </div>
