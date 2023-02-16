@@ -1,15 +1,18 @@
-import React, { useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import {ipcRenderer} from 'electron';
 import fs from 'fs';
 import DirectoryContext from '../../context/directory/DirectoryContext';
 import { minutesToHours } from '../../context/directory/DirectoryActions';
 import Slider from '../Slider.jsx';
+import EditModal from './EditModal.jsx';
 import { IoPlaySharp } from "react-icons/io5";
 import { BsPlusCircle } from "react-icons/bs";
 import { MdEdit } from "react-icons/md";
 
 const MovieItemView = ({directoryItem}) => {
+
     const {loading} = useContext(DirectoryContext);
+    const [openModal, setOpenModal] = useState(false);
 
     const handlePlayBtnClick = () => {
         const files = fs.readdirSync(directoryItem.directory.path);
@@ -20,10 +23,11 @@ const MovieItemView = ({directoryItem}) => {
     if (directoryItem.media_type === 'movie' && !loading) {
         return (
             <div>
+                <EditModal open={openModal} onClose={() => setOpenModal(false)} directoryItem={directoryItem} />
                 <div className="media-container">
                     {directoryItem.backdrop_path ? <div className='bg-image' style={{backgroundImage: "linear-gradient(to right, rgb(11, 16, 22), rgba(0, 0, 0, 0.5)), url("+`https://image.tmdb.org/t/p/w500/${directoryItem.backdrop_path}`+")"}}></div> : null}
                     <div className="media-info">
-                        <h1 className="title">{directoryItem.title} {directoryItem.path ? <button className="edit-btn" title="Edit Entry"><MdEdit /></button> : null}</h1>
+                        <h1 className="title">{directoryItem.title}</h1>
                         <div className="info-bar">
                             {directoryItem.vote_average ? <p>{Math.round(directoryItem.vote_average * 10)+ '%'}</p> : null}
                             {directoryItem.release ? <p>{directoryItem.release.substring(0,4)}</p> : null}
@@ -53,8 +57,9 @@ const MovieItemView = ({directoryItem}) => {
                                 </p>
                             ) : null}
                         </div>
-                        {directoryItem.path ? <button className="play-btn" onClick={handlePlayBtnClick}><IoPlaySharp/>Play</button> : null}
+                        {directoryItem.directory.path ? <button className="play-btn" onClick={handlePlayBtnClick}><IoPlaySharp/>Play</button> : null}
                         <button className="add-btn" title='Add to Watch List'><BsPlusCircle/></button>
+                        {directoryItem.directory.path ? <button className="edit-btn" title="Edit Entry" onClick={() => setOpenModal(true)}><MdEdit /></button> : null}
                     </div>
                     {directoryItem.recommendations ? 
                         <div className="recommendations">

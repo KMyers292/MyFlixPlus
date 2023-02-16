@@ -4,16 +4,15 @@ import DirectoryContext from '../context/directory/DirectoryContext';
 import MovieItemView from '../components/layout/MovieItemView.jsx';
 import SeriesItemView from '../components/layout/SeriesItemView.jsx';
 import UnknownFileView from '../components/layout/UnknownFileView.jsx';
-import { addSeasonsInDirectoryToList, getUnknownFilesInDirectory, getMediaObjectFromList } from '../context/directory/DirectoryActions';
+import { getMediaObjectFromList } from '../context/directory/DirectoryActions';
 
 const DirectoryItem = () => {
     const params = useParams();
-    const {directory, directories, dispatch, loading} = useContext(DirectoryContext);
+    const {directory, dispatch, loading} = useContext(DirectoryContext);
 
     useEffect(() => {
 
         dispatch({ type: 'SET_LOADING' });
-
         const directoryItem = getMediaObjectFromList(params.id);
 
         dispatch({ 

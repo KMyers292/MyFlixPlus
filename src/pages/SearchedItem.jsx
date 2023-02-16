@@ -32,7 +32,6 @@ const SearchedItem = () => {
         }
 
         getData();
-
     }, [dispatch, params.id, params.mediaType]);
 
     if (searchedItem.media_type === 'movie' && !loading) {

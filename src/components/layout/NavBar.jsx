@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import { useNavigate } from 'react-router-dom';
 import {Navbar, Container, Nav, Button, Form} from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { IoArrowBack } from "react-icons/io5";
@@ -8,6 +9,7 @@ import '../../assets/css/App.css';
 
 const NavBar = () => {
 
+    const navigate = useNavigate();
     const [text, setText] = useState('');
 
     const handleChange = (event) => {
@@ -28,7 +30,7 @@ const NavBar = () => {
     }
 
     const handleClick = () => {
-        history.back();
+        navigate(-1);
     }
 
     return (

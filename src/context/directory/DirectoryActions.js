@@ -132,7 +132,7 @@ export const getOtherFilesInDirectory = (seasonObject, checkedEpisodes) => {
         // Finds episodes with a directory property and then maps the directory file names to a new array.
         const episodesInDirectory = checkedEpisodes.filter((file) => file.hasOwnProperty('directory'));
 
-        if (Object.keys(episodesInDirectory).length === Object.keys(checkedEpisodes).length) {
+        if (Object.keys(episodesInDirectory).length === Object.keys(filesInDirectory).length) {
             return null;
         }
 
@@ -673,5 +673,27 @@ export const sortList = (directory, method) => {
     catch (error) {
         console.log("sortList Error: " + error);
         return null;
+    }
+};
+
+//===================================================================================================================================================================//
+
+export const saveNewDirectoryItemInfo = (directoryItem, directories, id = null) => {
+    console.log(directoryItem);
+    console.log(directories);
+    const mediaListPath = sessionStorage.getItem('mediaListPath');
+    const index = directories.findIndex(element => element.id === directoryItem.id);
+    if (index !== -1 && !id) {
+        directories[index] = directoryItem;
+        fs.writeFileSync(mediaListPath, JSON.stringify(directories));
+        sessionStorage.setItem('directories', JSON.stringify(directories));
+    }
+    else if (index === -1 && id) {
+        const index = directories.findIndex(element => element.id === id);
+        if (index !== -1) {
+            directories[index] = directoryItem;
+            fs.writeFileSync(mediaListPath, JSON.stringify(directories));
+            sessionStorage.setItem('directories', JSON.stringify(directories));
+        }
     }
 };

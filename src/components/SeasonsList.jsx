@@ -12,7 +12,7 @@ const SeasonsList = ({episodesList, id}) => {
     const {directories} = useContext(DirectoryContext);
 
     useEffect(() => {
-        if (episodesList.hasOwnProperty('directory')) {
+        if (Object.hasOwn(episodesList, 'directory')) {
             const list = addEpisodesInDirectoryToList(episodesList, directories, id);
             setEpisodes(list);
             const otherFiles = getOtherFilesInDirectory(episodesList, list);
@@ -26,6 +26,7 @@ const SeasonsList = ({episodesList, id}) => {
         }
 
         return () => {
+            setEpisodes([]);
             setOtherEpisodes({});
         }
     }, [episodesList]);

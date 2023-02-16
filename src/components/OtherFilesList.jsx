@@ -22,6 +22,10 @@ const OtherFilesList = ({otherFiles}) => {
             setFileList(files);
         }
 
+        return () => {
+            setOtherFoldersOptions([]);
+            setFileList([]);
+        }
     }, [otherFiles]);
 
     const handleChange = async (e) => {
