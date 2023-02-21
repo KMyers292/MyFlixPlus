@@ -62,10 +62,10 @@ export const minutesToHours = (totalMinutes) => {
         const minutes = totalMinutes % 60;
     
         if (hours === 0) {
-            return `${minutes}min`;
+            return `${minutes}m`;
         }
         else {
-            return`${hours}hr ${minutes}min`;
+            return`${hours}h ${minutes}m`;
         }
     } 
     catch (error) {
@@ -289,13 +289,13 @@ export const createEpisodesList = (seasonObject) => {
         if (seasonObject) {
             for(let i = 0; i < seasonObject.episodes.length; i++) {
                 episodes[i] = {
-                    air_date: seasonObject.episodes[i].air_date,
-                    episode_number: seasonObject.episodes[i].episode_number,
-                    name: seasonObject.episodes[i].name,
-                    overview: seasonObject.episodes[i].overview,
-                    runtime: seasonObject.episodes[i].runtime,
-                    still_path: seasonObject.episodes[i].still_path,
-                    vote_average: seasonObject.episodes[i].vote_average
+                    air_date: seasonObject.episodes[i].air_date || null,
+                    episode_number: seasonObject.episodes[i].episode_number || null,
+                    name: seasonObject.episodes[i].name || 'No Episode Title Available',
+                    overview: seasonObject.episodes[i].overview || 'No Overview Available',
+                    runtime: seasonObject.episodes[i].runtime || null,
+                    still_path: seasonObject.episodes[i].still_path ? `https://image.tmdb.org/t/p/w200/${seasonObject.episodes[i].still_path}` : 'D:/Projects/MyFlix+/myflix+/src/assets/images/no_image.png',
+                    vote_average: seasonObject.episodes[i].vote_average || null
                 }
             }
         }
@@ -394,21 +394,21 @@ export const addBasicDataToList = async (list, index) => {
     
             if (data) {
                 list.tmdb_data = 'Yes';
-                list.media_type = data.media_type ? data.media_type : null;
-                list.title = data.media_type === 'movie' ? data.title : data.media_type === 'tv' ? data.name : "No Title Found";
-                list.id = data.id ? data.id : index;
-                list.poster_path = data.poster_path ? data.poster_path : null;
-                list.backdrop_path = data.backdrop_path ? data.backdrop_path : null;
+                list.media_type = data.media_type || null;
+                list.title = data.media_type === 'movie' ? data.title : data.media_type === 'tv' ? data.name : "No Title Available";
+                list.id = data.id || index;
+                list.poster_path = data.poster_path ? `https://image.tmdb.org/t/p/w200/${data.poster_path}` : 'D:/Projects/MyFlix+/myflix+/src/assets/images/no_image.png';
+                list.backdrop_path = data.backdrop_path ? `https://image.tmdb.org/t/p/w500/${data.backdrop_path}` : null;
                 list.release = data.media_type === 'movie' ? data.release_date : data.media_type === 'tv' ? data.first_air_date : null;
-                list.overview = data.overview ? data.overview : null;
-                list.popularity = data.popularity ? data.popularity : null;
+                list.overview = data.overview || "No Overview Available";
+                list.popularity = data.popularity || null;
             }
             else {
                 list.tmdb_data = 'No Data';
                 list.media_type = null;
-                list.title = list.directory.file_name ? list.directory.file_name : 'No Title Found';
+                list.title = list.directory ? list.directory.file_name : 'No Title Found';
                 list.id = index;
-                list.poster_path = null;
+                list.poster_path = 'D:/Projects/MyFlix+/myflix+/src/assets/images/no_image.png';
                 list.backdrop_path = null;
                 list.release = null;
                 list.overview = null;
@@ -460,18 +460,18 @@ export const addDetailedDataToList = async (list) => {
                 const info = await fetchDetailedData(list.media_type, list.id);
 
                 if (list.searchedItem) {
-                    list.title = list.media_type === 'movie' ? info.title : list.media_type === 'tv' ? info.name : "No Title Found";
-                    list.backdrop_path = info.backdrop_path ? info.backdrop_path : null;
+                    list.title = list.media_type === 'movie' ? info.title : list.media_type === 'tv' ? info.name : "No Title Available";
+                    list.backdrop_path = info.backdrop_path ? `https://image.tmdb.org/t/p/w500/${info.backdrop_path}` : null;
                     list.release = list.media_type === 'movie' ? info.release_date : list.media_type === 'tv' ? info.first_air_date : null;
-                    list.overview = info.overview ? info.overview : null;
+                    list.overview = info.overview || 'No Overview Available';
                 }
 
                 list.detailed_info = true;
                 list.genres = info.genres? [...info.genres] : null;
-                list.status = info.status ? info.status : null;
-                list.vote_average = info.vote_average ? info.vote_average : null;
-                list.providers = info["watch/providers"].results.CA ? info["watch/providers"].results.CA.flatrate : null;
-                list.providers = list.providers ? {logo_path: list.providers[0].logo_path, provider_name: list.providers[0].provider_name} : null;
+                list.status = info.status || null;
+                list.vote_average = info.vote_average || null;
+                list.providers = info["watch/providers"].results.CA ? info["watch/providers"].results.CA.flatrate || null : null;
+                list.providers = list.providers ? {logo_path: `https://image.tmdb.org/t/p/w200/${list.providers[0].logo_path}`, provider_name: list.providers[0].provider_name} : null;
                 
                 list.credits = [];
                 for (let i = 0; i < 3; i++) {
@@ -483,10 +483,10 @@ export const addDetailedDataToList = async (list) => {
                     for (let i = 0; i < list.recommendations.length; i++) {
                         if (list.recommendations[i]) {
                             list.recommendations[i] = {
-                                backdrop_path: list.recommendations[i].backdrop_path ? list.recommendations[i].backdrop_path : null,
-                                id: list.recommendations[i].id ? list.recommendations[i].id : null,
-                                media_type: list.recommendations[i].media_type ? list.recommendations[i].media_type : null,
-                                vote_average: list.recommendations[i].vote_average ? list.recommendations[i].vote_average : null,
+                                backdrop_path: list.recommendations[i].backdrop_path ? `https://image.tmdb.org/t/p/w200/${list.recommendations[i].backdrop_path}` : null,
+                                id: list.recommendations[i].id || null,
+                                media_type: list.recommendations[i].media_type || null,
+                                vote_average: list.recommendations[i].vote_average || null,
                                 title: list.recommendations[i].media_type === 'movie' ? list.recommendations[i].title : list.recommendations[i].media_type === 'tv' ? list.recommendations[i].name : null
                             }
                         }
@@ -506,11 +506,11 @@ export const addDetailedDataToList = async (list) => {
                     if (info.seasons) {
                         for (let i = 0; i < info.seasons.length; i++) {
                             seasons[i] = {
-                                name: info.seasons[i].name,
-                                id: info.seasons[i].id,
-                                overview: info.seasons[i].overview,
-                                poster_path: info.seasons[i].poster_path,
-                                season_number: info.seasons[i].season_number
+                                name: info.seasons[i].name || null,
+                                id: info.seasons[i].id || null,
+                                overview: info.seasons[i].overview || 'No Overview Available',
+                                poster_path: info.seasons[i].poster_path ? `https://image.tmdb.org/t/p/w200/${info.seasons[i].poster_path}` : 'D:/Projects/MyFlix+/myflix+/src/assets/images/no_image.png',
+                                season_number: info.seasons[i].season_number || null
                             }
                         }
                     }
@@ -521,13 +521,13 @@ export const addDetailedDataToList = async (list) => {
                     const episodes = createEpisodesList(info['season/1']);
 
                     list.seasons[0].episodes = episodes ? [...episodes] : null; 
-                    list.number_of_seasons = info.number_of_seasons ? info.number_of_seasons : null;
-                    list.number_of_episodes = info.number_of_episodes ? info.number_of_episodes : null;
+                    list.number_of_seasons = info.number_of_seasons || null;
+                    list.number_of_episodes = info.number_of_episodes || null;
                     list.rating = info.content_ratings.results ? info.content_ratings.results.find(item => item.iso_3166_1 === "US") : null;
                     list.rating = list.rating ? list.rating.rating : null;
-                    list.last_air_date = info.last_air_date ? info.last_air_date : null;
-                    list.networks = info.networks ? info.networks : null;
-                    list.next_episode = info.next_episode_to_air ? info.next_episode_to_air : null;
+                    list.last_air_date = info.last_air_date || null;
+                    list.networks = info.networks || null;
+                    list.next_episode = info.next_episode_to_air || null;
                     }
             }
         }
@@ -678,9 +678,9 @@ export const sortList = (directory, method) => {
 
 //===================================================================================================================================================================//
 
+// Saves new info to the specified object in the directory list based on the index.
+// If used to replace an entire object, it will use the passed in id to determine what object to replace since id's will be different.
 export const saveNewDirectoryItemInfo = (directoryItem, directories, id = null) => {
-    console.log(directoryItem);
-    console.log(directories);
     const mediaListPath = sessionStorage.getItem('mediaListPath');
     const index = directories.findIndex(element => element.id === directoryItem.id);
     if (index !== -1 && !id) {
@@ -697,3 +697,5 @@ export const saveNewDirectoryItemInfo = (directoryItem, directories, id = null) 
         }
     }
 };
+
+//===================================================================================================================================================================//

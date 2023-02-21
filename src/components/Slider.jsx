@@ -35,7 +35,7 @@ const Slider = ({directoryList, type}) => {
                 <div className="blaze-container blaze-container-scrolling">
                     <div className="blaze-track">
                         {Object.values(directoryList).map((directory, i) => (
-                            <div className="blaze-card blaze-card-scrolling" key={i} style={ directory.poster_path ? { backgroundImage: "url(" + `https://image.tmdb.org/t/p/w400/${directory.poster_path}` + ")", backgroundSize: "100% 100%"} : {backgroundImage: "url(" + "D:/Projects/MyFlix+/myflix+/src/assets/images/no_image.png" + ")", backgroundSize: "100% 100%"}}>
+                            <div className="blaze-card blaze-card-scrolling" key={i} style={{ backgroundImage: "url(" + `${directory.poster_path}` + ")", backgroundSize: "100% 100%"}}>
                                 <Link to={`/${directory.id}`} className="card-link">
                                 </Link>
                             </div>
@@ -62,8 +62,8 @@ const Slider = ({directoryList, type}) => {
                             directory ? (
                                 <div key={i}>
                                     <Link to={directories.find((file) => file.id === Number(directory.id)) ? `/${directory.id}` : `/searched/${directory.id}/${directory.media_type}`} className="card-link">
-                                        <div className="blaze-card blaze-card-static" title={directory.title} style={ directory.backdrop_path ? { backgroundImage: "url(" + `https://image.tmdb.org/t/p/w400/${directory.backdrop_path}` + ")", backgroundSize: "100% 100%"} : {backgroundImage: "url(" + "D:/Projects/MyFlix+/myflix+/src/assets/images/no_image.png" + ")", backgroundSize: "100% 100%"}}>
-                                            {directories.find((file) => file.id === Number(directory.id)) ? <IoIosCheckmarkCircle className='checkmark' title='Available To Play'/> : null}
+                                        <div className="blaze-card blaze-card-static" title={directory.title} style={{ backgroundImage: "url(" + `${directory.backdrop_path}` + ")", backgroundSize: "100% 100%"}}>
+                                            {directories.find((file) => file.id === Number(directory.id)) ? <IoIosCheckmarkCircle className='checkmark' title='In Directory'/> : null}
                                         </div>
                                     </Link>
                                     <div className='card-info'>

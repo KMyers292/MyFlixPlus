@@ -226,6 +226,139 @@ html {
 }
 
 /*===============================================================================================*/
+/*                                             MovieItemView                                     */
+/*===============================================================================================*/
+
+.play-btn {
+    font-size: 3rem;
+    font-weight: 600;
+    padding: 0.5rem 2.5rem;
+    padding-right: 3rem;
+    padding-bottom: 1rem;
+    margin-right: 3rem;
+    border-radius: 5px;
+    border: 3px solid transparent;
+    background-color: #E50914;
+    color: #FFF;
+    transition: all 0.3s;
+}
+
+.play-btn:hover {
+    border: 3px solid #FFF;
+}
+
+/*===============================================================================================*/
+/*                                            SeriesItemView                                     */
+/*===============================================================================================*/
+
+.tabs {
+    display: flex;
+}
+
+.tabs-seasons {
+    padding-left: 5rem;
+    padding-top: 2rem;
+}
+
+.tabs-episodes {
+    padding-left: 5rem;
+}
+
+.episodes-header {
+    color: #FFF;
+    font-size: 2.5rem;
+    font-weight: 600;
+    padding: 1rem 3rem 2rem 3rem;
+    text-decoration: 2px underline transparent;
+    transition: text-decoration 0.3s;
+}
+
+.episodes-header:hover {
+    color: #FFF;
+    text-decoration: 2px underline #E50914;
+    cursor: pointer;
+}
+
+.active {
+    text-decoration: 2px underline #FFF;
+    background-color: #161F2B;
+    border-radius: 5px 5px 0 0;
+}
+
+.active-episodes {
+    text-decoration: 2px underline #FFF;
+    background-color: #0B1016;
+    border-radius: 5px 5px 0 0;
+}
+
+.season-container {
+    padding-top: 4rem;
+    background-color: #161F2B;
+}
+
+.seasons-select {
+    width: 15rem;
+    height: 4rem;
+    font-size: 2rem;
+    font-weight: 600;
+    color: #FFF;
+    background-color: #0B1016;
+    border: none;
+    border-radius: 5px;
+    padding: 0.5rem 1rem 0.5rem 1rem;
+    margin-left: 5rem;
+}
+
+.season-info-container {
+    display: flex;
+    flex-direction: row;
+    padding: 5rem 5rem 6rem 5rem;
+}
+
+.season-info {
+    display: flex;
+    flex-direction: column;
+    padding-left: 2rem;
+}
+
+.season-img {
+    width: 8rem;
+    height: 10rem;
+    border-radius: 3px;
+}
+
+.season-title {
+    color: #FFF;
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.season-overview {
+    font-size: 1.4rem;
+    color: #FFF;
+}
+
+.episodes-list-info {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 1.6rem;
+    padding-bottom: 2rem;
+    padding-left: 5rem;
+}
+
+.recommendations-series {
+    background-color: #161F2B;
+}
+
+.episodes-container {
+    background-color: #0B1016;
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+}
+
+/*===============================================================================================*/
 /*                                             DirectoryItem                                     */
 /*===============================================================================================*/
 
@@ -233,7 +366,7 @@ html {
     position: relative;
 }
 
-.bg-image {
+.bg-img {
     width: 80%;
     height: 50rem;
     left: 30rem;
@@ -247,8 +380,7 @@ html {
 
 .media-info {
     position: relative;
-    padding-top: 3rem;
-    padding-left: 5rem;
+    padding: 3rem 0 4rem 5rem;
     color: #fff;
     width: 50%;
     min-height: 40rem;
@@ -274,34 +406,16 @@ html {
     padding-bottom: 1rem;
 }
 
-.info-list {
+.info-list-container {
     font-size: 1.8rem;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.5);
-    padding-bottom: 2rem;
+    padding-bottom: 4rem;
 }
 
-.genres {
+.info-list {
     padding-left: 1rem;
     font-weight: 400;
-}
-
-.play-btn {
-    font-size: 3rem;
-    font-weight: 600;
-    padding: 0.5rem 2.5rem;
-    padding-right: 3rem;
-    padding-bottom: 1rem;
-    margin-right: 3rem;
-    border-radius: 5px;
-    border: 3px solid transparent;
-    background-color: #E50914;
-    color: #FFF;
-    transition: all 0.3s;
-}
-
-.play-btn:hover {
-    border: 3px solid #FFF;
 }
 
 .add-btn {
@@ -334,7 +448,6 @@ html {
 
 .slider-container {
     width: 100%;
-    margin: 0 auto;
 }
 
 .rating {
@@ -355,87 +468,6 @@ html {
     color: #FFF;
 }
 
-.season-container {
-    padding-left: 5rem;
-    padding-top: 4rem;
-}
-
-.seasons-select {
-    width: 10rem;
-    height: 3rem;
-    font-size: 1.6rem;
-    font-weight: 600;
-    margin-bottom: 5rem;
-}
-
-.season-info-container {
-    display: flex;
-    flex-direction: row;
-    padding-bottom: 4rem;
-    padding-right: 5rem;
-}
-
-.season-info {
-    display: flex;
-    flex-direction: column;
-    padding-left: 2rem;
-}
-
-.season-img {
-    width: 8rem;
-    height: 10rem;
-    border-radius: 3px;
-}
-
-.season-title {
-    color: #FFF;
-    font-size: 2rem;
-    font-weight: 600;
-}
-
-.season-overview {
-    font-size: 1.4rem;
-    color: #FFF;
-}
-
-.episodes-header {
-    color: #FFF;
-    font-size: 2.5rem;
-    font-weight: 600;
-    padding-bottom: 2rem;
-    text-decoration: 2px underline transparent;
-    transition: all 0.3s;
-}
-
-.episodes-header:hover {
-    color: #FFF;
-    text-decoration: 2px underline #E50914;
-    cursor: pointer;
-}
-
-.tabs {
-    display: flex;
-    gap: 2rem;
-}
-
-.tabs-seasons {
-    padding-left: 5rem;
-    padding-top: 5rem;
-}
-
-.episodes-list-info {
-    display: flex;
-    flex-direction: row;
-    gap: 2rem;
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 1.4rem;
-    padding-bottom: 2rem;
-}
-
-.active {
-    text-decoration: 2px underline #FFF;
-}
-
 /*===============================================================================================*/
 /*                                              SeasonsList                                      */
 /*===============================================================================================*/
@@ -453,12 +485,13 @@ html {
 .card-container {
     display: flex;
     flex-direction: row;
+    margin: 0 auto;
     margin-bottom: 2rem;
     font-size: 1.4rem;
     border: 2px solid transparent;
     border-radius: 5px;
-    width: 96%;
-    min-height: 12rem;
+    width: 75%;
+    min-height: 15rem;
     background-color: #161F2B;
 }
 
@@ -548,10 +581,19 @@ html {
     cursor: pointer;
     transition: all 0.3s;
     margin-bottom: 2rem;
+    margin-left: 5rem;
 }
 
 .files-container:hover {
     border: 2px solid #FFF;
+}
+
+.folders {
+    background-color: #0B1016;
+}
+
+.folders:first-of-type {
+    margin-top: 5rem;
 }
 
 .files-title {
@@ -560,6 +602,11 @@ html {
     font-weight: 600;
     text-align: center;
     padding-top: 2rem;
+}
+
+.other-files-container {
+    background-color: #161F2B;
+    padding-bottom: 4rem;
 }
 
 /*===============================================================================================*/
@@ -693,23 +740,21 @@ html {
     border-radius: 5px;
     z-index: 5;
     color: #FFF;
-    padding-bottom: 2rem;
 }
 
 .edit-modal-header {
     border-bottom: 2px solid rgba(255, 255, 255, 0.5);
-    margin-bottom: 1rem;
 }
 
 .modal-title {
     text-align: center;
-    padding-bottom: 0.5rem;
-    padding-top: 0.5rem;
+    padding-bottom: 1rem;
+    padding-top: 1rem;
 }
 
 .modal-close-btn {
     position: fixed;
-    top: 0.5rem;
+    top: 1rem;
     right: 1.5rem;
     font-size: 2.5rem;
     cursor: pointer;
@@ -724,6 +769,28 @@ html {
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
+}
+
+.tabs-header {
+    color: #FFF;
+    font-size: 2.5rem;
+    font-weight: 600;
+    padding: 1rem 3rem 2rem 3rem;
+    text-decoration: 2px underline transparent;
+    transition: text-decoration 0.3s;
+    flex-grow: 1;
+    text-align: center;
+}
+
+.tabs-header:hover {
+    color: #FFF;
+    text-decoration: 2px underline #E50914;
+    cursor: pointer;
+}
+
+.modal-info-container {
+    background-color: #0B1016;
+    padding-top: 4rem;
 }
 
 .modal-form {
@@ -745,14 +812,14 @@ html {
 }
 
 .modal-form-input {
-    width: 75%;
+    width: 30rem;
     margin-bottom: 3rem;
-    font-size: 1.4rem;
+    font-size: 2rem;
     padding: 0.3rem 1rem;
     background-color: #161F2B;
     border: none;
     color: rgba(255, 255, 255, 0.5);
-    border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 5px;
 }
 
 .modal-form-input:focus {
@@ -761,7 +828,44 @@ html {
 }
 
 .modal-form-input::placeholder {
-    color: rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.modal-search-input {
+    width: 40rem;
+    margin-bottom: 3rem;
+    font-size: 2rem;
+    padding: 1rem 1.5rem;
+    background-color: #161F2B;
+    border: none;
+    color: #FFF;
+    border-radius: 5px 0 0 5px;
+}
+
+.modal-search-input:focus {
+    outline: none;
+}
+
+.modal-search-input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.search-submit-btn {
+    border: none;
+    font-size: 2rem;
+    background-color: #E50914;
+    padding: 1rem 1.5rem;
+    border-radius: 0 5px 5px 0;
+}
+
+.search-submit-btn:hover .submit-icon {
+    color: #fff;
+}
+
+.submit-icon {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 2.6rem;
+    transition: all 0.3s;
 }
 
 .modal-form-save-btn {
@@ -787,9 +891,9 @@ html {
 }
 
 .edit-search-title {
-    font-size: 1.4rem;
+    font-size: 1.6rem;
     text-align: center;
-    padding-bottom: 1rem;
+    padding-bottom: 2rem;
 }
 
 
@@ -797,33 +901,78 @@ html {
 .search-results {
     overflow-y: scroll;
     height: 30rem;
+    gap: 2rem;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 2rem;
 }
 
 .search-card {
     display: flex;
     flex-direction: row;
-    margin-bottom: 2rem;
-    background-color: #213042;
-    margin-left: 2rem;
-    margin-right: 2rem;
+    margin: 0 auto;
+    background-color: #161F2B;
     border-radius: 5px;
+    width: 75%;
 }
 
 .search-card-image {
-    width: 6rem;
-    height: 8rem;
-    border-radius: 3px;
+    width: 8rem;
+    max-height: 14rem;
+    border-radius: 5px 0 0 5px;
+}
+
+.search-card-info-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-top: 0.5rem;
 }
 
 .search-card-info {
-    padding-left: 1rem;
-    width: 80%;
+    padding-left: 1.5rem;
+    width: 75%;
 }
 
 .search-card-title {
     font-size: 1.6rem;
-}
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: #FFF;
+}    
 
 .search-card-text {
+    font-size: 1.3rem;
+}
+
+.search-card-btn-container {
+    padding-right: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.search-card-other-info {
     font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.5);
+    text-align: right;
+    padding-right: 0.5rem;
+}
+
+.search-card-btn {
+    margin-bottom: 1.5rem;
+    margin-right: 0.5rem;
+    font-size: 1.6rem;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    font-weight: 600;
+    padding: 0.5rem 0.7rem;
+    background-color: #E50914;
+    color: rgba(255, 255, 255, 0.7);
+    transition: all 0.3s;
+}
+
+.search-card-btn:hover {
+    color: #fff;
+    border: 1px solid #FFF;
 }

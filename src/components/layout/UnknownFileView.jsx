@@ -1,8 +1,10 @@
 import React from 'react';
 
-const UnknownFileView = () => {
+const UnknownFileView = ({directoryItem}) => {
   return (
-    <div>UnknownFileView</div>
+    <div>
+      <p>UnknownFileView</p>
+    </div>
   )
 };
 

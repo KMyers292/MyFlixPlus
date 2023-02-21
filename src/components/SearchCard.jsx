@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DirectoryContext from '../context/directory/DirectoryContext';
 import { addDetailedDataToList, saveNewDirectoryItemInfo } from '../context/directory/DirectoryActions';
@@ -13,11 +13,11 @@ const SearchCard = ({result, directoryItem, onClose}) => {
         const media_type = directoryItem.media_type;
         const newItem = directoryItem;
         newItem.media_type = result.media_type;
-        newItem.title = result.media_type === 'movie' ? result.title : result.media_type === 'tv' ? result.name : "No Title Found";
+        newItem.title = result.title;
         newItem.id = result.id;
         newItem.poster_path = result.poster_path;
         newItem.backdrop_path = result.backdrop_path;
-        newItem.release = result.media_type === 'movie' ? result.release_date : result.media_type === 'tv' ? result.first_air_date : null;
+        newItem.release = result.release;
         newItem.overview = result.overview;
         newItem.popularity = result.popularity;
         newItem.detailed_info = false;
@@ -47,14 +47,31 @@ const SearchCard = ({result, directoryItem, onClose}) => {
         navigate(`/${newItem.id}`, {replace: true});
     }
 
+    useEffect(() => {
+        if (result) {
+            result.title = result.media_type === 'movie' ? result.title : result.media_type === 'tv' ? result.name : "No Title Found";
+            result.overview = result.overview || 'No Overview Available';
+            result.release = result.release_date || result.first_air_date || null;
+            result.poster_path = result.poster_path ? `https://image.tmdb.org/t/p/w200/${result.poster_path}` : 'D:/Projects/MyFlix+/myflix+/src/assets/images/no_image.png';
+        }
+    }, [result]);
+
     return (
         <div className="search-card">
-            {result.poster_path ? <img className='search-card-image' loading="lazy" src={`https://image.tmdb.org/t/p/w200/${result.poster_path}`}/> : <img className='' src="D:/Projects/MyFlix+/myflix+/src/assets/images/no_image.png" />}
-            <div className="search-card-info">
-                {result.title ? <p className='search-card-title'>{result.title} ({result.release_date ? result.release_date.substring(0,4) : null}) - Movie</p> : result.name ? <p className='search-card-title'>{result.name} ({result.first_air_date ? result.first_air_date.substring(0,4) : null}) - Series</p> : <p className='search-card-title'>No Title Found</p>}
-                {result.overview ? <p className='search-card-text'>{result.overview}</p> : null}
+            <img className='search-card-image' loading="lazy" src={result.poster_path} />
+            <div className='search-card-info-container'>
+                <div className="search-card-info">
+                    <p className='search-card-title'>{result.title}</p>
+                    <p className='search-card-text'>{result.overview}</p>
+                </div>
+                <div className='search-card-btn-container'>
+                    <div>
+                        {result.release ? <p className='search-card-other-info'>{result.release.substring(0,4)}</p> : null}
+                        {result.media_type === 'movie' ? <p className='search-card-other-info'>Movie</p> : result.media_type === 'tv' ? <p className='search-card-other-info'>Series</p> : null}
+                    </div>
+                    <button className='search-card-btn' onClick={handleClick}>Replace</button>
+                </div>
             </div>
-            <button onClick={handleClick}>Replace</button>
         </div>
     )
 };

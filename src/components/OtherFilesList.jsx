@@ -38,11 +38,11 @@ const OtherFilesList = ({otherFiles}) => {
     }
 
     return (
-        <div>
+        <div className='other-files-container'>
             <select className='seasons-select' value={selectedFolder} onChange={handleChange}>
                 {otherFoldersOptions}
             </select>
-            <EpisodeCard episodes={fileList} type="files" />
+            <EpisodeCard episodes={fileList} type="folders" />
         </div>
     )
 };

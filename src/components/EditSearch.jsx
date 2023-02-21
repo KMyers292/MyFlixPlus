@@ -1,17 +1,20 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import EditSearchResults from './EditSearchResults.jsx';
 import { fetchBasicData } from '../context/directory/DirectoryActions';
+import { IoSearchSharp } from "react-icons/io5";
 
-const EditSearch = ({directoryItem, onClose}) => {
+const EditSearch = ({directoryItem, onClose, getResults, searchResults, savedTitle}) => {
 
-    const [title, setTitle] = useState('');
-    const [results, setResults] = useState([]);
-
+    const [title, setTitle] = useState(savedTitle || '');
+    const [results, setResults] = useState(searchResults || {});
+    
     const submitHandler = async (e) => {
         e.preventDefault();
         
         if (title) {
-            setResults(await fetchBasicData(title));
+            const results = await fetchBasicData(title);
+            setResults(results);
+            getResults(results, title);
         }
     }
 
@@ -22,16 +25,18 @@ const EditSearch = ({directoryItem, onClose}) => {
                 <div className='modal-form-group'>
                     <div>
                         <input
-                            className='modal-form-input'
+                            className='modal-search-input'
                             type="text" 
                             id="newMedia" 
                             name="newMedia" 
-                            placeholder="Enter A Title"
+                            placeholder="Search..."
                             value={title} 
                             onChange={(e) => setTitle(e.target.value)}
                             required 
                         />
-                        <input type="submit" value="Search" />
+                        <button type="submit" className='search-submit-btn' >
+                            <IoSearchSharp className='submit-icon' />
+                        </button>
                     </div>
                 </div>
             </form>
