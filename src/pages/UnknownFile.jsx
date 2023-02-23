@@ -19,6 +19,7 @@ const UnknownFile = () => {
     const [openModal, setOpenModal] = useState(false);
     const [otherFoldersList, setOtherFoldersList] = useState([]);
     const [otherFilesList, setOtherFilesList] = useState([]);
+    const [firstFile, setFirstFile] = useState({});
     const [directory, setDirectory] = useState({});
 
     useEffect(() => {
@@ -31,7 +32,11 @@ const UnknownFile = () => {
             const list = getOtherFoldersList(directoryItem.directory.path);
 
             if (list) {
-                setOtherFilesList(list.filter((item) => !item.is_directory));
+                const filteredList = list.filter((item) => !item.is_directory);
+                const file = filteredList.shift();
+
+                setFirstFile(file);
+                setOtherFilesList(filteredList);
                 setOtherFoldersList(list.filter((item) => item.is_directory));
             }
         }
@@ -46,9 +51,9 @@ const UnknownFile = () => {
     }, [dispatch, params.id]);
 
     const handlePlayBtnClick = () => {
-        if (Object.keys(otherFilesList).length !== 0) {
-            if (fs.existsSync(otherFilesList[0].path)) {
-                ipcRenderer.send('vlc:open', otherFilesList[0].path);
+        if (Object.keys(firstFile).length !== 0) {
+            if (fs.existsSync(firstFile.path)) {
+                ipcRenderer.send('vlc:open', firstFile.path);
             }
             else {
                 console.log('No File Found');
@@ -96,7 +101,7 @@ const UnknownFile = () => {
                             ) : null}
                             {directory.status ? <p>Status: <span className='info-list'>{directory.status}</span></p> : null}
                         </div>
-                        {Object.keys(otherFilesList).length !== 0 ? <button className='play-btn' onClick={handlePlayBtnClick}><IoPlaySharp />Play</button> : null}
+                        {Object.keys(firstFile).length !== 0 ? <button className='play-btn' onClick={handlePlayBtnClick}><IoPlaySharp />Play</button> : null}
                         <button className='add-btn' title='Add to Watch List'><BsPlusCircle/></button>
                         {directory.directory && directory.directory.path ? <button className='edit-btn' title='Edit Entry' onClick={() => setOpenModal(true)}><MdEdit /></button> : null}
                     </div>
