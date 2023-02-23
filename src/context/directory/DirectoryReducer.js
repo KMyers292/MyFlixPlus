@@ -6,12 +6,6 @@ const directoryReducer = (state, action) => {
                 directories: action.payload,
                 loading: false
             }
-        case 'GET_DIRECTORY':
-            return {
-                ...state,
-                directory: action.payload,
-                loading: false
-            }
         case 'SET_LOADING':
             return {
                 ...state,

@@ -86,9 +86,8 @@ const EditForm = ({directoryItem, onClose}) => {
                         id='overview' 
                         name='overview' 
                         placeholder='Enter An Overview'
-                        value={overview} 
+                        value={overview || ''} 
                         onChange={(e) => setOverview(e.target.value)}
-                        required
                     ></textarea>
                 </div>
                 <div className='modal-form-group'>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { ipcRenderer } from 'electron';
+import fs from 'fs';
 import { minutesToHours, dateNumbersToWords } from '../context/directory/DirectoryActions';
 import { IoIosCheckmarkCircle } from 'react-icons/io';
 import { BiPlayCircle } from 'react-icons/bi';
@@ -8,10 +9,20 @@ const EpisodeCard = ({episodes, type}) => {
 
     const handleClick = (index) => {
         if (type === 'episodes') {
-            ipcRenderer.send('vlc:open', episodes[index].directory.path);
+            if (fs.existsSync(episodes[index].directory.path)) {
+                ipcRenderer.send('vlc:open', episodes[index].directory.path);
+            }
+            else {
+                console.log('No File Found');
+            }
         }
-        else if (type === 'files') {
-            ipcRenderer.send('vlc:open', episodes[index].path);
+        else if (type === 'files' || type === 'folders') {
+            if (fs.existsSync(episodes[index].path)) {
+                ipcRenderer.send('vlc:open', episodes[index].path);
+            }
+            else {
+                console.log('No File Found');
+            }
         }
     }
 
@@ -54,14 +65,18 @@ const EpisodeCard = ({episodes, type}) => {
             </>
         )
     }
-    else if (episodes.length > 0 && type === 'folders') {
+    else if (type === 'folders') {
         return (
             <>
-                {episodes.map((episode, i) => (
-                    <div key={i} className='files-container folders' onClick={!episode.is_directory ? () => handleClick(i) : undefined}>
-                        <p className='files-title'>{episode.file_name}</p>
-                    </div>
-                ))}
+                {episodes.length > 0 ? (
+                    episodes.map((episode, i) => (
+                        <div key={i} className='files-container folders' onClick={!episode.is_directory ? () => handleClick(i) : undefined}>
+                            <p className='files-title'>{episode.file_name}</p>
+                        </div>
+                    ))
+                ) : (
+                    <p className='files-title'>Folder Is Empty.</p>
+                )}
             </>
         )
     }

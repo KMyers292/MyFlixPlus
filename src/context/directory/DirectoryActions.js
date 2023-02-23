@@ -110,7 +110,8 @@ export const getOtherFoldersList = (directory) => {
         return folders;
     } 
     catch (error) {
-        throw new Error('getOtherFiles Error: ' + error);
+        console.log('getOtherFoldersList Error: ' + error);
+        return null;
     }
 };
 
@@ -158,6 +159,10 @@ export const getOtherFilesInDirectory = (seasonObject, episodesList) => {
         return null;
     }
     catch (error) {
+        if (error.code === 'ENOENT') {
+            return null;
+        }
+
         throw new Error('getOtherFilesInDirectory Error: ' + error);
     }
 };
@@ -216,6 +221,10 @@ export const addEpisodesInDirectoryToList = (seasonObject, directories, id) => {
         return seasonObject.episodes;
     } 
     catch (error) {
+        if (error.code === 'ENOENT') {
+            return null;
+        }
+
         throw new Error('addEpisodesInDirectoryToList Error: ' + error);
     }
 };
@@ -275,6 +284,10 @@ export const addSeasonsInDirectoryToList = (directoryObject, directories, id) =>
         return directories[index].seasons;
     } 
     catch (error) {
+        if (error.code === 'ENOENT') {
+            return null;
+        }
+
         throw new Error('addSeasonsInDirectoryToList Error: ' + error);
     }
 };
@@ -553,7 +566,8 @@ export const getDirectoryData = (directory) => {
             }
         });
 
-        return directoryList;
+        const filteredResults = directoryList.filter((directory) => directory.directory.is_directory);
+        return filteredResults;
     } 
     catch (error) {
         throw new Error('getDirectoryData Error: ' + error);

@@ -14,12 +14,18 @@ const SeasonsList = ({seasonObject, id}) => {
     useEffect(() => {
         if (Object.hasOwn(seasonObject, 'directory')) {
             const episodesList = addEpisodesInDirectoryToList(seasonObject, directories, id);
-            setEpisodes(episodesList);
-            const otherFiles = getOtherFilesInDirectory(seasonObject, episodesList);
 
-            if (otherFiles) {
-                const otherFilesFiltered = otherFiles.filter((file) => !file.is_directory);
-                setOtherEpisodes(otherFilesFiltered);
+            if (episodesList && episodesList.length > 0) {
+                setEpisodes(episodesList);
+                const otherFiles = getOtherFilesInDirectory(seasonObject, episodesList);
+
+                if (otherFiles) {
+                    const otherFilesFiltered = otherFiles.filter((file) => !file.is_directory);
+                    setOtherEpisodes(otherFilesFiltered);
+                }
+            }
+            else {
+                setEpisodes(seasonObject.episodes);
             }
         }
         else {

@@ -12,22 +12,20 @@ import { MdEdit } from "react-icons/md";
 const DirectorySeries = () => {
 
     const params = useParams();
-    const {directory, directories, dispatch, loading} = useContext(DirectoryContext);
+    const {directories, dispatch, loading} = useContext(DirectoryContext);
     const [active, setActive] = useState(0);
     const [seasonNum, setSeasonNum] = useState(1);
     const [openModal, setOpenModal] = useState(false);
     const [seasonObject, setSeasonObject] = useState({});
     const [seasonsOptions, setSeasonsOptions] = useState([]);
     const [otherFilesList, setOtherFilesList] = useState([]);
+    const [directory, setDirectory] = useState({});
 
     useEffect(() => {
         dispatch({ type: 'SET_LOADING' });
-        const directoryItem = getMediaObjectFromList(params.id);
 
-        dispatch({ 
-            type: 'GET_DIRECTORY',
-            payload: directoryItem
-        });
+        const directoryItem = getMediaObjectFromList(params.id);
+        setDirectory(directoryItem);
 
         let seasons = [];
 
@@ -48,10 +46,13 @@ const DirectorySeries = () => {
             }
         }
 
+        dispatch({ type: 'SET_LOADING_FALSE' });
+
         return () => {
             setSeasonsOptions([]);
             setSeasonObject({});
             setOtherFilesList([]);
+            setDirectory({});
         }
     }, [dispatch, params.id]);
 
@@ -83,21 +84,25 @@ const DirectorySeries = () => {
                         </div>
                         <p className='overview'>{directory.overview}</p>
                         <div className="info-list-container">
-                            <p>Starring:
-                                <span className='info-list'>
-                                    {directory.credits[0] ? directory.credits[0] : null}
-                                    {directory.credits[1] ? ", " + directory.credits[1] : null}
-                                    {directory.credits[2] ? ", " + directory.credits[2] : null}
-                                </span>
-                            </p>
-                            <p>Genres: 
-                                <span className='info-list'>
-                                    {directory.genres[0] ? directory.genres[0].name : null}
-                                    {directory.genres[1] ? ", " + directory.genres[1].name : null}
-                                    {directory.genres[2] ? ", " + directory.genres[2].name : null}
-                                </span>
-                            </p>
-                            <p>Status: <span className='info-list'>{directory.status}</span></p>
+                            {directory.credits && directory.credits.length > 0 && directory.credits[0] ? (
+                                <p>Starring:
+                                    <span className='info-list'>
+                                        {directory.credits[0] ? directory.credits[0] : null}
+                                        {directory.credits[1] ? ", " + directory.credits[1] : null}
+                                        {directory.credits[2] ? ", " + directory.credits[2] : null}
+                                    </span>
+                                </p>
+                            ) : null}
+                            {directory.genres && directory.genres.length > 0 && directory.genres[0] ? (
+                                <p>Genres: 
+                                    <span className='info-list'>
+                                        {directory.genres[0] ? directory.genres[0].name : null}
+                                        {directory.genres[1] ? ", " + directory.genres[1].name : null}
+                                        {directory.genres[2] ? ", " + directory.genres[2].name : null}
+                                    </span>
+                                </p>
+                            ) : null}
+                            {directory.status ? <p>Status: <span className='info-list'>{directory.status}</span></p> : null}
                             {directory.providers ? (
                                 <p>Watch On: 
                                     <img className='provider_logo' loading='lazy' title={directory.providers.provider_name} src={directory.providers.logo_path} />

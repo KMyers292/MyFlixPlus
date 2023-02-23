@@ -294,6 +294,7 @@ html {
 }
 
 .season-container {
+    min-height: 27rem;
     padding-top: 4rem;
     background-color: #161F2B;
 }
@@ -366,6 +367,7 @@ html {
 
 .media-container {
     position: relative;
+    min-height: 48.8rem;
 }
 
 .bg-img {
@@ -607,6 +609,7 @@ html {
 }
 
 .other-files-container {
+    min-height: 23rem;
     background-color: #161F2B;
     padding-bottom: 4rem;
 }

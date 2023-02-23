@@ -9,7 +9,6 @@ export const DirectoryProvider = ({children}) => {
 
     const initialState = {
         directories: directoriesFromStorage,
-        directory: {},
         loading: false
     }
 

@@ -21,6 +21,7 @@ const SearchedMovie = () => {
                 searchedItem: true
             }
             await addDetailedDataToList(data);
+            console.log(data);
             setSearchedMovie(data);
         }
 
@@ -48,21 +49,25 @@ const SearchedMovie = () => {
                         </div>
                         <p className='overview'>{searchedMovie.overview}</p>
                         <div className='info-list-container'>
-                            <p>Starring:
-                                <span className='info-list'>
-                                    {searchedMovie.credits[0] ? searchedMovie.credits[0] : null}
-                                    {searchedMovie.credits[1] ? ", " + searchedMovie.credits[1] : null}
-                                    {searchedMovie.credits[2] ? ", " + searchedMovie.credits[2] : null}
-                                </span>
-                            </p>
-                            <p>Genres: 
-                                <span className='info-list'>
-                                    {searchedMovie.genres[0] ? searchedMovie.genres[0].name : null}
-                                    {searchedMovie.genres[1] ? ", " + searchedMovie.genres[1].name : null}
-                                    {searchedMovie.genres[2] ? ", " + searchedMovie.genres[2].name : null}
-                                </span>
-                            </p>
-                            <p>Status: <span className='info-list'>{searchedMovie.status}</span></p>
+                        {searchedMovie.credits && searchedMovie.credits.length > 0 && searchedMovie.credits[0] ? (
+                                <p>Starring:
+                                    <span className='info-list'>
+                                        {searchedMovie.credits[0] ? searchedMovie.credits[0] : null}
+                                        {searchedMovie.credits[1] ? ", " + searchedMovie.credits[1] : null}
+                                        {searchedMovie.credits[2] ? ", " + searchedMovie.credits[2] : null}
+                                    </span>
+                                </p>
+                            ) : null}
+                            {searchedMovie.genres && searchedMovie.genres.length > 0 && searchedMovie.genres[0] ? (
+                                <p>Genres: 
+                                    <span className='info-list'>
+                                        {searchedMovie.genres[0] ? searchedMovie.genres[0].name : null}
+                                        {searchedMovie.genres[1] ? ", " + searchedMovie.genres[1].name : null}
+                                        {searchedMovie.genres[2] ? ", " + searchedMovie.genres[2].name : null}
+                                    </span>
+                                </p>
+                            ) : null}
+                            {searchedMovie.status ? <p>Status: <span className='info-list'>{searchedMovie.status}</span></p> : null}
                             {searchedMovie.providers ? (
                                 <p>Watch On: 
                                     <img className='provider_logo' loading='lazy' title={searchedMovie.providers.provider_name} src={searchedMovie.providers.logo_path} />

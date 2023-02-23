@@ -82,21 +82,25 @@ const SearchedSeries = () => {
                         </div>
                         <p className='overview'>{searchedSeries.overview}</p>
                         <div className='info-list-container'>
-                            <p>Starring:
-                                <span className='info-list'>
-                                    {searchedSeries.credits[0] ? searchedSeries.credits[0] : null}
-                                    {searchedSeries.credits[1] ? ', ' + searchedSeries.credits[1] : null}
-                                    {searchedSeries.credits[2] ? ', ' + searchedSeries.credits[2] : null}
-                                </span>
-                            </p>
-                            <p>Genres: 
-                                <span className='info-list'>
-                                    {searchedSeries.genres[0] ? searchedSeries.genres[0].name : null}
-                                    {searchedSeries.genres[1] ? ', ' + searchedSeries.genres[1].name : null}
-                                    {searchedSeries.genres[2] ? ', ' + searchedSeries.genres[2].name : null}
-                                </span>
-                            </p>
-                            <p>Status: <span className='info-list'>{searchedSeries.status}</span></p>
+                            {searchedSeries.credits && searchedSeries.credits.length > 0 && searchedSeries.credits[0] ? (
+                                <p>Starring:
+                                    <span className='info-list'>
+                                        {searchedSeries.credits[0] ? searchedSeries.credits[0] : null}
+                                        {searchedSeries.credits[1] ? ", " + searchedSeries.credits[1] : null}
+                                        {searchedSeries.credits[2] ? ", " + searchedSeries.credits[2] : null}
+                                    </span>
+                                </p>
+                            ) : null}
+                            {searchedSeries.genres && searchedSeries.genres.length > 0 && searchedSeries.genres[0] ? (
+                                <p>Genres: 
+                                    <span className='info-list'>
+                                        {searchedSeries.genres[0] ? searchedSeries.genres[0].name : null}
+                                        {searchedSeries.genres[1] ? ", " + searchedSeries.genres[1].name : null}
+                                        {searchedSeries.genres[2] ? ", " + searchedSeries.genres[2].name : null}
+                                    </span>
+                                </p>
+                            ) : null}
+                            {searchedSeries.status ? <p>Status: <span className='info-list'>{searchedSeries.status}</span></p> : null}
                             {searchedSeries.providers ? (
                                 <p>Watch On: 
                                     <img className='provider_logo' loading='lazy' title={searchedSeries.providers.provider_name} src={searchedSeries.providers.logo_path} />

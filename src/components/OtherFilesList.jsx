@@ -3,8 +3,7 @@ import { getOtherFoldersList } from '../context/directory/DirectoryActions';
 import EpisodeCard from './EpisodeCard.jsx';
 
 const OtherFilesList = ({otherFiles}) => {
-
-    const [selectedFolder, setSelectedFolder] = useState(otherFiles[0].path);
+    const [selectedFolder, setSelectedFolder] = useState(otherFiles.length > 0 ? otherFiles[0].path : []);
     const [otherFoldersOptions, setOtherFoldersOptions] = useState([]);
     const [fileList, setFileList] = useState([]);
 
@@ -35,13 +34,18 @@ const OtherFilesList = ({otherFiles}) => {
         if (files) {
             setFileList(files);
         }
+        else {
+            setFileList([]);
+        }
     }
 
     return (
         <div className='other-files-container'>
-            <select className='seasons-select' value={selectedFolder} onChange={handleChange}>
-                {otherFoldersOptions}
-            </select>
+            {otherFoldersOptions.length > 0 ? (
+                <select className='seasons-select' value={selectedFolder} onChange={handleChange}>
+                    {otherFoldersOptions}
+                </select>
+            ) : null}
             <EpisodeCard episodes={fileList} type='folders' />
         </div>
     )
