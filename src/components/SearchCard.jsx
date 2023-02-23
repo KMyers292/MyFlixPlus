@@ -49,7 +49,7 @@ const SearchCard = ({result, directoryItem, onClose}) => {
 
     useEffect(() => {
         if (result) {
-            result.title = result.media_type === 'movie' ? result.title : result.media_type === 'tv' ? result.name : "No Title Found";
+            result.title = result.media_type === 'movie' ? result.title : result.media_type === 'tv' ? result.name : 'No Title Found';
             result.overview = result.overview || 'No Overview Available';
             result.release = result.release_date || result.first_air_date || null;
             result.poster_path = result.poster_path ? `https://image.tmdb.org/t/p/w200/${result.poster_path}` : 'D:/Projects/MyFlix+/myflix+/src/assets/images/no_image.png';
@@ -57,10 +57,10 @@ const SearchCard = ({result, directoryItem, onClose}) => {
     }, [result]);
 
     return (
-        <div className="search-card">
-            <img className='search-card-image' loading="lazy" src={result.poster_path} />
+        <div className='search-card'>
+            <img className='search-card-image' loading='lazy' src={result.poster_path} />
             <div className='search-card-info-container'>
-                <div className="search-card-info">
+                <div className='search-card-info'>
                     <p className='search-card-title'>{result.title}</p>
                     <p className='search-card-text'>{result.overview}</p>
                 </div>

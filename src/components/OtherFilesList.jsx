@@ -1,23 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { getOtherFiles } from '../context/directory/DirectoryActions';
+import { getOtherFoldersList } from '../context/directory/DirectoryActions';
 import EpisodeCard from './EpisodeCard.jsx';
 
 const OtherFilesList = ({otherFiles}) => {
 
-    const [otherFoldersOptions, setOtherFoldersOptions] = useState([]);
     const [selectedFolder, setSelectedFolder] = useState(otherFiles[0].path);
+    const [otherFoldersOptions, setOtherFoldersOptions] = useState([]);
     const [fileList, setFileList] = useState([]);
 
     useEffect(() => {
-        let others = [];
+        let otherFolders = [];
 
         for (let i = 0; i < otherFiles.length; i++) {
-            others.push(<option value={otherFiles[i].path} key={i}>{otherFiles[i].file_name}</option>);
+            otherFolders.push(<option value={otherFiles[i].path} key={i}>{otherFiles[i].file_name}</option>);
         }
 
-        setOtherFoldersOptions(others);
+        setOtherFoldersOptions(otherFolders);
 
-        const files = getOtherFiles(selectedFolder);
+        const files = getOtherFoldersList(selectedFolder);
         if (files) {
             setFileList(files);
         }
@@ -31,7 +31,7 @@ const OtherFilesList = ({otherFiles}) => {
     const handleChange = async (e) => {
         setSelectedFolder(e.target.value);
 
-        const files = getOtherFiles(e.target.value);
+        const files = getOtherFoldersList(e.target.value);
         if (files) {
             setFileList(files);
         }
@@ -42,7 +42,7 @@ const OtherFilesList = ({otherFiles}) => {
             <select className='seasons-select' value={selectedFolder} onChange={handleChange}>
                 {otherFoldersOptions}
             </select>
-            <EpisodeCard episodes={fileList} type="folders" />
+            <EpisodeCard episodes={fileList} type='folders' />
         </div>
     )
 };

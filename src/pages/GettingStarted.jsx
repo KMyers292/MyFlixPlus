@@ -1,25 +1,25 @@
-import React, {useState, useContext} from 'react';
-const {ipcRenderer} = require('electron');
+import React, { useState, useContext } from 'react';
+const { ipcRenderer } = require('electron');
 import { useNavigate } from 'react-router-dom';
-import {Form, Button, Container} from 'react-bootstrap';
 import DirectoryContext from '../context/directory/DirectoryContext';
 import AlertContext from '../context/alert/AlertContext';
 import { getFileDataInDirectory } from '../context/directory/DirectoryActions';
-import '../assets/css/App.css';
+import { Form, Button, Container } from 'react-bootstrap';
 
 const GettingStarted = () => {
-    const [text, setText] = useState('');
-    const [saveDirectory, setSaveDirectory] = useState(false);
+
     const navigate = useNavigate();
     const {dispatch} = useContext(DirectoryContext);
     const { setAlert } = useContext(AlertContext);
+    const [saveDirectory, setSaveDirectory] = useState(false);
+    const [text, setText] = useState('');
 
-    const handleChange = (event) => {
-        setText(event.target.value);
+    const handleChange = (e) => {
+        setText(e.target.value);
     };
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
         if(text === '') {
             setAlert('Please Enter A Directory!', 'error');

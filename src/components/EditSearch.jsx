@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import EditSearchResults from './EditSearchResults.jsx';
 import { fetchBasicData } from '../context/directory/DirectoryActions';
-import { IoSearchSharp } from "react-icons/io5";
+import EditSearchResults from './EditSearchResults.jsx';
+import { IoSearchSharp } from 'react-icons/io5';
 
 const EditSearch = ({directoryItem, onClose, getResults, searchResults, savedTitle}) => {
 
     const [title, setTitle] = useState(savedTitle || '');
-    const [results, setResults] = useState(searchResults || {});
+    const [results, setResults] = useState(searchResults || []);
     
     const submitHandler = async (e) => {
         e.preventDefault();
@@ -22,19 +22,19 @@ const EditSearch = ({directoryItem, onClose, getResults, searchResults, savedTit
         <div>
             <h2 className='edit-search-title'>Not The Results You Were Expecting? Search For What You Want Below:</h2>
             <form onSubmit={submitHandler} className='edit-search-form'>
-                <div className='modal-form-group'>
+                <div className='search-form-group'>
                     <div>
                         <input
                             className='modal-search-input'
-                            type="text" 
-                            id="newMedia" 
-                            name="newMedia" 
-                            placeholder="Search..."
+                            type='text' 
+                            id='newMedia' 
+                            name='newMedia' 
+                            placeholder='Search...'
                             value={title} 
                             onChange={(e) => setTitle(e.target.value)}
                             required 
                         />
-                        <button type="submit" className='search-submit-btn' >
+                        <button type='submit' className='search-submit-btn' >
                             <IoSearchSharp className='submit-icon' />
                         </button>
                     </div>

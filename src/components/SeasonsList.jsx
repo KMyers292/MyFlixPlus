@@ -2,77 +2,78 @@ import React, { useEffect, useContext, useState } from 'react';
 import DirectoryContext from '../context/directory/DirectoryContext';
 import { addEpisodesInDirectoryToList, getOtherFilesInDirectory } from '../context/directory/DirectoryActions';
 import EpisodeCard from './EpisodeCard.jsx';
-import {IoIosCheckmarkCircle} from 'react-icons/io';
+import { IoIosCheckmarkCircle } from 'react-icons/io';
 
-const SeasonsList = ({episodesList, id}) => {
+const SeasonsList = ({seasonObject, id}) => {
 
-    const [episodes, setEpisodes] = useState([]);
-    const [otherEpisodes, setOtherEpisodes] = useState({});
-    const [active, setActive] = useState(0);
     const {directories} = useContext(DirectoryContext);
+    const [active, setActive] = useState(0);
+    const [episodes, setEpisodes] = useState([]);
+    const [otherEpisodes, setOtherEpisodes] = useState([]);
 
     useEffect(() => {
-        if (Object.hasOwn(episodesList, 'directory')) {
-            const list = addEpisodesInDirectoryToList(episodesList, directories, id);
-            setEpisodes(list);
-            const otherFiles = getOtherFilesInDirectory(episodesList, list);
+        if (Object.hasOwn(seasonObject, 'directory')) {
+            const episodesList = addEpisodesInDirectoryToList(seasonObject, directories, id);
+            setEpisodes(episodesList);
+            const otherFiles = getOtherFilesInDirectory(seasonObject, episodesList);
+
             if (otherFiles) {
                 const otherFilesFiltered = otherFiles.filter((file) => !file.is_directory);
                 setOtherEpisodes(otherFilesFiltered);
             }
         }
         else {
-            setEpisodes(episodesList.episodes);
+            setEpisodes(seasonObject.episodes);
         }
 
         return () => {
             setEpisodes([]);
-            setOtherEpisodes({});
+            setOtherEpisodes([]);
         }
-    }, [episodesList]);
+    }, [seasonObject, id]);
 
-    const getEpisodesAvailable = (list) => {
-        const available = list.filter((episode) => episode.hasOwnProperty('directory'));
-        return available.length;
+    const getEpisodesAvailable = (episodesList) => {
+        const availableEpisodes = episodesList.filter((episode) => Object.hasOwn(episode, 'directory'));
+        return availableEpisodes.length;
     }
 
-    if (Object.keys(episodesList).length !== 0) {
+    if (Object.keys(seasonObject).length !== 0 && episodes.length > 0) {
         return (
-            <div>
+            <>
                 <div className='season-info-container'>
-                    <img className='season-img' loading="lazy" src={episodesList.poster_path} />
+                    <img className='season-img' loading='lazy' src={seasonObject.poster_path} />
                     <div className='season-info'>
-                        {episodesList.hasOwnProperty('directory') ? (
-                            episodesList.name ? <p className='season-title'>{episodesList.name} ({episodesList.episodes[0].air_date.substring(0,4)}) <IoIosCheckmarkCircle className='checkmark-seasons' title='Season In Directory'/></p> : <p className='season-title'>No Season Name Available</p>
-                        ) : (episodesList.name ? <p className='season-title'>{episodesList.name} ({episodesList.episodes[0].air_date.substring(0,4)})</p> : <p className='season-title'>No Season Name Available</p>)}
-                        {episodesList.overview ? <p className='season-overview'>{episodesList.overview}</p> : <p className='season-overview'>No Overview Available</p>}
+                        {Object.hasOwn(seasonObject, 'directory') ? (
+                            seasonObject.name ? <p className='season-title'>{seasonObject.name} ({seasonObject.episodes[0].air_date.substring(0,4)}) <IoIosCheckmarkCircle className='checkmark-seasons' title='Season In Directory'/></p> : <p className='season-title'>No Season Name Available</p>
+                        ) : (seasonObject.name ? <p className='season-title'>{seasonObject.name} ({seasonObject.episodes[0].air_date.substring(0,4)})</p> : <p className='season-title'>No Season Name Available</p>)}
+                        <p className='season-overview'>{seasonObject.overview}</p>
                     </div>
                 </div>
                 <div className='tabs tabs-episodes'>
                     <a className={active === 0 ? 'episodes-header active-episodes' : 'episodes-header'} onClick={(e) => setActive(0)}>Episodes</a>
-                    {Object.keys(otherEpisodes).length !== 0 ? <a className={active === 1 ? 'episodes-header active-episodes' : 'episodes-header'} onClick={(e) => setActive(1)}>Other Files</a> : null}
+                    {otherEpisodes.length > 0 ? <a className={active === 1 ? 'episodes-header active-episodes' : 'episodes-header'} onClick={(e) => setActive(1)}>Other Files</a> : null}
                 </div>
                 {active === 0 && (
                     <div className='episodes-container'>
                         <div className='episodes-list-info'>
-                            <p>Total Episodes: {episodesList.episodes.length}</p>
-                            <p>Available To Play: {getEpisodesAvailable(episodesList.episodes)}</p>
+                            <p>Total Episodes: {seasonObject.episodes.length}</p>
+                            <p>Available To Play: {getEpisodesAvailable(seasonObject.episodes)}</p>
                         </div>
                         <EpisodeCard episodes={episodes} />
                     </div>
                 )}
                 {active === 1 && (
                     <div className='episodes-container'>
-                        <EpisodeCard episodes={otherEpisodes} type="files" />
+                        <EpisodeCard episodes={otherEpisodes} type='files' />
                     </div>
                 )}
-            </div>
+            </>
         )
     }
     else {
         return (
             <div>
-                <span className="loader"></span>
+                <span className='loader'></span>
             </div>
         )
     }

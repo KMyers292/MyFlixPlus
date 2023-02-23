@@ -5,7 +5,7 @@ import EditSearch from '../EditSearch.jsx';
 const EditModal = ({open, onClose, directoryItem}) => {
 
     const [active, setActive] = useState(0);
-    const [searchResults, setSearchResults] = useState({});
+    const [searchResults, setSearchResults] = useState([]);
     const [title, setTitle] = useState('');
 
     const getResults = (results, title) => {
@@ -14,7 +14,7 @@ const EditModal = ({open, onClose, directoryItem}) => {
     }
 
     const closeModal = () => {
-        setSearchResults({});
+        setSearchResults([]);
         setTitle('');
         onClose();
     }

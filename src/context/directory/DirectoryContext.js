@@ -1,4 +1,4 @@
-import React, {createContext, useReducer} from 'react';
+import React, { createContext, useReducer } from 'react';
 import directoryReducer from './DirectoryReducer';
 
 const DirectoryContext = createContext();
@@ -10,7 +10,6 @@ export const DirectoryProvider = ({children}) => {
     const initialState = {
         directories: directoriesFromStorage,
         directory: {},
-        searchedItem: {},
         loading: false
     }
 

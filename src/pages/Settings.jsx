@@ -1,59 +1,62 @@
-const {ipcRenderer} = require('electron');
-import React, {useState, useContext} from 'react';
-import {Form, Button, Container} from 'react-bootstrap';
-import { getFileDataInDirectory } from '../context/directory/DirectoryActions';
+import React, { useState, useContext } from 'react';
+const { ipcRenderer } = require('electron');
 import DirectoryContext from '../context/directory/DirectoryContext';
 import AlertContext from '../context/alert/AlertContext';
-import '../assets/css/App.css';
+import { getFileDataInDirectory } from '../context/directory/DirectoryActions';
 
 const Settings = () => {
 
-    const [text, setText] = useState(sessionStorage.getItem('savedDirectory') || '');
     const {setAlert} = useContext(AlertContext);
     const {dispatch} = useContext(DirectoryContext);
+    const [text, setText] = useState(sessionStorage.getItem('savedDirectory') || '');
 
-    const handleChange = (event) => {
-        setText(event.target.value);
-    };
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-
-        if(!text) {
+        if (text.length <= 0) {
             setAlert('Please Enter a Directory', 'error');
+            return null;
         }
-        else {
-            const directories = await getFileDataInDirectory(text);
 
+        try {
+            const directories = await getFileDataInDirectory(text);
+            
             dispatch({
                 type: 'GET_DIRECTORIES',
                 payload: directories
             });
 
-            if(!directories) {
-                setAlert('No Directory Found. Please Try Again.', 'error');
-            }
-            else {
-                // Send new settings to main process
-                ipcRenderer.send('settings:set', {
-                    directoryPath: text
-                });
+            // Send new settings to main process
+            ipcRenderer.send('settings:set', {
+                directoryPath: text
+            });
 
-                setAlert('Successfully Saved Directory!', 'success');
-            }
+            setAlert('Successfully Saved Directory!', 'success');
+        } 
+        catch (error) {
+            console.log('Settings Error: ' + error);
+            setAlert('No Directory Found. Please Try Again.', 'error');
+            return null;
         }
     };
 
     return (
-        <Container className="settings-container">
-            <div className='settings-header-box'>
-                <p>Settings</p>
-            </div>
-            <Form onSubmit={handleSubmit} className="form-box">
-                <Form.Control type="text" value={text || ''} className="form-input" onChange={handleChange} placeholder="Media Directory - Ex: C:\Folder\Media"/>
-                <Button type='submit' className="form-btn-submit">Save</Button>
-            </Form>
-        </Container>
+        <div className='settings-container'>
+            <h1 className='settings-header'>Settings</h1>
+            <form onSubmit={handleSubmit} className='settings-form'>
+                <input
+                    type='text'
+                    className='settings-form-input'
+                    id='storageDirectory'
+                    name='storageDirectory'
+                    placeholder='Media Directory - Ex: C:\Folder\Media'
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
+
+                />
+                <button type='submit' className='settings-submit-btn'>Save</button>
+            </form>
+        </div>
     )
 };
 

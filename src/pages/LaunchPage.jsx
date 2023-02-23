@@ -1,10 +1,10 @@
-import React, {useContext} from 'react';
+import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getFileDataInDirectory } from '../context/directory/DirectoryActions';
 import DirectoryContext from '../context/directory/DirectoryContext';
-import '../assets/css/App.css';
+import { getFileDataInDirectory } from '../context/directory/DirectoryActions';
 
 const LaunchPage = () => {
+
     const navigate = useNavigate();
     const {dispatch, loading} = useContext(DirectoryContext);
 
@@ -32,7 +32,7 @@ const LaunchPage = () => {
             <h1 className='launch-title'>MYFLIX+</h1>
             {loading ? (
                 <div>
-                    <span className="loader"></span>
+                    <span className='loader'></span>
                     <p>Reading Directory...</p>
                 </div>
             ) : (

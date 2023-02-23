@@ -31,25 +31,23 @@ ipcRenderer.on('settings:get', (event, settings) => {
 
 // Gets the difference in milliseconds between today's date and the passed in date.
 // Returns true or false depending on whether the difference is less or more than the passed in length of time (week or month).
-export const getTimeDifference = (date, timeLength) => {
+export const getTimeDifference = (date, lengthOfTime) => {
     try {
         const todaysDate = Date.now();
 
-        if (timeLength === 'month') {
+        if (lengthOfTime === 'month') {
             const monthInMillis = 2629746000;
             return todaysDate - date >= monthInMillis;
         }
-        else if (timeLength === 'week') {
+        else if (lengthOfTime === 'week') {
             const weekInMillis = 604800000;
             return todaysDate - date >= weekInMillis;
         }
-        else {
-            return null;
-        }
+
+        return null;
     } 
     catch (error) {
-        console.log('getTimeDifference Error: ' + error);
-        return null;
+        throw new Error('getTimeDifference Error: ' + error);
     }
 };
 
@@ -64,13 +62,15 @@ export const minutesToHours = (totalMinutes) => {
         if (hours === 0) {
             return `${minutes}m`;
         }
+        else if (minutes === 0) {
+            return `${hours}h`;
+        }
         else {
             return`${hours}h ${minutes}m`;
         }
     } 
     catch (error) {
-        console.log('minutesToHours Error: ' + error);
-        return null;
+        throw new Error('minutesToHours Error: ' + error);
     }
 };
 
@@ -81,43 +81,43 @@ export const dateNumbersToWords = (date) => {
     try {
         const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
         let month = date.substring(5,7);
+
         if (month.startsWith('0')) {
             month = month.substring(1);
         }
         return `${months[month - 1]} ${date.substring(8)}, ${date.substring(0,4)}`; 
     } 
     catch (error) {
-        console.log('dateNumbersToWords Error: ' + error.message);
-        return null;
+        throw new Error('dateNumbersToWords Error: ' + error);
     }
 };
 
 //===================================================================================================================================================================//
 
-export const getOtherFiles = (selectedFolder) => {
+// Reads the passed in directory and creates a list of files/folders inside that directory.
+export const getOtherFoldersList = (directory) => {
     try {
-        const files = fs.readdirSync(selectedFolder)
-        .map((file) => {
-            const stats = fs.statSync(path.join(selectedFolder, file));
+        const folders = fs.readdirSync(directory)
+        .map((folder) => {
+            const stats = fs.statSync(path.join(directory, folder));
             return {
-                file_name: file.toLowerCase(),
-                path: path.join(selectedFolder, file),
+                file_name: folder.toLowerCase(),
+                path: path.join(directory, folder),
                 is_directory: stats.isDirectory(),
             }
         });
 
-        return files;
+        return folders;
     } 
     catch (error) {
-        console.log('getOtherFiles Error: ' + error);
-        return null;
+        throw new Error('getOtherFiles Error: ' + error);
     }
 };
 
 //===================================================================================================================================================================//
 
 // Returns files in a directory that are not associated with a shows episode.
-export const getOtherFilesInDirectory = (seasonObject, checkedEpisodes) => {
+export const getOtherFilesInDirectory = (seasonObject, episodesList) => {
     try {
         const filesInDirectory = fs.readdirSync(seasonObject.directory.path)
         .map((file) => {
@@ -129,13 +129,15 @@ export const getOtherFilesInDirectory = (seasonObject, checkedEpisodes) => {
             }
         });
 
-        // Finds episodes with a directory property and then maps the directory file names to a new array.
-        const episodesInDirectory = checkedEpisodes.filter((file) => file.hasOwnProperty('directory'));
-
-        if (Object.keys(episodesInDirectory).length === Object.keys(filesInDirectory).length) {
+        // Finds episodes objects that have a 'directory' property.
+        const episodesInDirectory = episodesList.filter((episode) => Object.hasOwn(episode, 'directory'));
+        
+        // If only episodes from the season are in the directory, there are no other files and return null.
+        if (episodesInDirectory.length === filesInDirectory.length) {
             return null;
         }
 
+        // Maps the file names of all the episodes in directory and sorts alphabetically.
         const episodeFileNames = episodesInDirectory.map((file) => file.directory.file_name);
         episodeFileNames.sort();
 
@@ -149,22 +151,20 @@ export const getOtherFilesInDirectory = (seasonObject, checkedEpisodes) => {
             }
         }
 
-        if (Object.keys(filesInDirectory).length !== 0) {
+        if (filesInDirectory.length > 0) {
             return filesInDirectory;
         }
-        else {
-            return null;
-        }
+
+        return null;
     }
     catch (error) {
-        console.log('getOtherFilesInDirectory Error: ' + error);
-        return null;
+        throw new Error('getOtherFilesInDirectory Error: ' + error);
     }
 };
 
 //===================================================================================================================================================================//
 
-// Adds an object with directory info as a property to a matching episode in the json list.
+// Adds an object with directory info as a property to a matching episode in the 'MediaList.json.
 export const addEpisodesInDirectoryToList = (seasonObject, directories, id) => {
     try {
         let needSave = false;
@@ -175,13 +175,13 @@ export const addEpisodesInDirectoryToList = (seasonObject, directories, id) => {
             return {
                 file_name: file.toLowerCase(),
                 path: path.join(seasonObject.directory.path, file),
-                episode_number: file.match(regex) ? file.match(regex)[0] : "0"
+                episode_number: file.match(regex) ? file.match(regex)[0] : '0'
             }
         });
 
         // Sorts the episodes by file name size and then filters only unique episode numbers.
         // In circumstances where the regex produces multiple of the same episode number (eg. '1hello' & '1' will both have an episode number of 1),
-        // I have decided to choose the shortest file name as the 'correct' file. This should only come up in cases where the users naming conventions are not correct.
+        // I have decided to choose the shortest file name as the 'correct' file. This should only come up in cases where the users naming conventions are incorrect.
         episodesInDirectory.sort((a, b) => a.file_name.length - b.file_name.length);
         const uniqueEpisodes = episodesInDirectory.filter((set => file => !set.has(file.episode_number) && set.add(file.episode_number))(new Set));
         
@@ -197,7 +197,7 @@ export const addEpisodesInDirectoryToList = (seasonObject, directories, id) => {
 
             // Checks if a season directory object exists in json file but has been deleted in directory and if so, deletes that object property.
             const index = uniqueEpisodes.findIndex(element => Number(element.episode_number) === seasonObject.episodes[i].episode_number);
-            if (index === -1 && seasonObject.episodes[i].hasOwnProperty('directory')) {
+            if (index === -1 && Object.hasOwn(seasonObject.episodes[i], 'directory')) {
                 needSave = true;
                 delete seasonObject.episodes[i].directory;
             }
@@ -216,8 +216,7 @@ export const addEpisodesInDirectoryToList = (seasonObject, directories, id) => {
         return seasonObject.episodes;
     } 
     catch (error) {
-        console.log('addEpisodesInDirectoryToList Error: ' + error);
-        return null;
+        throw new Error('addEpisodesInDirectoryToList Error: ' + error);
     }
 };
 
@@ -235,10 +234,13 @@ export const addSeasonsInDirectoryToList = (directoryObject, directories, id) =>
             return {
                 file_name: file.toLowerCase(),
                 path: path.join(directoryObject.directory.path, file),
-                season_number: file.match(regex) ? file.match(regex)[0] : "0"
+                season_number: file.match(regex) ? file.match(regex)[0] : '0'
             }
         });
 
+        // Sorts the seasons by file name size and then filters only unique season numbers.
+        // In circumstances where the regex produces multiple of the same season number (eg. '1hello' & '1' will both have a season number of 1),
+        // I have decided to choose the shortest file name as the 'correct' file. This should only come up in cases where the users naming conventions are incorrect.
         seasonsInDirectory.sort((a, b) => a.file_name.length - b.file_name.length);
         const uniqueSeasons = seasonsInDirectory.filter((set => file => !set.has(file.season_number) && set.add(file.season_number))(new Set));
 
@@ -262,7 +264,6 @@ export const addSeasonsInDirectoryToList = (directoryObject, directories, id) =>
 
         if (needSave) {
             const mediaListPath = sessionStorage.getItem('mediaListPath');
-
             if(index !== -1) {
                 directories[index] = directoryObject;
             }
@@ -274,8 +275,7 @@ export const addSeasonsInDirectoryToList = (directoryObject, directories, id) =>
         return directories[index].seasons;
     } 
     catch (error) {
-        console.log('addSeasonsInDirectoryToList Error: ' + error);
-        return null;
+        throw new Error('addSeasonsInDirectoryToList Error: ' + error);
     }
 };
 
@@ -302,8 +302,7 @@ export const createEpisodesList = (seasonObject) => {
         return episodes;
     } 
     catch (error) {
-        console.log('createEpisodesList Error: ' + error);
-        return null;
+        throw new Error('createEpisodesList Error: ' + error);
     }
 };
 
@@ -323,8 +322,7 @@ export const fetchEpisodesData = async (id, season) => {
         return jsonResponse;
     }
     catch (error) {
-        console.log('fetchEpisodesData Error: ' + error);
-        return null;
+        throw new Error('fetchEpisodesData Error: ' + error);
     }
 };
 
@@ -334,7 +332,7 @@ export const fetchEpisodesData = async (id, season) => {
 // Also fetches for new episode data once every month based on when the last episodes array was added to the directory list.
 export const addEpisodesToList = async (season, directoryItem, directoryList) => {
     try {
-        const hasEpisodes = directoryItem.seasons[Number(season) - 1].hasOwnProperty('episodes');
+        const hasEpisodes = Object.hasOwn(directoryItem.seasons[Number(season) - 1], 'episodes');
 
         if (!hasEpisodes || getTimeDifference(directoryItem.date_added, 'month')) {
             const response = await fetchEpisodesData(directoryItem.id, season);
@@ -354,10 +352,11 @@ export const addEpisodesToList = async (season, directoryItem, directoryList) =>
         else if (hasEpisodes) {
             return directoryItem.seasons[Number(season) - 1];
         }
+
+        return null;
     } 
     catch (error) {
-        console.log('addEpisodesToList Error: ' + error);
-        return null;
+        throw new Error('addEpisodesToList Error: ' + error);
     }
 };
 
@@ -378,8 +377,7 @@ export const fetchBasicData = async (title) => {
         return results;
     }
     catch (error) {
-        console.log('fetchBasicData Error: ' + error);
-        return null;
+        throw new Error('fetchBasicData Error: ' + error);
     }
 };
 
@@ -395,12 +393,12 @@ export const addBasicDataToList = async (list, index) => {
             if (data) {
                 list.tmdb_data = 'Yes';
                 list.media_type = data.media_type || null;
-                list.title = data.media_type === 'movie' ? data.title : data.media_type === 'tv' ? data.name : "No Title Available";
+                list.title = data.media_type === 'movie' ? data.title : data.media_type === 'tv' ? data.name : 'No Title Available';
                 list.id = data.id || index;
                 list.poster_path = data.poster_path ? `https://image.tmdb.org/t/p/w200/${data.poster_path}` : 'D:/Projects/MyFlix+/myflix+/src/assets/images/no_image.png';
                 list.backdrop_path = data.backdrop_path ? `https://image.tmdb.org/t/p/w500/${data.backdrop_path}` : null;
                 list.release = data.media_type === 'movie' ? data.release_date : data.media_type === 'tv' ? data.first_air_date : null;
-                list.overview = data.overview || "No Overview Available";
+                list.overview = data.overview || 'No Overview Available';
                 list.popularity = data.popularity || null;
             }
             else {
@@ -417,8 +415,7 @@ export const addBasicDataToList = async (list, index) => {
         }
     }
     catch (error) {
-        console.log('addBasicDataToList Error: ' + error);
-        return null;
+        throw new Error('addBasicDataToList Error: ' + error);
     }
 };
 
@@ -445,8 +442,7 @@ export const fetchDetailedData = async (mediaType, id) => {
         return jsonResponse;
     }
     catch (error) {
-        console.log('fetchDetailedData Error: ' + error);
-        return null;
+        throw new Error('fetchDetailedData Error: ' + error);
     }
 };
 
@@ -460,7 +456,7 @@ export const addDetailedDataToList = async (list) => {
                 const info = await fetchDetailedData(list.media_type, list.id);
 
                 if (list.searchedItem) {
-                    list.title = list.media_type === 'movie' ? info.title : list.media_type === 'tv' ? info.name : "No Title Available";
+                    list.title = list.media_type === 'movie' ? info.title : list.media_type === 'tv' ? info.name : 'No Title Available';
                     list.backdrop_path = info.backdrop_path ? `https://image.tmdb.org/t/p/w500/${info.backdrop_path}` : null;
                     list.release = list.media_type === 'movie' ? info.release_date : list.media_type === 'tv' ? info.first_air_date : null;
                     list.overview = info.overview || 'No Overview Available';
@@ -470,7 +466,7 @@ export const addDetailedDataToList = async (list) => {
                 list.genres = info.genres? [...info.genres] : null;
                 list.status = info.status || null;
                 list.vote_average = info.vote_average || null;
-                list.providers = info["watch/providers"].results.CA ? info["watch/providers"].results.CA.flatrate || null : null;
+                list.providers = info['watch/providers'].results.CA ? info['watch/providers'].results.CA.flatrate || null : null;
                 list.providers = list.providers ? {logo_path: `https://image.tmdb.org/t/p/w200/${list.providers[0].logo_path}`, provider_name: list.providers[0].provider_name} : null;
                 
                 list.credits = [];
@@ -496,7 +492,7 @@ export const addDetailedDataToList = async (list) => {
                 if (list.media_type === 'movie') {
                     list.runtime = info.runtime;
                     if (info.release_dates.results) {
-                        const rating = info.release_dates.results.find(item => item.iso_3166_1 === "US");
+                        const rating = info.release_dates.results.find(item => item.iso_3166_1 === 'US');
                         list.rating = rating ? rating.release_dates[1] ? rating.release_dates[1].certification : null : null;
                     }
                 }
@@ -523,7 +519,7 @@ export const addDetailedDataToList = async (list) => {
                     list.seasons[0].episodes = episodes ? [...episodes] : null; 
                     list.number_of_seasons = info.number_of_seasons || null;
                     list.number_of_episodes = info.number_of_episodes || null;
-                    list.rating = info.content_ratings.results ? info.content_ratings.results.find(item => item.iso_3166_1 === "US") : null;
+                    list.rating = info.content_ratings.results ? info.content_ratings.results.find(item => item.iso_3166_1 === 'US') : null;
                     list.rating = list.rating ? list.rating.rating : null;
                     list.last_air_date = info.last_air_date || null;
                     list.networks = info.networks || null;
@@ -533,8 +529,7 @@ export const addDetailedDataToList = async (list) => {
         }
     } 
     catch (error) {
-        console.log('addDetailedDataToList Error: ' + error);
-        return null;
+        throw new Error('addDetailedDataToList Error: ' + error);
     }
 };
 
@@ -557,59 +552,63 @@ export const getDirectoryData = (directory) => {
                 detailed_info: false,
             }
         });
-        return directoryList;
 
+        return directoryList;
     } 
     catch (error) {
-        console.log("getDirectoryData Error: " + error);
-        return null;
+        throw new Error('getDirectoryData Error: ' + error);
     }
 };
 
 //===================================================================================================================================================================//
 
-// Creates a new json file in the specified path with data about the passed in directory.
+// Creates a new json file called 'MediaList.json' in the specified path with data about the passed in directory.
 export const createNewMediaList = async (directory) => {
     try {
         const mediaListPath = sessionStorage.getItem('mediaListPath');
         const directoryList = getDirectoryData(directory);
     
+        // Loops through the list of media in the specified directory and adds all the necessary data to each object.
         for (let i = 0; i < directoryList.length; i++) {
             await addBasicDataToList(directoryList[i], i);
             await addDetailedDataToList(directoryList[i]);
         }
     
+        // Writes the list with the newly added data to the 'MediaList.json' file. Also sets a session storage item to the list.
         fs.writeFileSync(mediaListPath, JSON.stringify(directoryList));
         sessionStorage.setItem('directories', JSON.stringify(directoryList));
         return directoryList;
     }
     catch (error) {
-        console.log("createNewMediaList Error: " + error);
-        return null;
+        throw new Error('createNewMediaList Error: ' + error);
     }
 };
 
 //===================================================================================================================================================================//
 
 // Creates a new list of media with detailed info depending on if a list already exists or not.
-// If list already exists, it will add or remove media based on the current users directory.
+// If list already exists, it will add or remove media based on the users directory.
 export const getFileDataInDirectory = async (directory) => {
+    let directoryList = [];
+
     try {
         const mediaListPath = sessionStorage.getItem('mediaListPath');
-        const directoryList = getDirectoryData(directory);
-        let mediaList = JSON.parse(fs.readFileSync(mediaListPath));
+        directoryList = getDirectoryData(directory);
 
+        // Read the 'MediaList.json' file. If there's an error, file doesn't exist and will need to be created.
+        // Otherwise create two arrays for the file names in 'MediaList.json' and one for the passed in list.
+        const mediaList = JSON.parse(fs.readFileSync(mediaListPath));
         const mediaListNames = mediaList.map((file) => file.directory.file_name);
         const directoryListNames = directoryList.map((file) => file.directory.file_name);
 
-        // Adds media object from local files array to the existing mediaList array if it doesn't already exist.
+        // Adds media object from passed in files array to the existing mediaList array if it doesn't already exist there.
         for (let i = 0; i < directoryList.length; i++) {
             if (mediaListNames.indexOf(directoryList[i].directory.file_name) === -1) {
                 mediaList.push(directoryList[i]);
             }
         }
 
-        // Removes media object from existing mediaList array if it is no longer in the new local files array.
+        // Removes media object from existing mediaList array if it is no longer in the passed in files array.
         // Then fetches data for any newly added media objects.
         for (let i = 0; i < mediaList.length; i++) {
             if (directoryListNames.indexOf(mediaList[i].directory.file_name) === -1) {
@@ -619,20 +618,28 @@ export const getFileDataInDirectory = async (directory) => {
             await addDetailedDataToList(mediaList[i]);
         }
 
+        // Replaces the existing media list in 'MediaList.json' with newly created one. As well as updates the session storage item.
         fs.writeFileSync(mediaListPath, JSON.stringify(mediaList));
         sessionStorage.setItem('directories', JSON.stringify(mediaList));
         return mediaList;
     } 
     catch (error) {   
-        console.log("getFileDataInDirectory Error: " + error);
-        const newList = await createNewMediaList(directory);
-        return newList;
+        if (!directoryList) {
+            throw new Error('getFileDataInDirectory Error: ' + error);
+        }
+        // If readFileSync fails, it means the 'MediaList.json' doesn't exist, in which case it needs to be created via 'createNewMediaList'. Then returns that list.
+        if (error.code === 'ENOENT') {
+            const newList = await createNewMediaList(directory);
+            return newList;
+        }
+
+        throw new Error('getFileDataInDirectory Error: ' + error);
     }
 };
 
 //===================================================================================================================================================================//
 
-// Returns the media object that is found in the media list based on the passed in id.
+// Returns the media object found in 'MediaList.json' based on the passed in id.
 export const getMediaObjectFromList = (id) => {
     try {
         const mediaListPath = sessionStorage.getItem('mediaListPath');
@@ -647,8 +654,7 @@ export const getMediaObjectFromList = (id) => {
         return mediaObject;
     } 
     catch (error) {
-        console.log("getMediaObjectFromList Error: " + error);
-        return null;
+        throw new Error('getMediaObjectFromList Error: ' + error);
     }
 };
 
@@ -657,7 +663,7 @@ export const getMediaObjectFromList = (id) => {
 // Returns an array of media objects sorted in various ways.
 export const sortList = (directory, method) => {
     try {
-        let sortedList = Object.values(directory);
+        let sortedList = directory;
 
         if (method === 'popular') {
             sortedList.sort((a, b) => b.popularity - a.popularity);
@@ -666,13 +672,12 @@ export const sortList = (directory, method) => {
             sortedList.sort((a, b) => b.date_added - a.date_added);
         }
     
-        sortedList = {...sortedList};
+        sortedList = [...sortedList];
     
         return sortedList;
     }
     catch (error) {
-        console.log("sortList Error: " + error);
-        return null;
+        throw new Error('sortList Error: ' + error);
     }
 };
 
@@ -681,20 +686,25 @@ export const sortList = (directory, method) => {
 // Saves new info to the specified object in the directory list based on the index.
 // If used to replace an entire object, it will use the passed in id to determine what object to replace since id's will be different.
 export const saveNewDirectoryItemInfo = (directoryItem, directories, id = null) => {
-    const mediaListPath = sessionStorage.getItem('mediaListPath');
-    const index = directories.findIndex(element => element.id === directoryItem.id);
-    if (index !== -1 && !id) {
-        directories[index] = directoryItem;
-        fs.writeFileSync(mediaListPath, JSON.stringify(directories));
-        sessionStorage.setItem('directories', JSON.stringify(directories));
-    }
-    else if (index === -1 && id) {
-        const index = directories.findIndex(element => element.id === id);
-        if (index !== -1) {
+    try {
+        const mediaListPath = sessionStorage.getItem('mediaListPath');
+        const index = directories.findIndex(element => element.id === directoryItem.id);
+        if (index !== -1 && !id) {
             directories[index] = directoryItem;
             fs.writeFileSync(mediaListPath, JSON.stringify(directories));
             sessionStorage.setItem('directories', JSON.stringify(directories));
         }
+        else if (index === -1 && id) {
+            const index = directories.findIndex(element => element.id === id);
+            if (index !== -1) {
+                directories[index] = directoryItem;
+                fs.writeFileSync(mediaListPath, JSON.stringify(directories));
+                sessionStorage.setItem('directories', JSON.stringify(directories));
+            }
+        }
+    } 
+    catch (error) {
+        throw new Error('saveNewDirectoryItemInfo Error: ' + error);
     }
 };
 
