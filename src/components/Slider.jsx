@@ -59,7 +59,7 @@ const Slider = ({directoryList, type}) => {
                             directory ? (
                                 <div key={i}>
                                     {directories.find((file) => file.id === Number(directory.id)) ? (
-                                        <Link to={directory.media_type === 'tv' ? `/series/${directory.id}` : directory.media_type === 'movie' ? `/movie/${directory.id}` : '/directoryFile'} className='card-link'>
+                                        <Link to={directory.media_type === 'tv' ? `/series/${directory.id}` : directory.media_type === 'movie' ? `/movie/${directory.id}` : `/unknown/${directory.id}`} className='card-link'>
                                             <div className='blaze-card blaze-card-static' title={directory.title} style={{ backgroundImage: 'url('+`${directory.backdrop_path ? directory.backdrop_path : 'D:/Projects/MyFlix+/myflix+/src/assets/images/no_image.png' }`+')', backgroundSize: '100% 100%'}}>
                                                 {directories.find((file) => file.id === Number(directory.id)) ? <IoIosCheckmarkCircle className='checkmark' title='In Directory'/> : null}
                                             </div>
@@ -81,6 +81,58 @@ const Slider = ({directoryList, type}) => {
                     </div>
                 </div>
             </div>
+        )
+    }
+    else if (type === 'trending') {
+        const ref = useBlazeSlider({
+            all: {
+                slidesToShow: 1,
+                enableAutoplay: true,
+                autoplayInterval: 5000,
+                }
+        });
+
+        return (
+            // <div ref={ref} className='blaze-slider'>
+            //     <div className='blaze-container'>
+            //         <div className='blaze-track'>
+            //             {directoryList.map((directory, i) => (
+            //                 directory ? (
+            //                     <div key={i}>
+            //                         {/* {directories.find((file) => file.id === Number(directory.id)) ? (
+            //                             <Link to={directory.media_type === 'tv' ? `/series/${directory.id}` : directory.media_type === 'movie' ? `/movie/${directory.id}` : '/directoryFile'} className='card-link'>
+            //                                 <div className='blaze-card blaze-card-static' title={directory.title} style={{ backgroundImage: 'url('+`${directory.backdrop_path ? directory.backdrop_path : 'D:/Projects/MyFlix+/myflix+/src/assets/images/no_image.png' }`+')', backgroundSize: '100% 100%'}}>
+            //                                     {directories.find((file) => file.id === Number(directory.id)) ? <IoIosCheckmarkCircle className='checkmark' title='In Directory'/> : null}
+            //                                 </div>
+            //                             </Link>
+            //                         ) : (
+            //                             <Link to={directory.media_type === 'tv' ? `/searched/series/${directory.id}` : `/searched/movie/${directory.id}`} className='card-link'>
+            //                                 <div className='blaze-card blaze-card-static' title={directory.title} style={{ backgroundImage: 'url('+`${directory.backdrop_path ? directory.backdrop_path : 'D:/Projects/MyFlix+/myflix+/src/assets/images/no_image.png' }`+')', backgroundSize: '100% 100%'}}>
+            //                                     {directories.find((file) => file.id === Number(directory.id)) ? <IoIosCheckmarkCircle className='checkmark' title='In Directory'/> : null}
+            //                                 </div>
+            //                             </Link>
+            //                         )} */}
+            //                             <div className='blaze-card' title={directory.title} style={{ backgroundImage: 'url('+`${directory.backdrop_path ? `https://image.tmdb.org/t/p/w200/${directory.backdrop_path}` : 'D:/Projects/MyFlix+/myflix+/src/assets/images/no_image.png' }`+')', backgroundSize: '100% 100%'}}>
+            //                             </div>
+            //                     </div>
+            //                 ) : null
+            //             ))}
+            //         </div>
+            //     </div>
+            // </div>
+                <div ref={ref} className="blaze-slider">
+                  <div className="blaze-container">
+                    <div className="blaze-track-container">
+                      <div className="blaze-track">
+                        {/* {directoryList.map((directory, i) => (
+                            <div key={i} className='blaze-card' title={directory.title} style={{ backgroundImage: 'url('+`${directory.backdrop_path ? `https://image.tmdb.org/t/p/w200/${directory.backdrop_path}` : 'D:/Projects/MyFlix+/myflix+/src/assets/images/no_image.png' }`+')', backgroundSize: '100% 100%'}}>
+                            </div>
+                        ))} */}
+                        <div>Hi</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
         )
     }
 };

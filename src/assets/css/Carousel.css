@@ -1,0 +1,106 @@
+/** Swiper styles **/
+
+.carousel-container {
+    height: 35rem;
+    margin-left: 3rem;
+    margin-right: 3rem;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+.swiper-carousel {
+    overflow: visible !important;
+    height: 30rem !important;
+    width: 100% !important;
+    padding: 0 0.4rem 0 0.4rem !important;
+}
+  
+.swiper-slide-carousel {
+    color: #fff;
+    overflow: visible !important;
+    position: relative;
+    background-color: rgba(51, 51, 51, 1);
+    border-radius: 8px;
+    transition: transform 0.3s;
+    cursor: pointer; 
+}
+  
+.swiper-slide-carousel-content {
+    width: 100%;
+    height: 100%;
+    display: none;
+    flex-direction: column;
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    transition: all 0.3s;
+}
+  
+.swiper-slide-carousel-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #FFF;
+}
+  
+.swiper-slide-carousel-image {
+    position: absolute;
+    object-fit: fill;
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    z-index: 0;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+    color: #FFF !important;
+    transition: color 0.3s !important;
+    font-weight: bold !important;
+}
+
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+    color: #E50914 !important;
+}
+
+.swiper-slide-carousel:hover {
+    transform: scale(1.15);
+    z-index: 1;
+}
+
+.nav-background-carousel {
+    height: 100%;
+    width: 5rem;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 2;
+    background: rgba(0, 0, 0, 0.8);
+    opacity: 0;
+    transition: all 0.5s;
+    border-radius: 8px 0 0 8px;
+}
+
+.nav-background-carousel-right {
+    height: 100%;
+    width: 5rem;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 2;
+    background: rgba(0, 0, 0, 0.8);
+    opacity: 0;
+    transition: all 0.5s;
+    border-radius: 0 8px 8px 0;
+}
+
+.nav-background-carousel:hover,
+.swiper-button-prev:hover ~ .nav-background-carousel {
+    opacity: 1;
+}
+
+.nav-background-carousel-right:hover,
+.swiper-button-next:hover ~ .nav-background-carousel-right {
+    opacity: 1;
+}

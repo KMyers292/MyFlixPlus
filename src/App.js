@@ -33,9 +33,9 @@ const App = () => {
 					crossOrigin='anonymous'
 				/>
 				<Router>
-					<div className={sidebarOpen ? 'main-container' : 'main-container-closed'}>
+					<div className='main-container'>
                     	<Sidebar toggleSidebar={handleSidebarOpen} isOpen={sidebarOpen} />
-						<div className='results'>
+						<div className={sidebarOpen ? 'results' : 'results-closed'}>
 							<NavBar />
 							<Routes>
 								<Route exact path='/' element={<LaunchPage />} />
@@ -49,6 +49,7 @@ const App = () => {
 								<Route exact path='/unknown/:id' element={<UnknownFile />} />
 							</Routes>
 						</div>
+						<Sidebar toggleSidebar={handleSidebarOpen} isOpen={sidebarOpen} />
 					</div>
 				</Router>
 			</AlertProvider>

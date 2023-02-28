@@ -307,7 +307,7 @@ export const createEpisodesList = (seasonObject) => {
                     name: seasonObject.episodes[i].name || 'No Episode Title Available',
                     overview: seasonObject.episodes[i].overview || 'No Overview Available',
                     runtime: seasonObject.episodes[i].runtime || null,
-                    still_path: seasonObject.episodes[i].still_path ? `https://image.tmdb.org/t/p/w200/${seasonObject.episodes[i].still_path}` : 'D:/Projects/MyFlix+/myflix+/src/assets/images/no_image.png',
+                    still_path: seasonObject.episodes[i].still_path ? `https://image.tmdb.org/t/p/w500/${seasonObject.episodes[i].still_path}` : 'D:/Projects/MyFlix+/myflix+/src/assets/images/no_image.png',
                     vote_average: seasonObject.episodes[i].vote_average || null
                 }
             }
@@ -408,7 +408,7 @@ export const addBasicDataToList = async (list, index) => {
                 list.media_type = data.media_type || null;
                 list.title = data.media_type === 'movie' ? data.title : data.media_type === 'tv' ? data.name : 'No Title Available';
                 list.id = data.id || index;
-                list.poster_path = data.poster_path ? `https://image.tmdb.org/t/p/w200/${data.poster_path}` : 'D:/Projects/MyFlix+/myflix+/src/assets/images/no_image.png';
+                list.poster_path = data.poster_path ? `https://image.tmdb.org/t/p/w500/${data.poster_path}` : 'D:/Projects/MyFlix+/myflix+/src/assets/images/no_image.png';
                 list.backdrop_path = data.backdrop_path ? `https://image.tmdb.org/t/p/w500/${data.backdrop_path}` : null;
                 list.release = data.media_type === 'movie' ? data.release_date : data.media_type === 'tv' ? data.first_air_date : null;
                 list.overview = data.overview || 'No Overview Available';
@@ -470,7 +470,7 @@ export const addDetailedDataToList = async (list) => {
 
                 if (list.searchedItem) {
                     list.title = list.media_type === 'movie' ? info.title : list.media_type === 'tv' ? info.name : 'No Title Available';
-                    list.backdrop_path = info.backdrop_path ? `https://image.tmdb.org/t/p/w500/${info.backdrop_path}` : null;
+                    list.backdrop_path = info.backdrop_path ? `https://image.tmdb.org/t/p/original/${info.backdrop_path}` : null;
                     list.release = list.media_type === 'movie' ? info.release_date : list.media_type === 'tv' ? info.first_air_date : null;
                     list.overview = info.overview || 'No Overview Available';
                 }
@@ -723,3 +723,52 @@ export const saveNewDirectoryItemInfo = (directoryItem, directories, id = null) 
 };
 
 //===================================================================================================================================================================//
+
+// Fetches the top 10 trending movies/series on TMDB.
+export const fetchTrendingMedia = async () => {
+    try {
+        if (sessionStorage.getItem('trending')) {
+            return JSON.parse(sessionStorage.getItem('trending'));
+        }
+
+        const response = await fetch(`https://api.themoviedb.org/3/trending/all/day?api_key=${tmdbApiKey}`);
+    
+        if (!response) {
+            console.log('No Response');
+            return null;
+        }
+
+        const {results} = await response.json();
+        let lessResults = [];
+
+        for (let i = 0; i < 10; i++) {
+            lessResults.push(results[i]);
+        }
+        sessionStorage.setItem('trending', JSON.stringify(lessResults));
+        return lessResults;
+    
+    } 
+    catch (error) {
+        throw new Error('fetchTrendingMedia Error: ' + error);
+    }
+};
+
+//===================================================================================================================================================================//
+
+export const checkForNewEpisodes = () => {
+    try {
+        const mediaListPath = sessionStorage.getItem('mediaListPath');
+        if (!mediaListPath) {
+            return null;
+        }
+
+        const mediaList = JSON.parse(fs.readFileSync(mediaListPath));
+        const filteredList = mediaList.filter((media) => media.media_type === 'tv' && media.status === 'Returning Series');
+
+        console.log(filteredList);
+
+    } 
+    catch (error) {
+        throw new Error('checkForNewEpisodes Error: ' + error);
+    }
+};

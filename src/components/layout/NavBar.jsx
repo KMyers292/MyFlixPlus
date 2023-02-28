@@ -15,7 +15,7 @@ const NavBar = () => {
     return (
         <Navbar expand='lg' variant='dark' className='navbar' sticky='top'>
             <Container fluid className='nav-container'>
-                <Navbar.Brand href='#' className='nav-brand'>MYFLIX+</Navbar.Brand>
+                <Navbar.Brand href='#' className='nav-brand'>Name TBD</Navbar.Brand>
                 <IoArrowBack className='nav-back-btn' onClick={handleClick} />
                 <Navbar.Toggle aria-controls='basic-navbar-nav' className='nav-toggle' />
                 <Navbar.Collapse className='justify-content-end'>
