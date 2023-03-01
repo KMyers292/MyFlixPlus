@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getFirstNumberDivisible } from '../context/directory/DirectoryActions';
 import { Swiper, SwiperSlide } from "swiper/react";
 import { A11y, Mousewheel, Navigation } from "swiper";
 import '../assets/css/swiper/swiper.min.css';
@@ -20,7 +21,7 @@ const Carousel = ({directoryList}) => {
         mousewheel: { enabled: true },
         spaceBetween: 15,
         slidesPerView: 6,
-        slidesPerGroup: 2,
+        slidesPerGroup: getFirstNumberDivisible(directoryList.length),
         lazy: { enabled: true },
         navigation: true,
     };

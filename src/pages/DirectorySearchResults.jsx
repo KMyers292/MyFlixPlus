@@ -8,6 +8,7 @@ import TrendingSlider from '../components/TrendingSlider.jsx';
 
 const DirectorySearchResults = () => {
 
+    const {directories, loading} = useContext(DirectoryContext);
     const [trending, setTrending] = useState([]);
 
     useEffect(() => {
@@ -21,7 +22,6 @@ const DirectorySearchResults = () => {
         getData();
     }, []);
 
-    const {directories, loading} = useContext(DirectoryContext);
 
     if(!loading && trending.length > 0) {
         return (
@@ -30,8 +30,12 @@ const DirectorySearchResults = () => {
                 <TrendingSlider trendingList={trending} />
                 <h2 className='heading'>Newly Added</h2>
                 <Carousel directoryList={sortList(directories, 'new')} />
-                <h2 className='heading'>Most Popular</h2>
-                <Carousel directoryList={sortList(directories, 'popular')} />
+                <h2 className='heading'>Top Rated</h2>
+                <Carousel directoryList={sortList(directories, 'topRated')} />
+                <h2 className='heading'>Top Series</h2>
+                <Carousel directoryList={sortList(directories, 'tv')} />
+                <h2 className='heading'>Top Movies</h2>
+                <Carousel directoryList={sortList(directories, 'movie')} />
             </div>
         )
     }

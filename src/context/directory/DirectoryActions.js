@@ -678,15 +678,35 @@ export const getMediaObjectFromList = (id) => {
 export const sortList = (directory, method) => {
     try {
         let sortedList = directory;
+        let filteredList = [];
 
-        if (method === 'popular') {
-            sortedList.sort((a, b) => b.popularity - a.popularity);
+        if (method === 'topRated') {
+            sortedList.sort((a, b) => b.vote_average - a.vote_average);
+            sortedList = [...sortedList];
         }
         else if (method === 'new') {
             sortedList.sort((a, b) => b.date_added - a.date_added);
+            sortedList = [...sortedList];
         }
-    
-        sortedList = [...sortedList];
+        else if (method === 'tv') {
+            filteredList = sortedList.filter((item) => item.media_type === 'tv');
+            filteredList.sort((a, b) => b.vote_average - a.vote_average);
+            sortedList = [...filteredList];
+        }
+        else if (method === 'movie') {
+            filteredList = sortedList.filter((item) => item.media_type === 'movie');
+            filteredList.sort((a, b) => b.vote_average - a.vote_average);
+            sortedList = [...filteredList];
+        }
+
+        if (sortedList.length > 30) {
+            let lessResults = [];
+
+            for (let i = 0; i < 30; i++) {
+                lessResults.push(sortedList[i]);
+            }
+            return lessResults;
+        }
     
         return sortedList;
     }
@@ -771,4 +791,15 @@ export const checkForNewEpisodes = () => {
     catch (error) {
         throw new Error('checkForNewEpisodes Error: ' + error);
     }
+};
+
+//===================================================================================================================================================================//
+
+export const getFirstNumberDivisible = (num) => {
+    for (let i = 6; i > 0; i--) {
+        if (num % i === 0) {
+            return i;
+        }
+    }
+    return 1;
 };
