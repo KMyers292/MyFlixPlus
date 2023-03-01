@@ -26,16 +26,12 @@ const DirectorySearchResults = () => {
     if(!loading && trending.length > 0) {
         return (
             <div className='results-container'>
-                <div className='results-headings'>
-                    <h2 className='heading'>Top 10 Trending Today</h2>
-                </div>
-
+                <h2 className='trending-header'>Top 10 Trending Today</h2>
                 <TrendingSlider trendingList={trending} />
-
-                <h2 className='heading'>Trending This Week</h2>
+                <h2 className='heading'>Newly Added</h2>
                 <Carousel directoryList={sortList(directories, 'new')} />
-                <h2 className='heading'>Trending This Week</h2>
-                <Carousel directoryList={sortList(directories, 'new')} />
+                <h2 className='heading'>Most Popular</h2>
+                <Carousel directoryList={sortList(directories, 'popular')} />
             </div>
         )
     }

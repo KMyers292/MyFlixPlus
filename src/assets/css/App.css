@@ -201,7 +201,7 @@ html {
 }
 
 .results {
-    margin-left: 25rem;
+    margin-left: 23rem;
 }
 
 .results-closed {
@@ -235,6 +235,14 @@ html {
     margin-right: 5rem;
 }
 
+.trending-header {
+    color: #fff;
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-left: 5rem;
+    padding-bottom: 2rem;
+}
+
 /*===============================================================================================*/
 /*                                                Sidebar                                        */
 /*===============================================================================================*/
@@ -247,7 +255,7 @@ html {
     border-right: 2px solid rgba(255, 255, 255, 0.1);
     background-color: #0B1016;
     height: 100%;
-    width: 25rem;
+    width: 23rem;
     position: fixed;
 }
 
@@ -282,9 +290,8 @@ html {
     text-align: right;
     color: #FFF;
     font-size: 3rem;
-    margin-right: 1rem;
     margin-bottom: 12rem;
-    /* display: block; */
+    margin-right: 2rem;
 }
 
 .close-btn >:hover {

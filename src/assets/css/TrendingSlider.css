@@ -11,6 +11,10 @@
     padding-top: 0;
     padding-bottom: 4rem;
 }
+
+.trending-slider {
+    margin-bottom: 6rem;
+}
   
 .swiper-slide {
     display: flex;

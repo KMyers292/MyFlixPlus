@@ -34,7 +34,7 @@ const TrendingSlider = ({trendingList}) => {
     };
     return (
       <>
-        <Swiper {...swiperParameters}>
+        <Swiper {...swiperParameters} className='trending-slider'>
             <div className="nav-background"></div>
             <div className="nav-background-right"></div>
             {trendingList.map((trending, i) => (
