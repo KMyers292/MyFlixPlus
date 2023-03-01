@@ -4,6 +4,7 @@ import { DirectoryProvider } from './context/directory/DirectoryContext';
 import { AlertProvider } from './context/alert/AlertContext';
 import NavBar from './components/layout/NavBar.jsx';
 import Sidebar from './components/layout/Sidebar.jsx';
+import RightSidebar from './components/layout/RightSidebar.jsx';
 import GettingStarted from './pages/GettingStarted.jsx';
 import DirectorySearchResults from './pages/DirectorySearchResults.jsx';
 import SearchedMovie from './pages/SearchedMovie.jsx';
@@ -18,9 +19,14 @@ import './assets/css/App.css';
 const App = () => {
 
 	const [sidebarOpen, setSidebarOpen] = useState(true);
+	const [sidebarRightOpen, setSidebarRightOpen] = useState(true);
 
 	const handleSidebarOpen = () => {
 		setSidebarOpen(!sidebarOpen);
+	}
+
+	const handleSidebarRightOpen = () => {
+		setSidebarRightOpen(!sidebarRightOpen);
 	}
 
 	return (
@@ -35,7 +41,7 @@ const App = () => {
 				<Router>
 					<div className='main-container'>
                     	<Sidebar toggleSidebar={handleSidebarOpen} isOpen={sidebarOpen} />
-						<div className={sidebarOpen ? 'results' : 'results-closed'}>
+						<div className={sidebarOpen && sidebarRightOpen ?  'results' : sidebarOpen && !sidebarRightOpen ? 'results-right-closed' : !sidebarOpen && sidebarRightOpen ? 'results-left-closed' : 'results-both-closed'}>
 							<NavBar />
 							<Routes>
 								<Route exact path='/' element={<LaunchPage />} />
@@ -49,7 +55,7 @@ const App = () => {
 								<Route exact path='/unknown/:id' element={<UnknownFile />} />
 							</Routes>
 						</div>
-						<Sidebar toggleSidebar={handleSidebarOpen} isOpen={sidebarOpen} />
+						<RightSidebar toggleSidebar={handleSidebarRightOpen} isOpen={sidebarRightOpen} />
 					</div>
 				</Router>
 			</AlertProvider>
