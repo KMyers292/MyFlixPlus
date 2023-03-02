@@ -54,7 +54,7 @@ const TrendingSlider = ({trendingList}) => {
           <div className="nav-background-right"></div>
           {trendingList.map((trending, i) => (
               trending ? (
-                  <SwiperSlide key={i} onClick={() => handleClick(trending)}>
+                  <SwiperSlide key={i} onClick={() => handleClick(trending)} className='trending-slide'>
                       <img className="swiper-slide-trending-image" loading="lazy" src={trending.backdrop_path ? `https://image.tmdb.org/t/p/original/${trending.backdrop_path}` : 'D:/Projects/MyFlix+/myflix+/src/assets/images/no_image.png'} />
                       <div className="swiper-lazy-preloader"></div>
                       <div className="swiper-slide-trending-content">
