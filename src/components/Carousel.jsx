@@ -33,8 +33,8 @@ const Carousel = ({directoryList}) => {
     return (
         <div className='carousel-container'>
             <Swiper {...swiperParameters} className='swiper-carousel'>
-                <div className="nav-background-carousel"></div>
-                <div className="nav-background-carousel-right"></div>
+                {directoryList.length > 6 ? <div className="nav-background-carousel"></div> : null}
+                {directoryList.length > 6 ? <div className="nav-background-carousel-right"></div> : null}
                 {directoryList.map((directory, i) => (
                     directory ? (
                         <SwiperSlide key={i} onClick={() => handleClick(directory)} className='swiper-slide-carousel'>

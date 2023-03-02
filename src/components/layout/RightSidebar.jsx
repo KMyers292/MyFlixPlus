@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import NewEpisodesSlider from '../NewEpisodesSlider.jsx';
 import { FaAngleDoubleLeft, FaAngleDoubleRight } from 'react-icons/fa';
 
 const RightSidebar = ({toggleSidebar, isOpen}) => {
@@ -9,7 +10,8 @@ const RightSidebar = ({toggleSidebar, isOpen}) => {
                 {isOpen ? <FaAngleDoubleRight onClick={toggleSidebar} /> : <FaAngleDoubleLeft onClick={toggleSidebar} />}
             </div>
             <div className='new-episodes-container'>
-                <h4>New Episodes This Week</h4>
+                <h4 className='new-episodes-header'>New Episodes This Week</h4>
+                <NewEpisodesSlider />
             </div>
         </div>
     )
