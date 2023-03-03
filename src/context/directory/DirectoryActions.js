@@ -53,6 +53,16 @@ export const getTimeDifference = (date, lengthOfTime) => {
 
 //===================================================================================================================================================================//
 
+export const getDateDifference = (date) => {
+    const oneDay = 24 * 60 * 60 * 1000; // One day in milliseconds.
+    const newDate = new Date(date.replace(/-/g, '\/'));
+    const todaysDate = new Date('2023-03-02'.replace(/-/g, '\/'));
+    const diffInDays = Math.round(Math.abs((newDate - todaysDate) / oneDay));
+    return diffInDays;
+};
+
+//===================================================================================================================================================================//
+
 // Converts a number of minutes into hours and remaining minutes.
 export const minutesToHours = (totalMinutes) => {
     try {
@@ -406,13 +416,13 @@ export const addBasicDataToList = async (list, index) => {
             if (data) {
                 list.tmdb_data = 'Yes';
                 list.media_type = data.media_type || null;
-                list.title = data.media_type === 'movie' ? data.title : data.media_type === 'tv' ? data.name : 'No Title Available';
                 list.id = data.id || index;
-                list.poster_path = data.poster_path ? `https://image.tmdb.org/t/p/w500/${data.poster_path}` : 'D:/Projects/MyFlix+/myflix+/src/assets/images/no_image.png';
-                list.backdrop_path = data.backdrop_path ? `https://image.tmdb.org/t/p/w500/${data.backdrop_path}` : null;
-                list.release = data.media_type === 'movie' ? data.release_date : data.media_type === 'tv' ? data.first_air_date : null;
-                list.overview = data.overview || 'No Overview Available';
-                list.popularity = data.popularity || null;
+                // list.title = data.media_type === 'movie' ? data.title : data.media_type === 'tv' ? data.name : 'No Title Available';
+                // list.poster_path = data.poster_path ? `https://image.tmdb.org/t/p/w500/${data.poster_path}` : 'D:/Projects/MyFlix+/myflix+/src/assets/images/no_image.png';
+                // list.backdrop_path = data.backdrop_path ? `https://image.tmdb.org/t/p/w500/${data.backdrop_path}` : null;
+                // list.release = data.media_type === 'movie' ? data.release_date : data.media_type === 'tv' ? data.first_air_date : null;
+                // list.overview = data.overview || 'No Overview Available';
+                // list.popularity = data.popularity || null;
             }
             else {
                 list.tmdb_data = 'No Data';
@@ -468,12 +478,19 @@ export const addDetailedDataToList = async (list) => {
             if (list.media_type === 'movie' || list.media_type === 'tv') {
                 const info = await fetchDetailedData(list.media_type, list.id);
 
-                if (list.searchedItem) {
-                    list.title = list.media_type === 'movie' ? info.title : list.media_type === 'tv' ? info.name : 'No Title Available';
-                    list.backdrop_path = info.backdrop_path ? `https://image.tmdb.org/t/p/original/${info.backdrop_path}` : null;
-                    list.release = list.media_type === 'movie' ? info.release_date : list.media_type === 'tv' ? info.first_air_date : null;
-                    list.overview = info.overview || 'No Overview Available';
-                }
+                // if (list.searchedItem) {
+                //     list.title = list.media_type === 'movie' ? info.title : list.media_type === 'tv' ? info.name : 'No Title Available';
+                //     list.backdrop_path = info.backdrop_path ? `https://image.tmdb.org/t/p/original/${info.backdrop_path}` : null;
+                //     list.release = list.media_type === 'movie' ? info.release_date : list.media_type === 'tv' ? info.first_air_date : null;
+                //     list.overview = info.overview || 'No Overview Available';
+                // }
+                
+                list.title = list.media_type === 'movie' ? info.title : list.media_type === 'tv' ? info.name : 'No Title Available';
+                list.poster_path = info.poster_path ? `https://image.tmdb.org/t/p/w500/${info.poster_path}` : 'D:/Projects/MyFlix+/myflix+/src/assets/images/no_image.png';
+                list.backdrop_path = info.backdrop_path ? `https://image.tmdb.org/t/p/original/${info.backdrop_path}` : null;
+                list.release = list.media_type === 'movie' ? info.release_date : list.media_type === 'tv' ? info.first_air_date : null;
+                list.overview = info.overview || 'No Overview Available';
+                list.popularity = info.popularity || null;
 
                 list.detailed_info = true;
                 list.genres = info.genres? [...info.genres] : null;
@@ -563,6 +580,7 @@ export const getDirectoryData = (directory) => {
                 tmdb_data: 'No',
                 date_added: Date.now(),
                 detailed_info: false,
+                custom_data : {}
             }
         });
 
@@ -775,18 +793,54 @@ export const fetchTrendingMedia = async () => {
 
 //===================================================================================================================================================================//
 
-export const checkForNewEpisodes = () => {
+export const fetchNewEpisodeData = async (id) => {
+    try {
+        const response = await fetch(`https://api.themoviedb.org/3/tv/${id}?api_key=${tmdbApiKey}`);
+        if (!response) {
+            console.log('No Response');
+            return null;
+        }
+    
+        const {next_episode_to_air, last_air_date, popularity, vote_average} = await response.json();
+        const object = {
+            next_episode_to_air: next_episode_to_air,
+            last_air_date: last_air_date
+        }
+
+        return object;
+    } 
+    catch (error) {
+        throw new Error('fetchNewEpisodeData Error: ' + error);
+    }
+};
+
+//===================================================================================================================================================================//
+
+export const checkForNewEpisodes = async () => {
     try {
         const mediaListPath = sessionStorage.getItem('mediaListPath');
         if (!mediaListPath) {
             return null;
         }
 
+        if (sessionStorage.getItem('checkedEpisodes')) {
+            return null;
+        }
+
         const mediaList = JSON.parse(fs.readFileSync(mediaListPath));
         const filteredList = mediaList.filter((media) => media.media_type === 'tv' && media.status === 'Returning Series');
 
-        console.log(filteredList);
+        for (let i = 0; i < filteredList.length; i++) {
 
+            const index = mediaList.findIndex(element => element.id === filteredList[i].id);
+            if (index !== -1) {
+                await addDetailedDataToList(mediaList[index]);
+            }
+        }
+        
+        fs.writeFileSync(mediaListPath, JSON.stringify(mediaList));
+        sessionStorage.setItem('directories', JSON.stringify(mediaList));
+        sessionStorage.setItem('checkedEpisodes', true);
     } 
     catch (error) {
         throw new Error('checkForNewEpisodes Error: ' + error);
@@ -795,11 +849,38 @@ export const checkForNewEpisodes = () => {
 
 //===================================================================================================================================================================//
 
-export const getFirstNumberDivisible = (num) => {
-    for (let i = 6; i > 0; i--) {
-        if (num % i === 0) {
-            return i;
+export const filterNewEpisodes = () => {
+    try {
+        const mediaListPath = sessionStorage.getItem('mediaListPath');
+        if (!mediaListPath) {
+            return null;
         }
+    
+        const mediaList = JSON.parse(fs.readFileSync(mediaListPath));
+        const filteredList = mediaList.filter((media) => media.media_type === 'tv' && media.next_episode !== null);
+        const newEpisodes = filteredList.filter((item) => getDateDifference(item.next_episode.air_date) <= 7);
+        return newEpisodes;
+    } 
+    catch (error) {
+        throw new Error('filterNewEpisodes Error: ' + error);
     }
-    return 1;
+}
+
+//===================================================================================================================================================================//
+
+export const getFirstNumberDivisible = (num) => {
+    try {
+        for (let i = 6; i > 0; i--) {
+            if (num % i === 0) {
+                return i;
+            }
+        }
+        return 1;
+    } 
+    catch (error) {
+        throw new Error('getFirstNumberDivisible Error: ' + error);
+    }
 };
+
+//===================================================================================================================================================================//
+

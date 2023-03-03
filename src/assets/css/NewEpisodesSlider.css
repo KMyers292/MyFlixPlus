@@ -8,11 +8,13 @@
     user-select: none;
     overflow: hidden;
     width: 50% !important;
-    height: 20rem !important;
+    height: 30rem !important;
 }
 
 .swiper-slide-new-episodes {
+    height: 15rem !important;
     width: 100% !important;
+    overflow: visible !important;
 }
 
 .swiper-slide-new-episodes-content {
@@ -20,10 +22,8 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    position: relative;
-    z-index: 1;
-    box-sizing: border-box;
-    padding: 0px 0px;
+    position: absolute;
+    bottom: -10rem;
   
     align-items: center;
     justify-content: center;
@@ -31,7 +31,7 @@
 }
   
 .swiper-slide-new-episodes-title {
-    font-size: 21px;
+    font-size: 1.6rem;
     font-weight: bold;
     letter-spacing: 0.03em;
     color: rgba(255, 255, 255, 1);
@@ -39,33 +39,25 @@
   
 .swiper-slide-new-episodes-image {
     position: absolute;
-    object-fit: cover;
+    object-fit: fill;
   
     left: 0%;
     top: 0%;
     width: 100%;
     height: 100%;
-  
-    z-index: 0;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    z-index: 4;
+    cursor: pointer;
 }
 
-/* .swiper-button-prev {
-    position:absolute;
-    top:var(--swiper-navigation-top-offset,50%);
-    width:calc(var(--swiper-navigation-size)/ 44 * 27);
-    height:var(--swiper-navigation-size);
-    margin-top:calc(0px - (var(--swiper-navigation-size)/ 2));
-    z-index:10;
-    cursor:pointer;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:var(--swiper-navigation-color,var(--swiper-theme-color));
-} */
+.swiper-slide-new-episodes-image:hover {
+    border: 2px solid #FFF;
+}
 
 .new-episodes-btn-prev,
 .new-episodes-btn-next {
-    top: 40%;
+    top: 25%;
 }
 
 .new-episodes-btn-prev::after,

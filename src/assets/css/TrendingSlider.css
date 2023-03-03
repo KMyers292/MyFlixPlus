@@ -26,11 +26,11 @@
     overflow: hidden;
     position: relative;
     border-radius: 8px;
-    cursor: pointer;
 }
 
 .trending-slide {
     border: 2px solid transparent;
+    cursor: pointer;
 }
 
 .trending-slide:hover {
