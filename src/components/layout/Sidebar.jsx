@@ -17,7 +17,7 @@ const Sidebar = ({toggleSidebar, isOpen}) => {
             <NavLink to='/browse' className={({isActive}) => isActive ? 'activeLink' : 'sidebar-link'}>
                 <IoCompassOutline /> {isOpen ? 'Browse' : undefined}
             </NavLink>
-            <NavLink to='/list' className={({isActive}) => isActive ? 'activeLink' : 'sidebar-link'}>
+            <NavLink to='/watchlist' className={({isActive}) => isActive ? 'activeLink' : 'sidebar-link'}>
                 <BsBookmarkHeart /> {isOpen ? 'Watch List' : undefined}
             </NavLink>
             <NavLink to='/settings' className={({isActive}) => isActive ? 'activeLink' : 'sidebar-link'}>

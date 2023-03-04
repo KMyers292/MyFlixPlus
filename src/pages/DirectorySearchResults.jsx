@@ -13,7 +13,6 @@ const DirectorySearchResults = () => {
 
     useEffect(() => {
         const getData = async () => {
-            console.log(await getNewMovies());
             await checkForNewEpisodes();
             const data = await fetchTrendingMedia();
             setTrending(data);

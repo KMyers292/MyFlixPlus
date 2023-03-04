@@ -5,6 +5,10 @@ import { AlertProvider } from './context/alert/AlertContext';
 import NavBar from './components/layout/NavBar.jsx';
 import Sidebar from './components/layout/Sidebar.jsx';
 import RightSidebar from './components/layout/RightSidebar.jsx';
+import HelpPage from './pages/HelpPage.jsx';
+import WatchListPage from './pages/WatchListPage.jsx';
+import BrowsePage from './pages/BrowsePage.jsx';
+import SearchPage from './pages/SearchPage.jsx';
 import GettingStarted from './pages/GettingStarted.jsx';
 import DirectorySearchResults from './pages/DirectorySearchResults.jsx';
 import SearchedMovie from './pages/SearchedMovie.jsx';
@@ -47,6 +51,10 @@ const App = () => {
 								<Route exact path='/' element={<LaunchPage />} />
 								<Route exact path='/getStarted' element={<GettingStarted />} />
 								<Route exact path='/settings' element={<Settings />} />
+								<Route exact path='/help' element={<HelpPage />} />
+								<Route exact path='/watchlist' element={<WatchListPage />} />
+								<Route exact path='/browse' element={<BrowsePage />} />
+								<Route exact path='/search' element={<SearchPage />} />
 								<Route exact path='/results' element={<DirectorySearchResults />} />
 								<Route exact path='/searched/movie/:id' element={<SearchedMovie />} />
 								<Route exact path='/searched/series/:id' element={<SearchedSeries />} />
