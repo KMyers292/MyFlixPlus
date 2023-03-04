@@ -19,7 +19,7 @@ import './assets/css/App.css';
 const App = () => {
 
 	const [sidebarOpen, setSidebarOpen] = useState(true);
-	const [sidebarRightOpen, setSidebarRightOpen] = useState(true);
+	const [sidebarRightOpen, setSidebarRightOpen] = useState(false);
 
 	const handleSidebarOpen = () => {
 		setSidebarOpen(!sidebarOpen);

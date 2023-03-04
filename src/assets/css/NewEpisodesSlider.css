@@ -23,7 +23,7 @@
     display: flex;
     flex-direction: column;
     position: absolute;
-    bottom: -10rem;
+    bottom: -11rem;
   
     align-items: center;
     justify-content: center;
@@ -64,4 +64,8 @@
 .new-episodes-btn-next::after {
     font-weight: normal;
     font-size: 3rem;
+}
+
+.content-text {
+    font-size: 1.4rem;
 }

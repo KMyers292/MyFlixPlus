@@ -793,29 +793,6 @@ export const fetchTrendingMedia = async () => {
 
 //===================================================================================================================================================================//
 
-export const fetchNewEpisodeData = async (id) => {
-    try {
-        const response = await fetch(`https://api.themoviedb.org/3/tv/${id}?api_key=${tmdbApiKey}`);
-        if (!response) {
-            console.log('No Response');
-            return null;
-        }
-    
-        const {next_episode_to_air, last_air_date, popularity, vote_average} = await response.json();
-        const object = {
-            next_episode_to_air: next_episode_to_air,
-            last_air_date: last_air_date
-        }
-
-        return object;
-    } 
-    catch (error) {
-        throw new Error('fetchNewEpisodeData Error: ' + error);
-    }
-};
-
-//===================================================================================================================================================================//
-
 export const checkForNewEpisodes = async () => {
     try {
         const mediaListPath = sessionStorage.getItem('mediaListPath');
@@ -884,3 +861,16 @@ export const getFirstNumberDivisible = (num) => {
 
 //===================================================================================================================================================================//
 
+export const getNewMovies = async () => {
+    const response = await fetch(`https://api.themoviedb.org/3/movie/upcoming?api_key=${tmdbApiKey}&language=en-US&region=US`);
+    
+    if (!response) {
+        console.log('No Response');
+        return null;
+    }
+
+    const {results} = await response.json();
+    
+    const filteredResults = results.filter((item) => item.original_language === 'en' && getDateDifference(item.release_date) <= 14);
+    return filteredResults;
+};
