@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IoArrowBack, IoArrowForward, IoSearchSharp } from 'react-icons/io5';
-import {Navbar, Container, Button, Form} from 'react-bootstrap';
 
 const NavBar = () => {
 
@@ -28,33 +27,28 @@ const NavBar = () => {
     }
 
     return (
-        <Navbar expand='lg' variant='dark' className='navbar' sticky='top'>
-            <Container fluid className='nav-container'>
-                <Navbar.Brand href='#' className='nav-brand'>Name TBD</Navbar.Brand>
+        <nav className='main-nav'>
+            <div className='nav-links'>
+                <h1 className='nav-brand'>NameTBD</h1>
                 <IoArrowBack className='nav-back-btn' onClick={handleClick} />
                 <IoArrowForward className='nav-back-btn' onClick={handleClickForward} />
-                <Navbar.Toggle aria-controls='basic-navbar-nav' className='nav-toggle' />
-                <Navbar.Collapse className='justify-content-end'>
-                    <form onSubmit={submitHandler} className='edit-search-form'>
-                        <div className='nav-form-group'>
-                            <input
-                                className='modal-search-input'
-                                type='text' 
-                                id='newMedia' 
-                                name='newMedia' 
-                                placeholder='Search...'
-                                value={text} 
-                                onChange={(e) => setText(e.target.value)}
-                                required 
-                            />
-                            <button type='submit' className='search-submit-btn' >
-                                <IoSearchSharp className='submit-icon' />
-                            </button>
-                        </div>
-                    </form>
-                </Navbar.Collapse>
-            </Container>
-        </Navbar>
+            </div>
+            <form onSubmit={submitHandler} className='nav-search-bar'>
+                <input
+                    className='nav-search-input'
+                    type='text' 
+                    id='newMedia' 
+                    name='newMedia' 
+                    placeholder='Search...'
+                    value={text} 
+                    onChange={(e) => setText(e.target.value)}
+                    required 
+                />
+                <button type='submit' className='search-submit-btn' >
+                    <IoSearchSharp className='submit-icon' />
+                </button>
+            </form>
+        </nav>
     )
 };
 

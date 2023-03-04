@@ -57,25 +57,41 @@ html {
 /*                                                NavBar                                         */
 /*===============================================================================================*/
 
-.navbar {
+.main-nav {
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 9rem;
+    z-index: 99;
     background-color: #0B1016;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    padding-left: 2rem;
+    padding-right: 2rem;
 }
 
-.nav-container {
-    padding-left: 5rem !important;
-    padding-right: 5rem !important;
+.nav-links {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
 .nav-brand {
-    font-size: 5rem !important;
-    color: #E50914 !important;
-    font-weight: bold !important;
+    font-size: 5rem;
+    color: #E50914;
+    font-weight: bold;
 }
 
 .nav-back-btn {
     color: rgba(255, 255, 255, 0.5);
     font-size: 4rem;
     margin-left: 3rem;
+    align-self: center;
     cursor: pointer;
 }
 
@@ -83,12 +99,26 @@ html {
     color: #fff;
 }
 
-.nav-toggle {
-    font-size: 2.5rem !important;
+.nav-search-bar {
+    align-self: center;
 }
 
-.nav-form-group {
-    padding-top: 2rem;
+.nav-search-input {
+    width: 40rem;
+    font-size: 2rem;
+    padding: 1rem 1.5rem;
+    background-color: #161F2B;
+    border: none;
+    color: #FFF;
+    border-radius: 5px 0 0 5px;
+}
+
+.nav-search-input:focus {
+    outline: none;
+}
+
+.nav-search-input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
 }
 
 /*===============================================================================================*/
