@@ -49,8 +49,10 @@ const store = new Store({
 	configName: 'user-settings',
 	defaults: {
 	  settings: {
-		directoryPath: null
-	  }
+		  directoryPath: null,
+      region: null
+	  },
+    watchlist: []
 	}
 });
 
@@ -137,6 +139,12 @@ app.on('ready', () => {
 ipcMain.on('settings:set', (event, settings) => {
 	store.set('settings', settings);
 	mainWindow.webContents.send('settings:get', store.get('settings'));
+});
+
+// Set watchlist
+ipcMain.on('watchlist:set', (event, watchlist) => {
+  store.set('watchlist', watchlist);
+  mainWindow.webContents.send('watchlist:get', store.get('watchlist'));
 });
 
 ipcMain.handle('getPath', () => app.getPath('userData'));

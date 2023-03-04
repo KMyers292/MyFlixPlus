@@ -52,7 +52,6 @@ const Settings = () => {
                     placeholder='Media Directory - Ex: C:\Folder\Media'
                     value={text}
                     onChange={(e) => setText(e.target.value)}
-
                 />
                 <button type='submit' className='settings-submit-btn'>Save</button>
             </form>

@@ -4,19 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import DirectoryContext from '../context/directory/DirectoryContext';
 import AlertContext from '../context/alert/AlertContext';
 import { getFileDataInDirectory } from '../context/directory/DirectoryActions';
-import { Form, Button, Container } from 'react-bootstrap';
 
 const GettingStarted = () => {
 
     const navigate = useNavigate();
     const {dispatch} = useContext(DirectoryContext);
     const { setAlert } = useContext(AlertContext);
-    const [saveDirectory, setSaveDirectory] = useState(false);
     const [text, setText] = useState('');
-
-    const handleChange = (e) => {
-        setText(e.target.value);
-    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -36,11 +30,10 @@ const GettingStarted = () => {
                 setAlert('No Directory Found. Please Try Again.', 'error');
             }
             else {
-                if(saveDirectory) {
-                    ipcRenderer.send('settings:set', {
-                        directoryPath: text
-                    });
-                }
+                ipcRenderer.send('settings:set', {
+                    directoryPath: text
+                });
+
                 setText('');
                 navigate('/results');
             }
@@ -48,20 +41,23 @@ const GettingStarted = () => {
     };
 
     return (
-        <Container className="get-started-container">
-            <div className='get-started-text-box'>
-                <p>Enter Directory Below To Get Started.</p>
-            </div>
-            <Form onSubmit={handleSubmit}>
-                <Form.Group className="get-started-form-box" controlId="formBasicText">
-                    <Form.Control className="form-input" type="text" value={text} onChange={handleChange} placeholder="Enter Directory Here - Ex: C:\Folder\Media" />
-                    <Button className="form-btn-submit" type="submit">Submit</Button>
-                </Form.Group>
-                <Form.Group className="get-started-form-box" controlId="formBasicCheckbox">
-                    <Form.Check className="get-started-checkbox" type="checkbox" value={true} label="Save Directory For Future Use?" onChange={(e) => setSaveDirectory(e.target.value)}/>
-                </Form.Group>
-            </Form>
-        </Container>
+        <div className='get-started-container'>
+            <h1 className='get-started-header'>Enter A Directory Below To Get Started.</h1>
+            <form onSubmit={handleSubmit} className='get-started-form-box'>
+                <div className='get-started-text-container'>
+                    <input
+                        type='text'
+                        className='get-started-text-input'
+                        id='storageDirectory'
+                        name='storageDirectory'
+                        placeholder='Media Directory - Ex: C:\Folder\Media'
+                        value={text}
+                        onChange={(e) => setText(e.target.value)}
+                    />
+                    <button type='submit' className='get-started-submit-btn'>Save</button>
+                </div>
+            </form>
+        </div>
     )
 };
 

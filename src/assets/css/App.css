@@ -150,7 +150,7 @@ html {
 /*===============================================================================================*/
 
 .settings-container {
-    padding-top: 6rem;
+    padding-top: 5rem;
 }
 
 .settings-header {
@@ -191,26 +191,58 @@ html {
 /*===============================================================================================*/
 
 .get-started-container {
-    padding-top: 6rem;
+    padding-top: 5rem;
 }
 
-.get-started-text-box {
-    display: flex;
-    justify-content: center;
-    color: #F5F5F1;
-    font-size: 2rem;
-    padding: 2rem 0;
+.get-started-header {
+    text-align: center;
+    color: #FFF;
+    font-size: 3rem;
+    padding-bottom: 1rem;
+}
+
+.get-started-text {
+    color: #FFF;
+    font-size: 1.4rem;
+    text-align: center;
+    padding-bottom: 4rem;
 }
 
 .get-started-form-box {
     display: flex;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
     margin-bottom: 3rem;
 }
 
-.get-started-checkbox {
-    color: #FFF;
+.get-started-text-container {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.get-started-text-input {
+    width: 50%;
+    height: 5rem;
     font-size: 2rem;
+    padding: 1rem 0.5rem;
+}
+
+.get-started-submit-btn {
+    border: none;
+    font-size: 2rem;
+    background-color: #E50914;
+    padding: 1rem 1.5rem;
+    border-radius: 0 5px 5px 0;
+    color: rgba(255, 255, 255, 0.6);
+    transition: all 0.3s;
+}
+
+.get-started-submit-btn:hover {
+    color: #FFF;
 }
 
 /*===============================================================================================*/

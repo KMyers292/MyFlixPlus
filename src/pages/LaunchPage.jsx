@@ -14,17 +14,18 @@ const LaunchPage = () => {
         if(!savedDirectory) {
             navigate('/getStarted');
         }
+        else {
+            dispatch({type: 'SET_LOADING'});
 
-        dispatch({type: 'SET_LOADING'});
-
-        const directories = await getFileDataInDirectory(savedDirectory);
-
-        dispatch({
-            type: 'GET_DIRECTORIES',
-            payload: directories
-        });
-
-        navigate('/results');
+            const directories = await getFileDataInDirectory(savedDirectory);
+    
+            dispatch({
+                type: 'GET_DIRECTORIES',
+                payload: directories
+            });
+    
+            navigate('/results');
+        }
     }
 
     return (

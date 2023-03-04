@@ -27,6 +27,14 @@ ipcRenderer.on('settings:get', (event, settings) => {
     }
 });
 
+ipcRenderer.on('watchlist:get', (event, watchlist) => {
+    const savedWatchlist = watchlist;
+
+    if (savedWatchlist) {
+        sessionStorage.setItem('savedWatchlist', savedWatchlist);
+    }
+});
+
 //===================================================================================================================================================================//
 
 // Gets the difference in milliseconds between today's date and the passed in date.
