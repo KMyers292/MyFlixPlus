@@ -22,7 +22,8 @@ const NavBar = ({getResults}) => {
         
         if (text) {
             const results = await fetchBasicData(text);
-            getResults(results, text);
+            const filteredResults = results.filter((result) => result.media_type !== 'person');
+            getResults(filteredResults, text);
             navigate('/search');
             setText('');
         }

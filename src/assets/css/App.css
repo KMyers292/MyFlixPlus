@@ -1127,6 +1127,7 @@ html {
     flex-direction: row;
     justify-content: space-between;
     padding-top: 0.5rem;
+    width: 100%;
 }
 
 .search-card-info {
@@ -1198,6 +1199,12 @@ html {
     margin-bottom: 4rem;
 }
 
+.search-no-results {
+    font-size: 2rem;
+    color: #FFF;
+    text-align: center;
+}
+
 /*===============================================================================================*/
 /*                                            MediaCard                                          */
 /*===============================================================================================*/
@@ -1205,12 +1212,14 @@ html {
 .media-card {
     display: flex;
     flex-direction: row;
+    margin: 0 auto;
     margin-bottom: 4rem;
     border: 2px solid transparent;
     border-radius: 8px;
     color: #FFF;
     transition: all 0.3s;
     cursor: pointer;
+    width: 75%;
 }
 
 .media-card:hover {
@@ -1228,6 +1237,7 @@ html {
     padding-left: 2rem;
     border-radius: 8px;
     background-color: #161F2B;
+    width: 100%;
 }
 
 .media-card-heading {
@@ -1286,7 +1296,7 @@ html {
     position: absolute;
     top: 4rem;
     right: 0;
-    margin: 1rem 1rem 0 0;
+    margin: 1rem 0 0 0;
     font-size: 1.2rem;
     font-weight: bold;
     color: #0B1016;

@@ -50,8 +50,8 @@ const SeasonsList = ({seasonObject, id}) => {
                     <img className='season-img' loading='lazy' src={seasonObject.poster_path} />
                     <div className='season-info'>
                         {Object.hasOwn(seasonObject, 'directory') ? (
-                            seasonObject.name ? <p className='season-title'>{seasonObject.name} ({seasonObject.episodes[0].air_date.substring(0,4)}) <IoIosCheckmarkCircle className='checkmark-seasons' title='Season In Directory'/></p> : <p className='season-title'>No Season Name Available</p>
-                        ) : (seasonObject.name ? <p className='season-title'>{seasonObject.name} ({seasonObject.episodes[0].air_date.substring(0,4)})</p> : <p className='season-title'>No Season Name Available</p>)}
+                            seasonObject.name ? <p className='season-title'>{seasonObject.name} ({seasonObject.episodes[0].air_date ? seasonObject.episodes[0].air_date.substring(0,4) : 'Date Unavailable'}) <IoIosCheckmarkCircle className='checkmark-seasons' title='Season In Directory'/></p> : <p className='season-title'>No Season Name Available</p>
+                        ) : (seasonObject.name ? <p className='season-title'>{seasonObject.name} ({seasonObject.episodes[0].air_date ? seasonObject.episodes[0].air_date.substring(0,4) : 'Date Unavailable'})</p> : <p className='season-title'>No Season Name Available</p>)}
                         <p className='season-overview'>{seasonObject.overview}</p>
                     </div>
                 </div>

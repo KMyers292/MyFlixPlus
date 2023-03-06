@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import DirectoryContext from '../../context/directory/DirectoryContext';
 import { filterNewEpisodes } from '../../context/directory/DirectoryActions';
 import NewEpisodesSlider from '../NewEpisodesSlider.jsx';
 import { FaAngleDoubleLeft, FaAngleDoubleRight } from 'react-icons/fa';
@@ -7,14 +7,16 @@ import { IoIosNotificationsOutline } from "react-icons/io";
 
 const RightSidebar = ({toggleSidebar, isOpen}) => {
 
+    const {directories} = useContext(DirectoryContext);
     const [newEpisodesList, setNewEpisodesList] = useState([]);
 
-    useEffect(() => {
+    useEffect(() => {       
         const newEpisodes = filterNewEpisodes();
+        newEpisodes.sort((a, b) => new Date(a.next_episode.air_date.replace(/-/g, '\/')) - new Date(b.next_episode.air_date.replace(/-/g, '\/')));
         if (newEpisodes) {
             setNewEpisodesList(newEpisodes);
         }
-    }, []);
+    }, [directories]);
 
     return (
         <div className={isOpen ? 'sidebar-right' : 'sidebar-right-closed align-close'}>

@@ -64,9 +64,17 @@ export const getTimeDifference = (date, lengthOfTime) => {
 export const getDateDifference = (date) => {
     const oneDay = 24 * 60 * 60 * 1000; // One day in milliseconds.
     const newDate = new Date(date.replace(/-/g, '\/'));
-    const todaysDate = new Date('2023-03-02'.replace(/-/g, '\/'));
+    const todaysDate = new Date(Date.now());
     const diffInDays = Math.round(Math.abs((newDate - todaysDate) / oneDay));
     return diffInDays;
+};
+
+//===================================================================================================================================================================//
+
+export const isDateInPast = (date) => {
+    const newDate = new Date(date.replace(/-/g, '\/'));
+    const todaysDate = new Date(Date.now());
+    return newDate < todaysDate;
 };
 
 //===================================================================================================================================================================//
@@ -482,7 +490,7 @@ export const fetchDetailedData = async (mediaType, id) => {
 // Fetches detailed info and adds it to array for each file in the directory that doesn't already have it.
 export const addDetailedDataToList = async (list) => {
     try {
-        if ((list.tmdb_data === 'Yes' && !list.detailed_info) || list.searchedItem) {
+        if ((list.tmdb_data === 'Yes' && !list.detailed_info) || list.searchedItem || !list.checked_episode) {
             if (list.media_type === 'movie' || list.media_type === 'tv') {
                 const info = await fetchDetailedData(list.media_type, list.id);
 
@@ -500,6 +508,7 @@ export const addDetailedDataToList = async (list) => {
                 list.overview = info.overview || 'No Overview Available';
                 list.popularity = info.popularity || null;
 
+                list.checked_episode === true;
                 list.detailed_info = true;
                 list.genres = info.genres? [...info.genres] : null;
                 list.status = info.status || null;
@@ -819,6 +828,7 @@ export const checkForNewEpisodes = async () => {
 
             const index = mediaList.findIndex(element => element.id === filteredList[i].id);
             if (index !== -1) {
+                mediaList[index].checked_episode === false;
                 await addDetailedDataToList(mediaList[index]);
             }
         }
@@ -843,7 +853,7 @@ export const filterNewEpisodes = () => {
     
         const mediaList = JSON.parse(fs.readFileSync(mediaListPath));
         const filteredList = mediaList.filter((media) => media.media_type === 'tv' && media.next_episode !== null);
-        const newEpisodes = filteredList.filter((item) => getDateDifference(item.next_episode.air_date) <= 7);
+        const newEpisodes = filteredList.filter((item) => !isDateInPast(item.next_episode.air_date) && getDateDifference(item.next_episode.air_date) <= 7);
         return newEpisodes;
     } 
     catch (error) {

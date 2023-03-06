@@ -13,8 +13,9 @@ const EditSearch = ({directoryItem, onClose, getResults, searchResults, savedTit
         
         if (title) {
             const results = await fetchBasicData(title);
-            setResults(results);
-            getResults(results, title);
+            const filteredResults = results.filter((result) => result.media_type !== 'person');
+            setResults(filteredResults);
+            getResults(filteredResults, title);
         }
     }
 
