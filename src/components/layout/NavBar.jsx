@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
 import { useNavigate } from 'react-router-dom';
+import { fetchBasicData } from '../../context/directory/DirectoryActions';
 import { IoArrowBack, IoArrowForward, IoSearchSharp } from 'react-icons/io5';
 
-const NavBar = () => {
+const NavBar = ({getResults}) => {
 
     const navigate = useNavigate();
     const [text, setText] = useState('');
@@ -20,9 +21,10 @@ const NavBar = () => {
         e.preventDefault();
         
         if (text) {
-            // const results = await fetchBasicData(title);
-            // setResults(results);
-            // getResults(results, title);
+            const results = await fetchBasicData(text);
+            getResults(results, text);
+            navigate('/search');
+            setText('');
         }
     }
 

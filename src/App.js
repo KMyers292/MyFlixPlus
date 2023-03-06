@@ -24,6 +24,8 @@ const App = () => {
 
 	const [sidebarOpen, setSidebarOpen] = useState(true);
 	const [sidebarRightOpen, setSidebarRightOpen] = useState(false);
+	const [searchResults, setSearchResults] = useState([]);
+	const [searchTitle, setSearchTitle] = useState('');
 
 	const handleSidebarOpen = () => {
 		setSidebarOpen(!sidebarOpen);
@@ -31,6 +33,11 @@ const App = () => {
 
 	const handleSidebarRightOpen = () => {
 		setSidebarRightOpen(!sidebarRightOpen);
+	}
+
+	const getResults = (results, text) => {
+		setSearchResults(results);
+		setSearchTitle(text);
 	}
 
 	return (
@@ -46,7 +53,7 @@ const App = () => {
 					<div className='main-container'>
                     	<Sidebar toggleSidebar={handleSidebarOpen} isOpen={sidebarOpen} />
 						<div className={sidebarOpen && sidebarRightOpen ?  'results' : sidebarOpen && !sidebarRightOpen ? 'results-right-closed' : !sidebarOpen && sidebarRightOpen ? 'results-left-closed' : 'results-both-closed'}>
-							<NavBar />
+							<NavBar getResults={getResults} />
 							<Routes>
 								<Route exact path='/' element={<LaunchPage />} />
 								<Route exact path='/getStarted' element={<GettingStarted />} />
@@ -54,7 +61,7 @@ const App = () => {
 								<Route exact path='/help' element={<HelpPage />} />
 								<Route exact path='/watchlist' element={<WatchListPage />} />
 								<Route exact path='/browse' element={<BrowsePage />} />
-								<Route exact path='/search' element={<SearchPage />} />
+								<Route exact path='/search' element={<SearchPage searchResults={searchResults} searchTitle={searchTitle} />} />
 								<Route exact path='/results' element={<DirectorySearchResults />} />
 								<Route exact path='/searched/movie/:id' element={<SearchedMovie />} />
 								<Route exact path='/searched/series/:id' element={<SearchedSeries />} />
