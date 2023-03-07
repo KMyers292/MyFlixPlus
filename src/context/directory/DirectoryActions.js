@@ -413,7 +413,8 @@ export const fetchBasicData = async (title) => {
         }
     
         const {results} = await response.json();
-        return results;
+        const filteredResults = results.filter((result) => result.media_type !== 'person');
+        return filteredResults;
     }
     catch (error) {
         throw new Error('fetchBasicData Error: ' + error);
@@ -732,6 +733,10 @@ export const sortList = (directory, method) => {
             filteredList = sortedList.filter((item) => item.media_type === 'movie');
             filteredList.sort((a, b) => b.vote_average - a.vote_average);
             sortedList = [...filteredList];
+        }
+        else if (method === 'alphabetically') {
+            sortedList.sort((a, b) => b.title > a.title);
+            sortedList = [...sortedList];
         }
 
         if (sortedList.length > 30) {
