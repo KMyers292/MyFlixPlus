@@ -1,3 +1,4 @@
+import React from 'react';
 import {ipcRenderer} from 'electron';
 import path from 'path';
 import fs from 'fs';
@@ -10,9 +11,13 @@ const tmdbApiKey = process.env.TMDB_KEY;
 
 ipcRenderer.invoke('getPath').then((result) => {
     const mediaListPath = path.join(result, 'MediaList' + '.json');
+    const watchListPath = path.join(result, 'WatchList' + '.json');
 
     if (mediaListPath) {
         sessionStorage.setItem('mediaListPath', mediaListPath);
+    }
+    if (watchListPath) {
+        sessionStorage.setItem('watchListPath', watchListPath);
     }
 })
 .catch((err) => {
@@ -24,14 +29,6 @@ ipcRenderer.on('settings:get', (event, settings) => {
 
     if (savedDirectory) {
         sessionStorage.setItem('savedDirectory', savedDirectory);
-    }
-});
-
-ipcRenderer.on('watchlist:get', (event, watchlist) => {
-    const savedWatchlist = watchlist;
-
-    if (savedWatchlist) {
-        sessionStorage.setItem('savedWatchlist', savedWatchlist);
     }
 });
 
@@ -74,6 +71,7 @@ export const getDateDifference = (date) => {
 export const isDateInPast = (date) => {
     const newDate = new Date(date.replace(/-/g, '\/'));
     const todaysDate = new Date(Date.now());
+    todaysDate.setHours(0,0,0,0);
     return newDate < todaysDate;
 };
 
@@ -885,15 +883,105 @@ export const getFirstNumberDivisible = (num) => {
 //===================================================================================================================================================================//
 
 export const getNewMovies = async () => {
-    const response = await fetch(`https://api.themoviedb.org/3/movie/upcoming?api_key=${tmdbApiKey}&language=en-US&region=US`);
+    try {
+        const response = await fetch(`https://api.themoviedb.org/3/movie/upcoming?api_key=${tmdbApiKey}&language=en-US&region=US`);
     
-    if (!response) {
-        console.log('No Response');
-        return null;
+        if (!response) {
+            console.log('No Response');
+            return null;
+        }
+    
+        const {results} = await response.json();
+        
+        const filteredResults = results.filter((item) => item.original_language === 'en' && getDateDifference(item.release_date) <= 14);
+        return filteredResults;
+    } 
+    catch (error) {
+        throw new Error('getNewMovies Error: ' + error);
     }
-
-    const {results} = await response.json();
-    
-    const filteredResults = results.filter((item) => item.original_language === 'en' && getDateDifference(item.release_date) <= 14);
-    return filteredResults;
 };
+
+//===================================================================================================================================================================//
+
+export const getWatchList = () => {
+    try {
+        const watchListPath = sessionStorage.getItem('watchListPath');
+        if (!watchListPath) {
+            return null;
+        }
+    
+        const watchList = JSON.parse(fs.readFileSync(watchListPath));
+        sessionStorage.setItem('watchlist', JSON.stringify(watchList));
+        return watchList;
+    } 
+    catch (error) {
+        if (error.code === 'ENOENT') {
+            return [];
+        }
+        throw new Error('getWatchList Error: ' + error);
+    }
+}
+
+//===================================================================================================================================================================//
+
+export const addToWatchList = (mediaItem) => {
+    try {
+        const watchListPath = sessionStorage.getItem('watchListPath');
+        if (!watchListPath) {
+            return null;
+        }
+    
+        const watchList = JSON.parse(fs.readFileSync(watchListPath));
+
+        if (Object.keys(mediaItem).length === 0) {
+            return null;
+        }
+
+        watchList.push(mediaItem);
+        fs.writeFileSync(watchListPath, JSON.stringify(watchList));
+        sessionStorage.setItem('watchlist', JSON.stringify(watchList));
+        return watchList;
+    } 
+    catch (error) {
+        if (error.code === 'ENOENT') {
+            const watchListPath = sessionStorage.getItem('watchListPath');
+            const newList = [mediaItem];
+            fs.writeFileSync(watchListPath, JSON.stringify(newList));
+            sessionStorage.setItem('watchlist', JSON.stringify(newList));
+            return newList;
+        }
+
+        throw new Error('addToWatchList Error: ' + error);
+    }
+};
+
+//===================================================================================================================================================================//
+
+export const removeFromWatchList = (mediaItem) => {
+    try {
+        const watchListPath = sessionStorage.getItem('watchListPath');
+        if (!watchListPath) {
+            return null;
+        }
+    
+        const watchList = JSON.parse(fs.readFileSync(watchListPath));
+
+        if (Object.keys(mediaItem).length === 0) {
+            return null;
+        } 
+
+        const index = watchList.findIndex((file) => Number(file.id) === Number(mediaItem.id));
+        if (index !== -1) {
+            watchList.splice(index, 1);
+            fs.writeFileSync(watchListPath, JSON.stringify(watchList));
+            sessionStorage.setItem('watchlist', JSON.stringify(watchList));
+            return watchList;
+        }
+    } 
+    catch (error) {
+        throw new Error('removeFromWatchList Error: ' + error);
+    }
+};
+
+//===================================================================================================================================================================//
+

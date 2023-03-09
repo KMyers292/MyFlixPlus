@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DirectoryContext from '../context/directory/DirectoryContext';
-import { getFileDataInDirectory } from '../context/directory/DirectoryActions';
+import { getFileDataInDirectory, getWatchList } from '../context/directory/DirectoryActions';
 
 const LaunchPage = () => {
 
@@ -18,10 +18,16 @@ const LaunchPage = () => {
             dispatch({type: 'SET_LOADING'});
 
             const directories = await getFileDataInDirectory(savedDirectory);
+            const watchlist = getWatchList();
     
             dispatch({
                 type: 'GET_DIRECTORIES',
                 payload: directories
+            });
+
+            dispatch({
+                type: 'GET_WATCHLIST',
+                payload: watchlist
             });
     
             navigate('/results');

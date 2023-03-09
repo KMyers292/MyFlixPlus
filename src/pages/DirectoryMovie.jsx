@@ -3,17 +3,16 @@ import { ipcRenderer } from 'electron';
 import fs from 'fs';
 import { useParams } from 'react-router-dom';
 import DirectoryContext from '../context/directory/DirectoryContext';
-import { getMediaObjectFromList, minutesToHours, getOtherFoldersList } from '../context/directory/DirectoryActions';
+import { getMediaObjectFromList, minutesToHours, getOtherFoldersList, addToWatchList, removeFromWatchList } from '../context/directory/DirectoryActions';
 import Slider from '../components/Slider.jsx';
 import EditModal from '../components/layout/EditModal.jsx';
 import { IoPlaySharp } from 'react-icons/io5';
-import { BsPlusCircle } from 'react-icons/bs';
-import { MdEdit } from 'react-icons/md';
+import { MdEdit, MdPlaylistRemove, MdPlaylistAdd } from 'react-icons/md';
 
 const DirectoryMovie = () => {
 
     const params = useParams();
-    const {loading, dispatch} = useContext(DirectoryContext);
+    const {watchlist, loading, dispatch} = useContext(DirectoryContext);
     const [openModal, setOpenModal] = useState(false);
     const [files, setFiles] = useState([]);
     const [directory, setDirectory] = useState({});
@@ -50,6 +49,24 @@ const DirectoryMovie = () => {
             }
         }
     }
+
+    const handleListAdd = () => {
+        const list = addToWatchList(directory);
+        
+        dispatch({
+            type: 'GET_WATCHLIST',
+            payload: list
+        });
+    };
+
+    const handleListRemove = () => {
+        const list = removeFromWatchList(directory);
+
+        dispatch({
+            type: 'GET_WATCHLIST',
+            payload: list
+        });
+    };
 
     if (directory.media_type === 'movie' && !loading) {
         return (
@@ -97,7 +114,11 @@ const DirectoryMovie = () => {
                             ) : null}
                         </div>
                         {Object.keys(files).length !== 0 ? <button className='play-btn' onClick={handlePlayBtnClick}><IoPlaySharp />Play</button> : null}
-                        <button className='add-btn' title='Add to Watch List'><BsPlusCircle/></button>
+                        {watchlist.find((file) => Number(file.id) === Number(directory.id)) ? (
+                            <button className='add-btn' title='Remove From Watch List' onClick={handleListRemove}><MdPlaylistRemove /></button>
+                        ) : (
+                            <button className='add-btn' title='Add to Watch List' onClick={handleListAdd}><MdPlaylistAdd /></button>
+                        )}
                         {directory.directory && directory.directory.path ? <button className='edit-btn' title='Edit Entry' onClick={() => setOpenModal(true)}><MdEdit /></button> : null}
                     </div>
                     {directory.recommendations ? 

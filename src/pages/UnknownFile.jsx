@@ -3,18 +3,17 @@ import { ipcRenderer } from 'electron';
 import fs from 'fs';
 import { useParams } from 'react-router-dom';
 import DirectoryContext from '../context/directory/DirectoryContext';
-import { getOtherFoldersList, getMediaObjectFromList } from '../context/directory/DirectoryActions';
+import { getOtherFoldersList, getMediaObjectFromList, addToWatchList, removeFromWatchList } from '../context/directory/DirectoryActions';
 import EditModal from '../components/layout/EditModal.jsx';
 import OtherFilesList from '../components/OtherFilesList.jsx';
 import EpisodeCard from '../components/EpisodeCard.jsx';
 import { IoPlaySharp } from 'react-icons/io5';
-import { BsPlusCircle } from 'react-icons/bs';
-import { MdEdit } from 'react-icons/md';
+import { MdEdit, MdPlaylistRemove, MdPlaylistAdd } from 'react-icons/md';
 
 const UnknownFile = () => {
 
     const params = useParams();
-    const {loading, dispatch} = useContext(DirectoryContext);
+    const {watchlist, loading, dispatch} = useContext(DirectoryContext);
     const [active, setActive] = useState(0);
     const [openModal, setOpenModal] = useState(false);
     const [otherFoldersList, setOtherFoldersList] = useState([]);
@@ -49,6 +48,24 @@ const UnknownFile = () => {
             setDirectory({});
         }
     }, [dispatch, params.id]);
+
+    const handleListAdd = () => {
+        const list = addToWatchList(directory);
+        
+        dispatch({
+            type: 'GET_WATCHLIST',
+            payload: list
+        });
+    };
+
+    const handleListRemove = () => {
+        const list = removeFromWatchList(directory);
+
+        dispatch({
+            type: 'GET_WATCHLIST',
+            payload: list
+        });
+    };
 
     const handlePlayBtnClick = () => {
         if (Object.keys(firstFile).length !== 0) {
@@ -102,7 +119,11 @@ const UnknownFile = () => {
                             {directory.status ? <p>Status: <span className='info-list'>{directory.status}</span></p> : null}
                         </div>
                         {Object.keys(firstFile).length !== 0 ? <button className='play-btn' onClick={handlePlayBtnClick}><IoPlaySharp />Play</button> : null}
-                        <button className='add-btn' title='Add to Watch List'><BsPlusCircle/></button>
+                        {watchlist.find((file) => Number(file.id) === Number(directory.id)) ? (
+                            <button className='add-btn' title='Remove From Watch List' onClick={handleListRemove}><MdPlaylistRemove /></button>
+                        ) : (
+                            <button className='add-btn' title='Add to Watch List' onClick={handleListAdd}><MdPlaylistAdd /></button>
+                        )}
                         {directory.directory && directory.directory.path ? <button className='edit-btn' title='Edit Entry' onClick={() => setOpenModal(true)}><MdEdit /></button> : null}
                     </div>
                 </div>

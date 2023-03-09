@@ -1,14 +1,14 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import DirectoryContext from '../context/directory/DirectoryContext';
-import { addDetailedDataToList, minutesToHours } from '../context/directory/DirectoryActions';
+import { addDetailedDataToList, minutesToHours, addToWatchList, removeFromWatchList } from '../context/directory/DirectoryActions';
 import Slider from '../components/Slider.jsx';
-import { BsPlusCircle } from 'react-icons/bs';
+import { MdPlaylistRemove, MdPlaylistAdd } from 'react-icons/md';
 
 const SearchedMovie = () => {
 
     const params = useParams();
-    const {dispatch, loading} = useContext(DirectoryContext);
+    const {watchlist, dispatch, loading} = useContext(DirectoryContext);
     const [searchedMovie, setSearchedMovie] = useState({});
 
     useEffect(() => {
@@ -33,6 +33,24 @@ const SearchedMovie = () => {
             setSearchedMovie({});
         }
     }, [dispatch, params.id]);
+
+    const handleListAdd = () => {
+        const list = addToWatchList(searchedMovie);
+
+        dispatch({
+            type: 'GET_WATCHLIST',
+            payload: list
+        });
+    };
+
+    const handleListRemove = () => {
+        const list = removeFromWatchList(searchedMovie);
+
+        dispatch({
+            type: 'GET_WATCHLIST',
+            payload: list
+        });
+    };
     
     if (Object.keys(searchedMovie).length !== 0 && !loading) {
         return (
@@ -74,7 +92,11 @@ const SearchedMovie = () => {
                                 </p>
                             ) : null}
                         </div>
-                        <button className='add-btn' title='Add to Watch List'><BsPlusCircle/></button>
+                        {watchlist.find((file) => Number(file.id) === Number(searchedMovie.id)) ? (
+                            <button className='add-btn' title='Remove From Watch List' onClick={handleListRemove}><MdPlaylistRemove /></button>
+                        ) : (
+                            <button className='add-btn' title='Add to Watch List' onClick={handleListAdd}><MdPlaylistAdd /></button>
+                        )}
                     </div>
                     {searchedMovie.recommendations ? 
                         <div className='recommendations'>
