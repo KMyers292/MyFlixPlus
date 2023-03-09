@@ -3,7 +3,7 @@ import { ipcRenderer } from 'electron';
 import fs from 'fs';
 import { useParams } from 'react-router-dom';
 import DirectoryContext from '../context/directory/DirectoryContext';
-import { getMediaObjectFromList, minutesToHours, getOtherFoldersList, addToWatchList, removeFromWatchList } from '../context/directory/DirectoryActions';
+import { getMediaObjectFromList, minutesToHours, getOtherFoldersList, addToWatchList, removeFromWatchList, dateNumbersToWords } from '../context/directory/DirectoryActions';
 import Slider from '../components/Slider.jsx';
 import EditModal from '../components/layout/EditModal.jsx';
 import { IoPlaySharp } from 'react-icons/io5';
@@ -82,7 +82,7 @@ const DirectoryMovie = () => {
                         <h1 className='title'>{directory.title}</h1>
                         <div className='info-bar'>
                             {directory.vote_average ? <p>{Math.round(directory.vote_average * 10)+ '%'}</p> : null}
-                            {directory.release ? <p>{directory.release.substring(0,4)}</p> : null}
+                            {directory.release ? <p>{dateNumbersToWords(directory.release)}</p> : null}
                             {directory.runtime ? <p>{minutesToHours(directory.runtime)}</p> : null}
                             {directory.rating ? <p className='rating'>{directory.rating}</p> : null}
                         </div>

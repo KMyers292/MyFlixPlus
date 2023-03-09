@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import DirectoryContext from '../context/directory/DirectoryContext';
-import { addDetailedDataToList, minutesToHours, addToWatchList, removeFromWatchList } from '../context/directory/DirectoryActions';
+import { addDetailedDataToList, minutesToHours, addToWatchList, removeFromWatchList, dateNumbersToWords } from '../context/directory/DirectoryActions';
 import Slider from '../components/Slider.jsx';
 import { MdPlaylistRemove, MdPlaylistAdd } from 'react-icons/md';
 
@@ -61,7 +61,7 @@ const SearchedMovie = () => {
                         <h1 className='title'>{searchedMovie.title}</h1>
                         <div className='info-bar'>
                             {searchedMovie.vote_average ? <p>{Math.round(searchedMovie.vote_average * 10)+ '%'}</p> : null}
-                            {searchedMovie.release ? <p>{searchedMovie.release.substring(0,4)}</p> : null}
+                            {searchedMovie.release ? <p>{dateNumbersToWords(searchedMovie.release)}</p> : null}
                             {searchedMovie.runtime ? <p>{minutesToHours(searchedMovie.runtime)}</p> : null}
                             {searchedMovie.rating ? <p className='rating'>{searchedMovie.rating}</p> : null}
                         </div>

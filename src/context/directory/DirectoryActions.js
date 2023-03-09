@@ -108,7 +108,7 @@ export const dateNumbersToWords = (date) => {
         if (month.startsWith('0')) {
             month = month.substring(1);
         }
-        return `${months[month - 1]} ${date.substring(8)}, ${date.substring(0,4)}`; 
+        return `${months[month - 1]} ${date.substring(8,10)}, ${date.substring(0,4)}`; 
     } 
     catch (error) {
         throw new Error('dateNumbersToWords Error: ' + error);
@@ -485,7 +485,7 @@ export const addDetailedDataToList = async (list) => {
         if ((list.tmdb_data === 'Yes' && !list.detailed_info) || list.searchedItem || !list.checked_episode) {
             if (list.media_type === 'movie' || list.media_type === 'tv') {
                 const info = await fetchDetailedData(list.media_type, list.id);
-                
+                console.log(info);
                 list.title = list.media_type === 'movie' ? info.title : list.media_type === 'tv' ? info.name : 'No Title Available';
                 list.poster_path = info.poster_path ? `https://image.tmdb.org/t/p/w500/${info.poster_path}` : 'D:/Projects/MyFlix+/myflix+/src/assets/images/no_image.png';
                 list.backdrop_path = info.backdrop_path ? `https://image.tmdb.org/t/p/original/${info.backdrop_path}` : null;
@@ -523,9 +523,15 @@ export const addDetailedDataToList = async (list) => {
         
                 if (list.media_type === 'movie') {
                     list.runtime = info.runtime;
+                    list.release = info.release_date || null;
                     if (info.release_dates.results) {
-                        const rating = info.release_dates.results.find(item => item.iso_3166_1 === 'US');
-                        list.rating = rating ? rating.release_dates[1] ? rating.release_dates[1].certification : null : null;
+                        info.release_dates.results.find(item => {
+                            if (item.iso_3166_1 === 'US') {
+                                const release = item.release_dates[0] ? item.release_dates[0].release_date : item.release_dates[1] ? item.release_dates[1].release_date : null;
+                                list.release = release ? release.split('T')[0] : null;
+                                list.rating = item.release_dates[0] ? item.release_dates[0].certification : item.release_dates[1] ? item.release_dates[1].certification : null;  
+                            }
+                        });
                     }
                 }
         
@@ -548,6 +554,7 @@ export const addDetailedDataToList = async (list) => {
 
                     const episodes = createEpisodesList(info['season/1']);
 
+                    list.release = info.first_air_date || null;
                     list.seasons[0].episodes = episodes ? [...episodes] : null; 
                     list.number_of_seasons = info.number_of_seasons || null;
                     list.number_of_episodes = info.number_of_episodes || null;
@@ -837,6 +844,40 @@ export const checkForNewEpisodes = async () => {
 
 //===================================================================================================================================================================//
 
+export const checkForNewEpisodesWatchList = async () => {
+    try {
+        const watchListPath = sessionStorage.getItem('watchListPath');
+        if (!watchListPath) {
+            return null;
+        }
+
+        if (sessionStorage.getItem('checkedWatchListEpisodes')) {
+            return null;
+        }
+
+        const watchList = JSON.parse(fs.readFileSync(watchListPath));
+        const filteredList = watchList.filter((media) => media.media_type === 'tv' && media.status === 'Returning Series');
+
+        for (let i = 0; i < filteredList.length; i++) {
+
+            const index = watchList.findIndex(element => element.id === filteredList[i].id && element.media_type === filteredList[i].media_type);
+            if (index !== -1) {
+                watchList[index].checked_episode === false;
+                await addDetailedDataToList(watchList[index]);
+            }
+        }
+        
+        fs.writeFileSync(watchListPath, JSON.stringify(watchList));
+        sessionStorage.setItem('watchlist', JSON.stringify(watchList));
+        sessionStorage.setItem('checkedWatchListEpisodes', true);
+    } 
+    catch (error) {
+        throw new Error('checkForNewEpisodesWatchList Error: ' + error);
+    }
+};
+
+//===================================================================================================================================================================//
+
 export const filterNewEpisodes = () => {
     try {
         const mediaListPath = sessionStorage.getItem('mediaListPath');
@@ -852,7 +893,26 @@ export const filterNewEpisodes = () => {
     catch (error) {
         throw new Error('filterNewEpisodes Error: ' + error);
     }
-}
+};
+
+//===================================================================================================================================================================//
+
+export const filterNewEpisodesWatchList = () => {
+    try {
+        const watchListPath = sessionStorage.getItem('watchListPath');
+        if (!watchListPath) {
+            return null;
+        }
+    
+        const watchList = JSON.parse(fs.readFileSync(watchListPath));
+        const filteredList = watchList.filter((media) => media.media_type === 'tv' && media.next_episode !== null);
+        const newEpisodes = filteredList.filter((item) => !isDateInPast(item.next_episode.air_date) && getDateDifference(item.next_episode.air_date) <= 7);
+        return newEpisodes;
+    } 
+    catch (error) {
+        throw new Error('filterNewEpisodesWatchList Error: ' + error);
+    }
+};
 
 //===================================================================================================================================================================//
 
@@ -867,27 +927,6 @@ export const getFirstNumberDivisible = (num) => {
     } 
     catch (error) {
         throw new Error('getFirstNumberDivisible Error: ' + error);
-    }
-};
-
-//===================================================================================================================================================================//
-
-export const getNewMovies = async () => {
-    try {
-        const response = await fetch(`https://api.themoviedb.org/3/movie/upcoming?api_key=${tmdbApiKey}&language=en-US&region=US`);
-    
-        if (!response) {
-            console.log('No Response');
-            return null;
-        }
-    
-        const {results} = await response.json();
-        
-        const filteredResults = results.filter((item) => item.original_language === 'en' && getDateDifference(item.release_date) <= 14);
-        return filteredResults;
-    } 
-    catch (error) {
-        throw new Error('getNewMovies Error: ' + error);
     }
 };
 

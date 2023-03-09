@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import DirectoryContext from '../../context/directory/DirectoryContext';
-import { filterNewEpisodes } from '../../context/directory/DirectoryActions';
+import { filterNewEpisodes, filterNewEpisodesWatchList } from '../../context/directory/DirectoryActions';
 import NewEpisodesSlider from '../NewEpisodesSlider.jsx';
 import { FaAngleDoubleLeft, FaAngleDoubleRight } from 'react-icons/fa';
 import { IoIosNotificationsOutline } from "react-icons/io";
@@ -11,10 +11,15 @@ const RightSidebar = ({toggleSidebar, isOpen}) => {
     const [newEpisodesList, setNewEpisodesList] = useState([]);
 
     useEffect(() => {       
-        const newEpisodes = filterNewEpisodes();
-        newEpisodes.sort((a, b) => new Date(a.next_episode.air_date.replace(/-/g, '\/')) - new Date(b.next_episode.air_date.replace(/-/g, '\/')));
-        if (newEpisodes) {
-            setNewEpisodesList(newEpisodes);
+        let newEpisodes = filterNewEpisodes();
+        const watchList = filterNewEpisodesWatchList();
+        newEpisodes = [...newEpisodes, ...watchList];
+        const newEpisodesFiltered = newEpisodes.filter((episode, index, self) => {
+            return index === self.findIndex((episode2) => episode2.id === episode.id);
+        });
+        newEpisodesFiltered.sort((a, b) => new Date(a.next_episode.air_date.replace(/-/g, '\/')) - new Date(b.next_episode.air_date.replace(/-/g, '\/')));
+        if (newEpisodesFiltered) {
+            setNewEpisodesList(newEpisodesFiltered);
         }
     }, [directories]);
 
