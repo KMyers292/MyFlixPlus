@@ -1,18 +1,16 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import DirectoryContext from '../context/directory/DirectoryContext';
-import { addDetailedDataToList, fetchEpisodesData, createEpisodesList } from '../context/directory/DirectoryActions';
+import { addDetailedDataToList, addToWatchList, removeFromWatchList } from '../context/directory/DirectoryActions';
 import Slider from '../components/Slider.jsx';
 import SeasonsList from '../components/SeasonsList.jsx';
-import { BsPlusCircle } from 'react-icons/bs';
+import { MdPlaylistRemove, MdPlaylistAdd } from "react-icons/md";
 
 const SearchedSeries = () => {
 
     const params = useParams();
-    const {dispatch, loading} = useContext(DirectoryContext);
+    const {watchlist, dispatch} = useContext(DirectoryContext);
     const [active, setActive] = useState(0);
-    const [seasonNum, setSeasonNum] = useState(1);
-    const [seasonObject, setSeasonObject] = useState({});
     const [seasonsOptions, setSeasonsOptions] = useState([]);
     const [searchedSeries, setSearchedSeries] = useState({});
 
@@ -29,8 +27,6 @@ const SearchedSeries = () => {
             return data;
         }
 
-        dispatch({ type: 'SET_LOADING' });
-
         getData().then((data) => {
             let seasons = [];
 
@@ -38,32 +34,28 @@ const SearchedSeries = () => {
                 seasons.push(<option value={i} key={i}>Season {i}</option>);
             }
             setSeasonsOptions(seasons);
-            setSeasonObject(data.seasons[seasonNum - 1]);
         });
+    }, [params.id]);
 
-        dispatch({ type: 'SET_LOADING_FALSE' });
+    const handleListAdd = () => {
+        const list = addToWatchList(searchedSeries);
 
-        return () => {
-            setSearchedSeries({});
-            setSeasonObject({});
-            setSeasonsOptions([]);
-        }
-    }, [dispatch, params.id]);
+        dispatch({
+            type: 'GET_WATCHLIST',
+            payload: list
+        });
+    };
 
-    const handleChange = async (e) => {
-        setSeasonNum(e.target.value);
+    const handleListRemove = () => {
+        const list = removeFromWatchList(searchedSeries);
 
-        const response = await fetchEpisodesData(searchedSeries.id, e.target.value);
-        const episodes = createEpisodesList(response);
-
-        if (episodes) {
-            const item = searchedSeries.seasons[e.target.value - 1];
-            item.episodes = [...episodes];
-            setSeasonObject(item);
-        }
-    }
+        dispatch({
+            type: 'GET_WATCHLIST',
+            payload: list
+        });
+    };
     
-    if (Object.keys(searchedSeries).length !== 0 && Object.keys(seasonObject).length !== 0 && !loading) {
+    if (Object.keys(searchedSeries).length !== 0) {
         return (
             <div>
                 <div className='media-container'>
@@ -107,7 +99,11 @@ const SearchedSeries = () => {
                                 </p>
                             ) : null}
                         </div>
-                        <button className='add-btn' title='Add to Watch List'><BsPlusCircle /></button>
+                        {watchlist.find((file) => Number(file.id) === Number(searchedSeries.id)) ? (
+                            <button className='add-btn' title='Remove From Watch List' onClick={handleListRemove}><MdPlaylistRemove /></button>
+                        ) : (
+                            <button className='add-btn' title='Add to Watch List' onClick={handleListAdd}><MdPlaylistAdd /></button>
+                        )}
                     </div>
                 </div>
                 <div className='tabs tabs-seasons'>
@@ -115,12 +111,7 @@ const SearchedSeries = () => {
                     {searchedSeries.recommendations ? <a className={active === 1 ? 'episodes-header active' : 'episodes-header'} onClick={(e) => setActive(1)}>Recommendations</a> : null}
                 </div>
                 {active === 0 && (
-                    <div className='season-container'>
-                        <select className='seasons-select' value={seasonNum} onChange={handleChange}>
-                            {seasonsOptions}
-                        </select>
-                        <SeasonsList seasonObject={seasonObject} id={params.id} />
-                    </div>
+                    <SeasonsList directory={searchedSeries} options={seasonsOptions} type='searched' />
                 )}
                 {active === 1 && (
                     <div className='recommendations recommendations-series'>

@@ -1,70 +1,62 @@
 import React, { useEffect, useContext, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import DirectoryContext from '../context/directory/DirectoryContext';
-import { getMediaObjectFromList, addSeasonsInDirectoryToList, addEpisodesToList, getOtherFilesInDirectory } from '../context/directory/DirectoryActions';
+import { getMediaObjectFromList, addSeasonsInDirectoryToList, getOtherFilesInDirectory, addToWatchList, removeFromWatchList } from '../context/directory/DirectoryActions';
 import Slider from '../components/Slider.jsx';
 import SeasonsList from '../components/SeasonsList.jsx';
 import OtherFilesList from '../components/OtherFilesList.jsx';
 import EditModal from '../components/layout/EditModal.jsx';
-import { BsPlusCircle } from "react-icons/bs";
-import { MdEdit } from "react-icons/md";
+import { MdEdit, MdPlaylistRemove, MdPlaylistAdd } from "react-icons/md";
 
 const DirectorySeries = () => {
 
     const params = useParams();
-    const {directories, dispatch, loading} = useContext(DirectoryContext);
+    const {directories, watchlist, dispatch} = useContext(DirectoryContext);
+    const directory =  getMediaObjectFromList(params.id);
     const [active, setActive] = useState(0);
-    const [seasonNum, setSeasonNum] = useState(1);
     const [openModal, setOpenModal] = useState(false);
-    const [seasonObject, setSeasonObject] = useState({});
     const [seasonsOptions, setSeasonsOptions] = useState([]);
     const [otherFilesList, setOtherFilesList] = useState([]);
-    const [directory, setDirectory] = useState({});
 
     useEffect(() => {
-        dispatch({ type: 'SET_LOADING' });
-
-        const directoryItem = getMediaObjectFromList(params.id);
-        setDirectory(directoryItem);
-
         let seasons = [];
 
-        for (let i = 1; i <= directoryItem.number_of_seasons; i++) {
+        for (let i = 1; i <= directory.number_of_seasons; i++) {
             seasons.push(<option value={i} key={i}>Season {i}</option>);
         }
 
         setSeasonsOptions(seasons);
-        setSeasonObject(directoryItem.seasons[seasonNum - 1]);
 
-        if (directoryItem.directory && directoryItem.media_type === 'tv') {
-            const seasonsList = addSeasonsInDirectoryToList(directoryItem, directories, params.id);
-            const otherFiles = getOtherFilesInDirectory(directoryItem, seasonsList);
+        if (directory.directory && directory.media_type === 'tv') {
+            const seasonsList = addSeasonsInDirectoryToList(directory, directories, params.id);
+            const otherFiles = getOtherFilesInDirectory(directory, seasonsList);
 
             if(otherFiles) {
                 const otherFilesFiltered = otherFiles.filter((file) => file.is_directory);
                 setOtherFilesList(otherFilesFiltered);
             }
         }
+    }, [params.id]);
 
-        dispatch({ type: 'SET_LOADING_FALSE' });
+    const handleListAdd = () => {
+        const list = addToWatchList(directory);
+        
+        dispatch({
+            type: 'GET_WATCHLIST',
+            payload: list
+        });
+    };
 
-        return () => {
-            setSeasonsOptions([]);
-            setSeasonObject({});
-            setOtherFilesList([]);
-            setDirectory({});
-        }
-    }, [dispatch, params.id]);
+    const handleListRemove = () => {
+        const list = removeFromWatchList(directory);
 
-    const handleChange = async (e) => {
-        setSeasonNum(e.target.value);
-        const seasonObject = await addEpisodesToList(e.target.value, directory, directories);
-        if (seasonObject) {
-            setSeasonObject(seasonObject);
-        }
-    }
+        dispatch({
+            type: 'GET_WATCHLIST',
+            payload: list
+        });
+    };
 
-    if (directory.media_type === 'tv' && !loading && Object.keys(seasonObject).length !== 0) {
+    if (Object.keys(directory).length !== 0) {
         return (
             <div>
                 <EditModal open={openModal} onClose={() => setOpenModal(false)} directoryItem={directory} />
@@ -109,7 +101,11 @@ const DirectorySeries = () => {
                                 </p>
                             ) : null}
                         </div>
-                        <button className='add-btn' title='Add to Watch List'><BsPlusCircle /></button>
+                        {watchlist.find((file) => Number(file.id) === Number(directory.id)) ? (
+                            <button className='add-btn' title='Remove From Watch List' onClick={handleListRemove}><MdPlaylistRemove /></button>
+                        ) : (
+                            <button className='add-btn' title='Add to Watch List' onClick={handleListAdd}><MdPlaylistAdd /></button>
+                        )}
                         {directory.directory && directory.directory.path ? <button className='edit-btn' title='Edit Entry' onClick={() => setOpenModal(true)}><MdEdit /></button> : null}
                     </div>
                 </div>
@@ -119,12 +115,7 @@ const DirectorySeries = () => {
                     {otherFilesList.length > 0 ? <a className={active === 2 ? 'episodes-header active' : 'episodes-header'} onClick={(e) => setActive(2)}>Other Folders</a> : null}
                 </div>
                 {active === 0 && (
-                    <div className='season-container'>
-                        <select className='seasons-select' value={seasonNum} onChange={handleChange}>
-                            {seasonsOptions}
-                        </select>
-                        <SeasonsList seasonObject={seasonObject} id={params.id} />
-                    </div>
+                    <SeasonsList directory={directory} options={seasonsOptions} type='directory' />
                 )}
                 {active === 1 && (
                     <div className='recommendations recommendations-series'>

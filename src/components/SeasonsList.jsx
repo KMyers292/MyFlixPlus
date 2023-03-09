@@ -1,22 +1,21 @@
 import React, { useEffect, useContext, useState } from 'react';
 import DirectoryContext from '../context/directory/DirectoryContext';
-import { addEpisodesInDirectoryToList, getOtherFilesInDirectory } from '../context/directory/DirectoryActions';
+import { addEpisodesInDirectoryToList, getOtherFilesInDirectory, addEpisodesToList, fetchEpisodesData, createEpisodesList } from '../context/directory/DirectoryActions';
 import EpisodeCard from './EpisodeCard.jsx';
 import { IoIosCheckmarkCircle } from 'react-icons/io';
 
-const SeasonsList = ({seasonObject, id}) => {
+const SeasonsList = ({directory, options, type}) => {
 
     const {directories} = useContext(DirectoryContext);
     const [active, setActive] = useState(0);
-    const [episodes, setEpisodes] = useState([]);
+    const [seasonObject, setSeasonObject] = useState(directory.seasons[0]);
     const [otherEpisodes, setOtherEpisodes] = useState([]);
 
     useEffect(() => {
         if (Object.hasOwn(seasonObject, 'directory')) {
-            const episodesList = addEpisodesInDirectoryToList(seasonObject, directories, id);
+            const episodesList = addEpisodesInDirectoryToList(seasonObject, directories, directory.id);
 
             if (episodesList && episodesList.length > 0) {
-                setEpisodes(episodesList);
                 const otherFiles = getOtherFilesInDirectory(seasonObject, episodesList);
 
                 if (otherFiles) {
@@ -24,34 +23,51 @@ const SeasonsList = ({seasonObject, id}) => {
                     setOtherEpisodes(otherFilesFiltered);
                 }
             }
-            else {
-                setEpisodes(seasonObject.episodes);
-            }
         }
-        else {
-            setEpisodes(seasonObject.episodes);
-        }
-
-        return () => {
-            setEpisodes([]);
-            setOtherEpisodes([]);
-        }
-    }, [seasonObject, id]);
+    }, [seasonObject]);
 
     const getEpisodesAvailable = (episodesList) => {
         const availableEpisodes = episodesList.filter((episode) => Object.hasOwn(episode, 'directory'));
         return availableEpisodes.length;
     }
 
-    if (Object.keys(seasonObject).length !== 0 && episodes.length > 0) {
+    const handleChange = async (e) => {
+        if (type === 'directory') {
+            const seasonObject = await addEpisodesToList(e.target.value, directory, directories);
+            if (seasonObject) {
+                setSeasonObject(seasonObject);
+            }
+            else {
+                setSeasonObject(directory.seasons[e.target.value - 1]);
+            }
+        }
+        else if (type === 'searched') {
+            const response = await fetchEpisodesData(directory.id, e.target.value);
+            const episodes = createEpisodesList(response);
+    
+            if (episodes) {
+                const item = directory.seasons[e.target.value - 1];
+                item.episodes = [...episodes];
+                setSeasonObject(item);
+            }
+            else {
+                setSeasonObject(directory.seasons[e.target.value - 1]);
+            }
+        }
+    };
+
+    if (Object.keys(seasonObject).length !== 0) {
         return (
-            <>
+            <div className='season-container'>
+                <select className='seasons-select' onChange={handleChange}>
+                    {options}
+                </select>
                 <div className='season-info-container'>
                     <img className='season-img' loading='lazy' src={seasonObject.poster_path} />
                     <div className='season-info'>
                         {Object.hasOwn(seasonObject, 'directory') ? (
-                            seasonObject.name ? <p className='season-title'>{seasonObject.name} ({seasonObject.episodes[0].air_date ? seasonObject.episodes[0].air_date.substring(0,4) : 'Date Unavailable'}) <IoIosCheckmarkCircle className='checkmark-seasons' title='Season In Directory'/></p> : <p className='season-title'>No Season Name Available</p>
-                        ) : (seasonObject.name ? <p className='season-title'>{seasonObject.name} ({seasonObject.episodes[0].air_date ? seasonObject.episodes[0].air_date.substring(0,4) : 'Date Unavailable'})</p> : <p className='season-title'>No Season Name Available</p>)}
+                            seasonObject.name ? <p className='season-title'>{seasonObject.name} ({seasonObject.episodes.length > 0 && seasonObject.episodes[0].air_date ? seasonObject.episodes[0].air_date.substring(0,4) : 'Date Unavailable'}) <IoIosCheckmarkCircle className='checkmark-seasons' title='Season In Directory'/></p> : <p className='season-title'>No Season Name Available</p>
+                        ) : (seasonObject.name ? <p className='season-title'>{seasonObject.name} ({seasonObject.episodes.length > 0 && seasonObject.episodes[0].air_date ? seasonObject.episodes[0].air_date.substring(0,4) : 'Date Unavailable'})</p> : <p className='season-title'>No Season Name Available</p>)}
                         <p className='season-overview'>{seasonObject.overview}</p>
                     </div>
                 </div>
@@ -61,11 +77,13 @@ const SeasonsList = ({seasonObject, id}) => {
                 </div>
                 {active === 0 && (
                     <div className='episodes-container'>
-                        <div className='episodes-list-info'>
-                            <p>Total Episodes: {seasonObject.episodes.length}</p>
-                            <p>Available To Play: {getEpisodesAvailable(seasonObject.episodes)}</p>
-                        </div>
-                        <EpisodeCard episodes={episodes} />
+                        {seasonObject.episodes.length > 0 ? (
+                            <div className='episodes-list-info'>
+                                <p>Total Episodes: {seasonObject.episodes.length}</p>
+                                <p>Available To Play: {getEpisodesAvailable(seasonObject.episodes)}</p>
+                            </div>
+                        ) : null}
+                        <EpisodeCard episodes={seasonObject.episodes} />
                     </div>
                 )}
                 {active === 1 && (
@@ -73,7 +91,7 @@ const SeasonsList = ({seasonObject, id}) => {
                         <EpisodeCard episodes={otherEpisodes} type='files' />
                     </div>
                 )}
-            </>
+            </div>
         )
     }
     else {
