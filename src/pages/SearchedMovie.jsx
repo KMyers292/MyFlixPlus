@@ -92,7 +92,7 @@ const SearchedMovie = () => {
                                 </p>
                             ) : null}
                         </div>
-                        {watchlist.find((file) => Number(file.id) === Number(searchedMovie.id)) ? (
+                        {watchlist.find((file) => Number(file.id) === Number(searchedMovie.id) && file.media_type === searchedMovie.media_type) ? (
                             <button className='add-btn' title='Remove From Watch List' onClick={handleListRemove}><MdPlaylistRemove /></button>
                         ) : (
                             <button className='add-btn' title='Add to Watch List' onClick={handleListAdd}><MdPlaylistAdd /></button>

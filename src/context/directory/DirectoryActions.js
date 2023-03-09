@@ -1,4 +1,3 @@
-import React from 'react';
 import {ipcRenderer} from 'electron';
 import path from 'path';
 import fs from 'fs';
@@ -198,7 +197,7 @@ export const addEpisodesInDirectoryToList = (seasonObject, directories, id) => {
     try {
         let needSave = false;
         const regex = /\d+/; // regex for getting the first group of digits in a string.
-        const index = directories.findIndex(element => element.id === Number(id));
+        const index = directories.findIndex(element => element.id === Number(id) && element.media_type === 'tv');
         const episodesInDirectory = fs.readdirSync(seasonObject.directory.path)
         .map((file) => {
             return {
@@ -261,7 +260,7 @@ export const addSeasonsInDirectoryToList = (directoryObject, directories, id) =>
     try {
         let needSave = false;
         const regex = /\d+/; // regex for getting the first group of digits in a string.
-        const index = directories.findIndex(element => element.id === Number(id));
+        const index = directories.findIndex(element => element.id === Number(id) && element.media_type === 'tv');
         const seasonsInDirectory = fs.readdirSync(directoryObject.directory.path)
         .map((file) => {
             return {
@@ -377,7 +376,7 @@ export const addEpisodesToList = async (season, directoryItem, directoryList) =>
     
             if (!hasEpisodes || (hasEpisodes && !util.isDeepStrictEqual(directoryItem.seasons[Number(season) - 1].episodes, episodes))) {
                 const mediaListPath = sessionStorage.getItem('mediaListPath');
-                const index = directoryList.findIndex(element => element.id === directoryItem.id);
+                const index = directoryList.findIndex(element => element.id === directoryItem.id && element.media_type === 'tv');
                 if (index !== -1) {
                     directoryList[index].seasons[Number(season) - 1].episodes = [...episodes];
                     fs.writeFileSync(mediaListPath, JSON.stringify(directoryList));
@@ -432,12 +431,6 @@ export const addBasicDataToList = async (list, index) => {
                 list.tmdb_data = 'Yes';
                 list.media_type = data.media_type || null;
                 list.id = data.id || index;
-                // list.title = data.media_type === 'movie' ? data.title : data.media_type === 'tv' ? data.name : 'No Title Available';
-                // list.poster_path = data.poster_path ? `https://image.tmdb.org/t/p/w500/${data.poster_path}` : 'D:/Projects/MyFlix+/myflix+/src/assets/images/no_image.png';
-                // list.backdrop_path = data.backdrop_path ? `https://image.tmdb.org/t/p/w500/${data.backdrop_path}` : null;
-                // list.release = data.media_type === 'movie' ? data.release_date : data.media_type === 'tv' ? data.first_air_date : null;
-                // list.overview = data.overview || 'No Overview Available';
-                // list.popularity = data.popularity || null;
             }
             else {
                 list.tmdb_data = 'No Data';
@@ -492,13 +485,6 @@ export const addDetailedDataToList = async (list) => {
         if ((list.tmdb_data === 'Yes' && !list.detailed_info) || list.searchedItem || !list.checked_episode) {
             if (list.media_type === 'movie' || list.media_type === 'tv') {
                 const info = await fetchDetailedData(list.media_type, list.id);
-
-                // if (list.searchedItem) {
-                //     list.title = list.media_type === 'movie' ? info.title : list.media_type === 'tv' ? info.name : 'No Title Available';
-                //     list.backdrop_path = info.backdrop_path ? `https://image.tmdb.org/t/p/original/${info.backdrop_path}` : null;
-                //     list.release = list.media_type === 'movie' ? info.release_date : list.media_type === 'tv' ? info.first_air_date : null;
-                //     list.overview = info.overview || 'No Overview Available';
-                // }
                 
                 list.title = list.media_type === 'movie' ? info.title : list.media_type === 'tv' ? info.name : 'No Title Available';
                 list.poster_path = info.poster_path ? `https://image.tmdb.org/t/p/w500/${info.poster_path}` : 'D:/Projects/MyFlix+/myflix+/src/assets/images/no_image.png';
@@ -688,11 +674,11 @@ export const getFileDataInDirectory = async (directory) => {
 //===================================================================================================================================================================//
 
 // Returns the media object found in 'MediaList.json' based on the passed in id.
-export const getMediaObjectFromList = (id) => {
+export const getMediaObjectFromList = (id, mediaType) => {
     try {
         const mediaListPath = sessionStorage.getItem('mediaListPath');
         const mediaList = JSON.parse(fs.readFileSync(mediaListPath));
-        const mediaObject = mediaList.find((file) => file.id === Number(id));
+        const mediaObject = mediaList.find((file) => file.id === Number(id) && file.media_type === mediaType);
     
         if (!mediaObject) {
             console.log('No File Found.');
@@ -757,23 +743,27 @@ export const sortList = (directory, method) => {
 
 // Saves new info to the specified object in the directory list based on the index.
 // If used to replace an entire object, it will use the passed in id to determine what object to replace since id's will be different.
-export const saveNewDirectoryItemInfo = (directoryItem, directories, id = null) => {
+export const saveNewDirectoryItemInfo = (directoryItem, directories, mediaType = null, id = null) => {
     try {
         const mediaListPath = sessionStorage.getItem('mediaListPath');
-        const index = directories.findIndex(element => element.id === directoryItem.id);
+        const index = directories.findIndex(element => element.id === directoryItem.id && element.media_type === directoryItem.media_type);
         if (index !== -1 && !id) {
             directories[index] = directoryItem;
             fs.writeFileSync(mediaListPath, JSON.stringify(directories));
             sessionStorage.setItem('directories', JSON.stringify(directories));
+            return true;
         }
         else if (index === -1 && id) {
-            const index = directories.findIndex(element => element.id === id);
+            const index = directories.findIndex(element => element.id === id && element.media_type === mediaType);
             if (index !== -1) {
                 directories[index] = directoryItem;
                 fs.writeFileSync(mediaListPath, JSON.stringify(directories));
                 sessionStorage.setItem('directories', JSON.stringify(directories));
+                return true;
             }
         }
+
+        return false;
     } 
     catch (error) {
         throw new Error('saveNewDirectoryItemInfo Error: ' + error);
@@ -829,7 +819,7 @@ export const checkForNewEpisodes = async () => {
 
         for (let i = 0; i < filteredList.length; i++) {
 
-            const index = mediaList.findIndex(element => element.id === filteredList[i].id);
+            const index = mediaList.findIndex(element => element.id === filteredList[i].id && element.media_type === filteredList[i].media_type);
             if (index !== -1) {
                 mediaList[index].checked_episode === false;
                 await addDetailedDataToList(mediaList[index]);
@@ -970,7 +960,7 @@ export const removeFromWatchList = (mediaItem) => {
             return null;
         } 
 
-        const index = watchList.findIndex((file) => Number(file.id) === Number(mediaItem.id));
+        const index = watchList.findIndex((file) => Number(file.id) === Number(mediaItem.id) && file.media_type === mediaItem.media_type);
         if (index !== -1) {
             watchList.splice(index, 1);
             fs.writeFileSync(watchListPath, JSON.stringify(watchList));

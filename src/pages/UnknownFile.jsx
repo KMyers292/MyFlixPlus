@@ -24,7 +24,7 @@ const UnknownFile = () => {
     useEffect(() => {
         dispatch({ type: 'SET_LOADING' });
 
-        const directoryItem = getMediaObjectFromList(params.id);
+        const directoryItem = getMediaObjectFromList(params.id, null);
         setDirectory(directoryItem);
 
         if (directoryItem.directory) {
@@ -119,7 +119,7 @@ const UnknownFile = () => {
                             {directory.status ? <p>Status: <span className='info-list'>{directory.status}</span></p> : null}
                         </div>
                         {Object.keys(firstFile).length !== 0 ? <button className='play-btn' onClick={handlePlayBtnClick}><IoPlaySharp />Play</button> : null}
-                        {watchlist.find((file) => Number(file.id) === Number(directory.id)) ? (
+                        {watchlist.find((file) => Number(file.id) === Number(directory.id) && file.media_type === directory.media_type) ? (
                             <button className='add-btn' title='Remove From Watch List' onClick={handleListRemove}><MdPlaylistRemove /></button>
                         ) : (
                             <button className='add-btn' title='Add to Watch List' onClick={handleListAdd}><MdPlaylistAdd /></button>

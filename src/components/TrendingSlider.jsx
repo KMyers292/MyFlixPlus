@@ -39,7 +39,7 @@ const TrendingSlider = ({trendingList}) => {
   };
 
   const handleClick = (directory) => {
-    if (directories.find((file) => file.id === Number(directory.id))) {
+    if (directories.find((file) => file.id === Number(directory.id) && file.media_type === directory.media_type)) {
       navigate(directory.media_type === 'tv' ? `/series/${directory.id}` : directory.media_type === 'movie' ? `/movie/${directory.id}` : `/unknown/${directory.id}`);
     }
     else {
@@ -61,7 +61,7 @@ const TrendingSlider = ({trendingList}) => {
                 <div className={trending.media_type === 'tv' ? 'series-badge' : 'movie-badge'}><p>{trending.media_type === 'tv' ? 'Series' : trending.media_type === 'movie' ? 'Movie' : null}</p></div>
                 <div className='rating-badge'><p>{Math.round(trending.vote_average * 10)+ '%'}</p></div>
                 <div className="swiper-slide-trending-title">
-                  <p>{trending.title || trending.name} {directories.find((file) => file.id === Number(trending.id)) ? <IoIosCheckmarkCircle className='checkmark-trending' title='In Directory'/> : null}</p>
+                  <p>{trending.title || trending.name} {directories.find((file) => file.id === Number(trending.id) && file.media_type === trending.media_type) ? <IoIosCheckmarkCircle className='checkmark-trending' title='In Directory'/> : null}</p>
                 </div>
                 <div className="swiper-slide-trending-text">
                     <p>{trending.overview.length > 310 ? trending.overview.substring(0, 310) + '...' : trending.overview}</p>

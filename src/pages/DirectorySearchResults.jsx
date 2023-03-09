@@ -1,14 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
 import DirectoryContext from '../context/directory/DirectoryContext';
-import Slider from '../components/Slider.jsx';
-import Alert from '../components/layout/Alert.jsx';
 import { sortList, fetchTrendingMedia, checkForNewEpisodes, getNewMovies } from '../context/directory/DirectoryActions';
 import Carousel from '../components/Carousel.jsx';
 import TrendingSlider from '../components/TrendingSlider.jsx';
 
 const DirectorySearchResults = () => {
 
-    const {directories, loading} = useContext(DirectoryContext);
+    const {directories} = useContext(DirectoryContext);
     const [trending, setTrending] = useState([]);
 
     useEffect(() => {
@@ -22,7 +20,7 @@ const DirectorySearchResults = () => {
     }, []);
 
 
-    if(!loading && trending.length > 0) {
+    if(trending.length > 0) {
         return (
             <div className='results-container'>
                 <h2 className='trending-header'>Top 10 Trending Today</h2>

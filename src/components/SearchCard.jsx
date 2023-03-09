@@ -11,7 +11,7 @@ const SearchCard = ({result, directoryItem, onClose}) => {
     const handleClick = async () => {
         const id = directoryItem.id;
         const media_type = directoryItem.media_type;
-        const newItem = directoryItem;
+        const newItem = {...directoryItem};
         newItem.media_type = result.media_type;
         newItem.title = result.title;
         newItem.id = result.id;
@@ -36,15 +36,20 @@ const SearchCard = ({result, directoryItem, onClose}) => {
             newItem.next_episode ? delete newItem.next_episode : null;
         }
 
-        saveNewDirectoryItemInfo(newItem, directories, id);
-
-        dispatch({ 
-            type: 'GET_DIRECTORY',
-            payload: newItem
-        });
-
-        onClose();
-        navigate(`/${newItem.id}`, {replace: true});
+        if (saveNewDirectoryItemInfo(newItem, directories, media_type, id)) {
+            dispatch({ 
+                type: 'GET_DIRECTORY',
+                payload: newItem
+            });
+    
+            onClose();
+            navigate(`${newItem.media_type === 'movie' ? '/movie' : newItem.media_type === 'tv' ? '/series' : '/unknown'}/${newItem.id}`, {replace: true});
+        }
+        else {
+            console.log(directoryItem);
+            dispatch({ type: 'SET_LOADING_FALSE' });
+            onClose();
+        }
     }
 
     useEffect(() => {

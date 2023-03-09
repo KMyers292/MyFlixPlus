@@ -1,5 +1,6 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { useNavigate } from 'react-router-dom';
+import DirectoryContext from '../context/directory/DirectoryContext';
 import { getFirstNumberDivisible } from '../context/directory/DirectoryActions';
 import { Swiper, SwiperSlide } from "swiper/react";
 import { A11y, Mousewheel, Navigation } from "swiper";
@@ -11,6 +12,7 @@ import '../assets/css/Carousel.css';
 const Carousel = ({directoryList}) => {
 
     const navigate = useNavigate();
+    const {directories} = useContext(DirectoryContext);
 
     const swiperParameters = {
         modules: [A11y, Mousewheel, Navigation],
@@ -27,7 +29,12 @@ const Carousel = ({directoryList}) => {
     };
 
     const handleClick = (directory) => {
-        navigate(directory.media_type === 'tv' ? `/series/${directory.id}` : directory.media_type === 'movie' ? `/movie/${directory.id}` : `/unknown/${directory.id}`);
+        if (directories.find((file) => file.id === Number(directory.id) && file.media_type === directory.media_type)) {
+            navigate(directory.media_type === 'tv' ? `/series/${directory.id}` : directory.media_type === 'movie' ? `/movie/${directory.id}` : `/unknown/${directory.id}`);
+        }
+        else {
+            navigate(directory.media_type === 'tv' ? `/searched/series/${directory.id}` : directory.media_type === 'movie' ? `/searched/movie/${directory.id}` : `/unknown/${directory.id}`);
+        }
     };
 
     return (

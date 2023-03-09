@@ -32,7 +32,7 @@ const NewEpisodesSlider = ({episodes}) => {
     };
 
     const handleClick = (directory) => {
-        if (directories.find((file) => file.id === Number(directory.id))) {
+        if (directories.find((file) => file.id === Number(directory.id) && file.media_type === directory.media_type)) {
           navigate(directory.media_type === 'tv' ? `/series/${directory.id}` : directory.media_type === 'movie' ? `/movie/${directory.id}` : `/unknown/${directory.id}`);
         }
         else {

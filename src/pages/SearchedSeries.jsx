@@ -21,7 +21,6 @@ const SearchedSeries = () => {
                 id: params.id,
                 searchedItem: true
             }
-            
             await addDetailedDataToList(data);
             setSearchedSeries(data);
             return data;
@@ -99,7 +98,7 @@ const SearchedSeries = () => {
                                 </p>
                             ) : null}
                         </div>
-                        {watchlist.find((file) => Number(file.id) === Number(searchedSeries.id)) ? (
+                        {watchlist.find((file) => Number(file.id) === Number(searchedSeries.id) && file.media_type === searchedSeries.media_type) ? (
                             <button className='add-btn' title='Remove From Watch List' onClick={handleListRemove}><MdPlaylistRemove /></button>
                         ) : (
                             <button className='add-btn' title='Add to Watch List' onClick={handleListAdd}><MdPlaylistAdd /></button>

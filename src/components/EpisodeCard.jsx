@@ -29,7 +29,6 @@ const EpisodeCard = ({episodes, type}) => {
     if(episodes.length > 0 && type === 'episodes') {
         return (
             <>
-                {console.log(episodes)}
                 {episodes.map((episode, i) => (
                     <div key={i} className={Object.hasOwn(episode, 'directory') ? 'card-container hasDirectory' : 'card-container'} onClick={Object.hasOwn(episode, 'directory') ? () => handleClick(i) : undefined}>
                         <div className='episode-image-container'>

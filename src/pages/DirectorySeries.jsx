@@ -12,7 +12,7 @@ const DirectorySeries = () => {
 
     const params = useParams();
     const {directories, watchlist, dispatch} = useContext(DirectoryContext);
-    const directory =  getMediaObjectFromList(params.id);
+    const directory =  getMediaObjectFromList(params.id, 'tv');
     const [active, setActive] = useState(0);
     const [openModal, setOpenModal] = useState(false);
     const [seasonsOptions, setSeasonsOptions] = useState([]);
@@ -101,7 +101,7 @@ const DirectorySeries = () => {
                                 </p>
                             ) : null}
                         </div>
-                        {watchlist.find((file) => Number(file.id) === Number(directory.id)) ? (
+                        {watchlist.find((file) => Number(file.id) === Number(directory.id) && file.media_type === directory.media_type) ? (
                             <button className='add-btn' title='Remove From Watch List' onClick={handleListRemove}><MdPlaylistRemove /></button>
                         ) : (
                             <button className='add-btn' title='Add to Watch List' onClick={handleListAdd}><MdPlaylistAdd /></button>
