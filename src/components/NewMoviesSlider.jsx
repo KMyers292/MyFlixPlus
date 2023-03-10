@@ -9,7 +9,7 @@ import '../assets/css/swiper/a11y.min.css';
 import '../assets/css/swiper/navigation.min.css';
 import '../assets/css/NewEpisodesSlider.css';
 
-const NewEpisodesSlider = ({episodes}) => {
+const NewMoviesSlider = ({episodes}) => {
 
     const navigate = useNavigate();
     const {directories} = useContext(DirectoryContext);
@@ -23,8 +23,8 @@ const NewEpisodesSlider = ({episodes}) => {
         observeParents: true,
         resistanceRatio: 0.8,
         navigation: {
-          prevEl: "#button-prev-episodes",
-          nextEl: "#button-next-episodes",
+          prevEl: "#button-prev",
+          nextEl: "#button-next",
         },
         observer: true,
         speed: 600,
@@ -50,17 +50,16 @@ const NewEpisodesSlider = ({episodes}) => {
                                 <img onClick={() => handleClick(episode)} className="swiper-slide-new-episodes-image" loading="lazy" src={episode.poster_path} />
                                 <div className="swiper-lazy-preloader"></div>
                                 <div className="swiper-slide-new-episodes-content">
-                                    <div className="content-text">Episode. {episode.next_episode.episode_number}</div>
-                                    <div className="swiper-slide-new-episodes-title">{dateNumbersToWords(episode.next_episode.air_date)}</div>
+                                    <div className="swiper-slide-new-episodes-title">{dateNumbersToWords(episode.release)}</div>
                                 </div>
                             </SwiperSlide>
                         ) : null
                     ))}
                 </Swiper>
-                <div id='button-prev-episodes' className="swiper-button-prev new-episodes-btn-prev" />
-                <div id='button-next-episodes' className="swiper-button-next new-episodes-btn-next" />
+                <div id="button-prev" className="swiper-button-prev new-episodes-btn-prev" />
+                <div id="button-next" className="swiper-button-next new-episodes-btn-next" />
             </div>
-        );
+        )
     }
     else {
         return (
@@ -71,4 +70,4 @@ const NewEpisodesSlider = ({episodes}) => {
     }
 };
 
-export default NewEpisodesSlider;
+export default NewMoviesSlider;

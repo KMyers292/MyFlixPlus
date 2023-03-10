@@ -1,7 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
 import DirectoryContext from '../../context/directory/DirectoryContext';
-import { filterNewEpisodes } from '../../context/directory/DirectoryActions';
+import { filterNewEpisodes, filterNewMovies } from '../../context/directory/DirectoryActions';
 import NewEpisodesSlider from '../NewEpisodesSlider.jsx';
+import NewMoviesSlider from '../NewMoviesSlider.jsx'
 import { FaAngleDoubleLeft, FaAngleDoubleRight } from 'react-icons/fa';
 import { IoIosNotificationsOutline } from "react-icons/io";
 
@@ -15,6 +16,11 @@ const RightSidebar = ({toggleSidebar, isOpen}) => {
         const newEpisodes = filterNewEpisodes();
         if (newEpisodes) {
             setNewEpisodesList(newEpisodes);
+        }
+        const newMovies = filterNewMovies();
+        if (newMovies) {
+            setNewMoviesList(newMovies);
+            console.log(newMovies);
         }
     }, []);
 
@@ -33,7 +39,7 @@ const RightSidebar = ({toggleSidebar, isOpen}) => {
             </div>
             <div className={isOpen ? 'new-episodes-container' : 'new-episodes-container-closed'}>
                 <h4 className='new-episodes-header'>New Movies Coming Soon</h4>
-                <NewEpisodesSlider episodes={newEpisodesList} />
+                <NewMoviesSlider episodes={newMoviesList} />
             </div>
         </div>
     )

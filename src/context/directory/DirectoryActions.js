@@ -892,7 +892,40 @@ export const filterNewEpisodes = () => {
 
 //===================================================================================================================================================================//
 
+export const filterNewMovies = () => {
+    try {
+        const mediaListPath = sessionStorage.getItem('mediaListPath');
+        const watchListPath = sessionStorage.getItem('watchListPath');
+        if (!mediaListPath && !watchListPath) {
+            return null;
+        }
+    
+        const mediaList = JSON.parse(fs.readFileSync(mediaListPath));
+        const watchList = JSON.parse(fs.readFileSync(watchListPath));
 
+        const filteredList = mediaList.filter((media) => {
+            if (media.media_type === 'movie') {
+                return !isDateInPast(media.release) && getDateDifference(media.release) <= 7;
+            }
+        });
+        const filteredWatchList = watchList.filter((media) => {
+            if (media.media_type === 'movie') {
+                return !isDateInPast(media.release) && getDateDifference(media.release) <= 7;
+            }
+        });
+
+        const newMoviesList = [...filteredList, ...filteredWatchList];
+        const newMoviesListFiltered = newMoviesList.filter((movie, index, self) => {
+            return index === self.findIndex((movie2) => movie2.id === movie.id);
+        });
+        newMoviesListFiltered.sort((a, b) => new Date(a.release.replace(/-/g, '\/')) - new Date(b.release.replace(/-/g, '\/')));
+
+        return newMoviesListFiltered;
+    } 
+    catch (error) {
+        throw new Error('filterNewMovies Error: ' + error);
+    }
+};
 
 //===================================================================================================================================================================//
 
