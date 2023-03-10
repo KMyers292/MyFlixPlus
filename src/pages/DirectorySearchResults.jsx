@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import DirectoryContext from '../context/directory/DirectoryContext';
-import { sortList, fetchTrendingMedia, checkForNewEpisodes, checkForNewEpisodesWatchList } from '../context/directory/DirectoryActions';
+import { sortList, fetchTrendingMedia, checkForNewEpisodes } from '../context/directory/DirectoryActions';
 import Carousel from '../components/Carousel.jsx';
 import TrendingSlider from '../components/TrendingSlider.jsx';
 
@@ -12,7 +12,6 @@ const DirectorySearchResults = () => {
     useEffect(() => {
         const getData = async () => {
             await checkForNewEpisodes();
-            await checkForNewEpisodesWatchList();
             const data = await fetchTrendingMedia();
             setTrending(data);
         };

@@ -493,7 +493,7 @@ export const addDetailedDataToList = async (list) => {
                 list.overview = info.overview || 'No Overview Available';
                 list.popularity = info.popularity || null;
 
-                list.checked_episode === true;
+                list.checked_episode = true;
                 list.detailed_info = true;
                 list.genres = info.genres? [...info.genres] : null;
                 list.status = info.status || null;
@@ -813,7 +813,8 @@ export const fetchTrendingMedia = async () => {
 export const checkForNewEpisodes = async () => {
     try {
         const mediaListPath = sessionStorage.getItem('mediaListPath');
-        if (!mediaListPath) {
+        const watchListPath = sessionStorage.getItem('watchListPath');
+        if (!mediaListPath && !watchListPath) {
             return null;
         }
 
@@ -822,19 +823,29 @@ export const checkForNewEpisodes = async () => {
         }
 
         const mediaList = JSON.parse(fs.readFileSync(mediaListPath));
+        const watchList = JSON.parse(fs.readFileSync(watchListPath));
         const filteredList = mediaList.filter((media) => media.media_type === 'tv' && media.status === 'Returning Series');
+        const filteredWatchList = watchList.filter((media) => media.media_type === 'tv' && media.status === 'Returning Series');
 
         for (let i = 0; i < filteredList.length; i++) {
-
             const index = mediaList.findIndex(element => element.id === filteredList[i].id && element.media_type === filteredList[i].media_type);
             if (index !== -1) {
-                mediaList[index].checked_episode === false;
+                mediaList[index].checked_episode = false;
                 await addDetailedDataToList(mediaList[index]);
+            }
+        }
+        for (let i = 0; i < filteredWatchList.length; i++) {
+            const index = watchList.findIndex(element => element.id === filteredWatchList[i].id && element.media_type === filteredWatchList[i].media_type);
+            if (index !== -1) {
+                watchList[index].checked_episode = false;
+                await addDetailedDataToList(watchList[index]);
             }
         }
         
         fs.writeFileSync(mediaListPath, JSON.stringify(mediaList));
+        fs.writeFileSync(watchListPath, JSON.stringify(watchList));
         sessionStorage.setItem('directories', JSON.stringify(mediaList));
+        sessionStorage.setItem('watchlist', JSON.stringify(watchList));
         sessionStorage.setItem('checkedEpisodes', true);
     } 
     catch (error) {
@@ -844,51 +855,35 @@ export const checkForNewEpisodes = async () => {
 
 //===================================================================================================================================================================//
 
-export const checkForNewEpisodesWatchList = async () => {
-    try {
-        const watchListPath = sessionStorage.getItem('watchListPath');
-        if (!watchListPath) {
-            return null;
-        }
-
-        if (sessionStorage.getItem('checkedWatchListEpisodes')) {
-            return null;
-        }
-
-        const watchList = JSON.parse(fs.readFileSync(watchListPath));
-        const filteredList = watchList.filter((media) => media.media_type === 'tv' && media.status === 'Returning Series');
-
-        for (let i = 0; i < filteredList.length; i++) {
-
-            const index = watchList.findIndex(element => element.id === filteredList[i].id && element.media_type === filteredList[i].media_type);
-            if (index !== -1) {
-                watchList[index].checked_episode === false;
-                await addDetailedDataToList(watchList[index]);
-            }
-        }
-        
-        fs.writeFileSync(watchListPath, JSON.stringify(watchList));
-        sessionStorage.setItem('watchlist', JSON.stringify(watchList));
-        sessionStorage.setItem('checkedWatchListEpisodes', true);
-    } 
-    catch (error) {
-        throw new Error('checkForNewEpisodesWatchList Error: ' + error);
-    }
-};
-
-//===================================================================================================================================================================//
-
 export const filterNewEpisodes = () => {
     try {
         const mediaListPath = sessionStorage.getItem('mediaListPath');
-        if (!mediaListPath) {
+        const watchListPath = sessionStorage.getItem('watchListPath');
+        if (!mediaListPath && !watchListPath) {
             return null;
         }
     
         const mediaList = JSON.parse(fs.readFileSync(mediaListPath));
-        const filteredList = mediaList.filter((media) => media.media_type === 'tv' && media.next_episode !== null);
-        const newEpisodes = filteredList.filter((item) => !isDateInPast(item.next_episode.air_date) && getDateDifference(item.next_episode.air_date) <= 7);
-        return newEpisodes;
+        const watchList = JSON.parse(fs.readFileSync(watchListPath));
+
+        const filteredList = mediaList.filter((media) => {
+            if (media.media_type === 'tv' && media.next_episode !== null) {
+                return !isDateInPast(media.next_episode.air_date) && getDateDifference(media.next_episode.air_date) <= 7;
+            }
+        });
+        const filteredWatchList = watchList.filter((media) => {
+            if (media.media_type === 'tv' && media.next_episode !== null) {
+                return !isDateInPast(media.next_episode.air_date) && getDateDifference(media.next_episode.air_date) <= 7;
+            }
+        });
+        
+        const newEpisodesList = [...filteredList, ...filteredWatchList];
+        const newEpisodesListFiltered = newEpisodesList.filter((episode, index, self) => {
+            return index === self.findIndex((episode2) => episode2.id === episode.id);
+        });
+        newEpisodesListFiltered.sort((a, b) => new Date(a.next_episode.air_date.replace(/-/g, '\/')) - new Date(b.next_episode.air_date.replace(/-/g, '\/')));
+
+        return newEpisodesListFiltered;
     } 
     catch (error) {
         throw new Error('filterNewEpisodes Error: ' + error);
@@ -897,22 +892,7 @@ export const filterNewEpisodes = () => {
 
 //===================================================================================================================================================================//
 
-export const filterNewEpisodesWatchList = () => {
-    try {
-        const watchListPath = sessionStorage.getItem('watchListPath');
-        if (!watchListPath) {
-            return null;
-        }
-    
-        const watchList = JSON.parse(fs.readFileSync(watchListPath));
-        const filteredList = watchList.filter((media) => media.media_type === 'tv' && media.next_episode !== null);
-        const newEpisodes = filteredList.filter((item) => !isDateInPast(item.next_episode.air_date) && getDateDifference(item.next_episode.air_date) <= 7);
-        return newEpisodes;
-    } 
-    catch (error) {
-        throw new Error('filterNewEpisodesWatchList Error: ' + error);
-    }
-};
+
 
 //===================================================================================================================================================================//
 

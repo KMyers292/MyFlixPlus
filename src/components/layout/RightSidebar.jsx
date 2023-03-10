@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import DirectoryContext from '../../context/directory/DirectoryContext';
-import { filterNewEpisodes, filterNewEpisodesWatchList } from '../../context/directory/DirectoryActions';
+import { filterNewEpisodes } from '../../context/directory/DirectoryActions';
 import NewEpisodesSlider from '../NewEpisodesSlider.jsx';
 import { FaAngleDoubleLeft, FaAngleDoubleRight } from 'react-icons/fa';
 import { IoIosNotificationsOutline } from "react-icons/io";
@@ -9,19 +9,14 @@ const RightSidebar = ({toggleSidebar, isOpen}) => {
 
     const {directories} = useContext(DirectoryContext);
     const [newEpisodesList, setNewEpisodesList] = useState([]);
+    const [newMoviesList, setNewMoviesList] = useState([]);
 
     useEffect(() => {       
-        let newEpisodes = filterNewEpisodes();
-        const watchList = filterNewEpisodesWatchList();
-        newEpisodes = [...newEpisodes, ...watchList];
-        const newEpisodesFiltered = newEpisodes.filter((episode, index, self) => {
-            return index === self.findIndex((episode2) => episode2.id === episode.id);
-        });
-        newEpisodesFiltered.sort((a, b) => new Date(a.next_episode.air_date.replace(/-/g, '\/')) - new Date(b.next_episode.air_date.replace(/-/g, '\/')));
-        if (newEpisodesFiltered) {
-            setNewEpisodesList(newEpisodesFiltered);
+        const newEpisodes = filterNewEpisodes();
+        if (newEpisodes) {
+            setNewEpisodesList(newEpisodes);
         }
-    }, [directories]);
+    }, []);
 
     return (
         <div className={isOpen ? 'sidebar-right' : 'sidebar-right-closed align-close'}>
@@ -34,6 +29,10 @@ const RightSidebar = ({toggleSidebar, isOpen}) => {
             </div>
             <div className={isOpen ? 'new-episodes-container' : 'new-episodes-container-closed'}>
                 <h4 className='new-episodes-header'>New Episodes Coming Soon</h4>
+                <NewEpisodesSlider episodes={newEpisodesList} />
+            </div>
+            <div className={isOpen ? 'new-episodes-container' : 'new-episodes-container-closed'}>
+                <h4 className='new-episodes-header'>New Movies Coming Soon</h4>
                 <NewEpisodesSlider episodes={newEpisodesList} />
             </div>
         </div>
