@@ -8,7 +8,7 @@ import { IoIosNotificationsOutline } from "react-icons/io";
 
 const RightSidebar = ({toggleSidebar, isOpen}) => {
 
-    const {directories} = useContext(DirectoryContext);
+    const {directories, watchlist} = useContext(DirectoryContext);
     const [newEpisodesList, setNewEpisodesList] = useState([]);
     const [newMoviesList, setNewMoviesList] = useState([]);
 
@@ -22,7 +22,7 @@ const RightSidebar = ({toggleSidebar, isOpen}) => {
             setNewMoviesList(newMovies);
             console.log(newMovies);
         }
-    }, []);
+    }, [watchlist, directories]);
 
     return (
         <div className={isOpen ? 'sidebar-right' : 'sidebar-right-closed align-close'}>
