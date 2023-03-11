@@ -68,7 +68,7 @@ const RightSidebar = ({toggleSidebar, isOpen}) => {
     }
     else {
         return (
-            <div className="sidebar-right-closed">
+            <div className="sidebar-not-loaded">
             </div>
         )
     }

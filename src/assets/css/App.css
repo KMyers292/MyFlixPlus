@@ -324,12 +324,12 @@ html {
     position: fixed;
 }
 
-.sidebar {
-    animation: openLeftSidebar 0.3s forwards;
-}
-
 .sidebar-closed {
     width: 7rem;
+}
+
+.sidebar-not-loaded {
+    width: 0rem;
 }
 
 .sidebar-link,

@@ -35,7 +35,7 @@ const Sidebar = ({toggleSidebar, isOpen}) => {
     }
     else {
         return (
-            <div className="sidebar-closed">
+            <div className="sidebar-not-loaded">
             </div>
         )
     }

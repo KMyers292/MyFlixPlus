@@ -22,16 +22,6 @@ const directoryReducer = (state, action) => {
                 ...state,
                 loading: false
             }
-        case 'SET_SIDEBAR_CLOSED':
-            return {
-                ...state,
-                sidebarsClosed: true
-            }
-        case 'SET_SIDEBAR_OPEN':
-            return {
-                ...state,
-                sidebarsClosed: false
-            }
         default:
             return state
     }
