@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import DirectoryContext from '../context/directory/DirectoryContext';
 import { dateNumbersToWords } from '../context/directory/DirectoryActions';
@@ -6,14 +6,39 @@ import { dateNumbersToWords } from '../context/directory/DirectoryActions';
 const WatchListPage = () => {
 
     const {directories, watchlist} = useContext(DirectoryContext);
+    const [sortedList, setSortedList] = useState(watchlist);
+
+    const handleChange = (e) => {
+        if (e.target.value === 'all') {
+            setSortedList(watchlist);
+        }
+        else if (e.target.value === 'tv') {
+            const filteredList = watchlist.filter((item) => item.media_type === 'tv');
+            filteredList.sort((a,b) => (a.title.toLowerCase() > b.title.toLowerCase()) ? 1 : ((b.title.toLowerCase() > a.title.toLowerCase()) ? -1 : 0));
+            setSortedList(filteredList);
+        }
+        else if (e.target.value === 'movie') {
+            const filteredList = watchlist.filter((item) => item.media_type === 'movie');
+            filteredList.sort((a,b) => (a.title.toLowerCase() > b.title.toLowerCase()) ? 1 : ((b.title.toLowerCase() > a.title.toLowerCase()) ? -1 : 0));
+            setSortedList(filteredList);
+        }
+    }
     
     return (
         <div className='browse-container'>
             <div className='browse-heading'>
                 <h1 className='browse-title'>Watch List</h1>
+                <div>
+                    <label className='browse-select-label' htmlFor="filter-watchlist">Filter </label>
+                    <select className='browse-select' name="filter-watchlist" id="filter-watchlist" onChange={handleChange}>
+                        <option value='all'>All Media</option>
+                        <option value='tv'>Series</option>
+                        <option value='movie'>Movies</option>
+                    </select>
+                </div>
             </div>
             <div className='browse-grid'>
-                {watchlist.map((directory, i) => (
+                {sortedList.map((directory, i) => (
                     directory ? (
                         <div key={i} className='browse-card-container'>
                             {directories.find((file) => Number(file.id) === Number(directory.id) && file.media_type === directory.media_type) ? (

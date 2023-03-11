@@ -1,11 +1,10 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import DirectoryContext from '../context/directory/DirectoryContext';
-import { sortList } from '../context/directory/DirectoryActions';
 
 const BrowsePage = () => {
 
-    const {directories, loading} = useContext(DirectoryContext);
+    const {directories} = useContext(DirectoryContext);
     const [sortType, setSortType] = useState('All Media');
     const [sortedList, setSortedList] = useState([]);
 
