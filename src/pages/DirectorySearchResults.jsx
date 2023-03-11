@@ -13,7 +13,17 @@ const DirectorySearchResults = () => {
         const getData = async () => {
             await checkForNewEpisodes();
             const data = await fetchTrendingMedia();
-            setTrending(data);
+            if (data) {
+                setTrending(data);
+            }
+            else {
+                let lessResults = [];
+
+                for (let i = 0; i < 10; i++) {
+                    lessResults.push(directories[i]);
+                }
+                setTrending(lessResults);
+            }
         };
 
         getData();

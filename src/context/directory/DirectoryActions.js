@@ -802,7 +802,6 @@ export const fetchTrendingMedia = async () => {
         }
         sessionStorage.setItem('trending', JSON.stringify(lessResults));
         return lessResults;
-    
     } 
     catch (error) {
         throw new Error('fetchTrendingMedia Error: ' + error);
