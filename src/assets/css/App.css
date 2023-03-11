@@ -324,6 +324,10 @@ html {
     position: fixed;
 }
 
+.sidebar {
+    animation: openLeftSidebar 0.3s forwards;
+}
+
 .sidebar-closed {
     width: 7rem;
 }
@@ -369,6 +373,14 @@ html {
     padding-right: 0;
     padding-left: 0;
     margin-right: 0;
+}
+
+.link-open {
+    width: 100%;
+}
+
+.link-closed {
+    width: 0%;
 }
 
 /*===============================================================================================*/
@@ -431,21 +443,49 @@ html {
     display: block;
 }
 
+.notify-movie {
+    margin-top: 30rem;
+}
+
 .notify-number {
     position: absolute;
-    top: -0.5rem;
-    right: 0.8rem;
+    top: -1.2rem;
+    right: 0.2rem;
     color: #FFF;
     background-color: #E50914;
     border-radius: 50%;
     padding: 0.2rem 0.8rem;
     font-size: 1.4rem;
     font-weight: bold;
+    user-select: none;
+}
+
+.notify-number-large {
+    position: absolute;
+    top: -1.2rem;
+    right: 0.2rem;
+    color: #FFF;
+    background-color: #E50914;
+    border-radius: 50%;
+    padding: 0.2rem 0.5rem;
+    font-size: 1.4rem;
+    font-weight: bold;
+    user-select: none;
+}
+
+.notify-episode-today {
+    position: absolute;
+    top: -0.4rem;
+    right: 1.2rem;
+    background-color: #61B07C;
+    border-radius: 50%;
+    padding: 0.5rem 0.5rem;
+    user-select: none;
 }
 
 .notify-icon {
     color: #FFF;
-    font-size: 4rem;
+    font-size: 3.5rem;
     text-align: center;
     margin: 0 auto;
     display: block;
@@ -1444,4 +1484,32 @@ html {
 
 .browse-card-link {
     text-decoration: none;
+}
+
+/*===============================================================================================*/
+/*                                             Animations                                        */
+/*===============================================================================================*/
+
+@keyframes leftSidebarLaunch {
+    0% {
+        opacity: 0;
+        transform: scale(0);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes openLeftSidebar {
+    0% {
+        width: 7rem;
+    }
+    100% {
+        width: 23rem;
+    }
+}
+
+.fade-in-btns {
+    animation: leftSidebarLaunch 1s ease-in forwards;
 }

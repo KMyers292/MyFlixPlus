@@ -22,7 +22,7 @@ import './assets/css/App.css';
 
 const App = () => {
 
-	const [sidebarOpen, setSidebarOpen] = useState(true);
+	const [sidebarOpen, setSidebarOpen] = useState(false);
 	const [sidebarRightOpen, setSidebarRightOpen] = useState(false);
 	const [searchResults, setSearchResults] = useState([]);
 	const [searchTitle, setSearchTitle] = useState('');

@@ -61,6 +61,7 @@ export const getDateDifference = (date) => {
     const oneDay = 24 * 60 * 60 * 1000; // One day in milliseconds.
     const newDate = new Date(date.replace(/-/g, '\/'));
     const todaysDate = new Date(Date.now());
+    todaysDate.setHours(0,0,0,0);
     const diffInDays = Math.round(Math.abs((newDate - todaysDate) / oneDay));
     return diffInDays;
 };
@@ -881,7 +882,6 @@ export const filterNewEpisodes = () => {
         const newEpisodesListFiltered = newEpisodesList.filter((episode, index, self) => {
             return index === self.findIndex((episode2) => episode2.id === episode.id);
         });
-        newEpisodesListFiltered.sort((a, b) => new Date(a.next_episode.air_date.replace(/-/g, '\/')) - new Date(b.next_episode.air_date.replace(/-/g, '\/')));
 
         return newEpisodesListFiltered;
     } 
@@ -918,12 +918,83 @@ export const filterNewMovies = () => {
         const newMoviesListFiltered = newMoviesList.filter((movie, index, self) => {
             return index === self.findIndex((movie2) => movie2.id === movie.id);
         });
-        newMoviesListFiltered.sort((a, b) => new Date(a.release.replace(/-/g, '\/')) - new Date(b.release.replace(/-/g, '\/')));
 
         return newMoviesListFiltered;
     } 
     catch (error) {
         throw new Error('filterNewMovies Error: ' + error);
+    }
+};
+
+//===================================================================================================================================================================//
+
+export const areThereNewEpisodesToday = () => {
+    try {
+        const mediaListPath = sessionStorage.getItem('mediaListPath');
+        const watchListPath = sessionStorage.getItem('watchListPath');
+        if (!mediaListPath && !watchListPath) {
+            return null;
+        }
+    
+        const mediaList = JSON.parse(fs.readFileSync(mediaListPath));
+        const watchList = JSON.parse(fs.readFileSync(watchListPath));
+
+        const filteredList = mediaList.filter((media) => {
+            if (media.media_type === 'tv' && media.next_episode !== null) {
+                return !isDateInPast(media.next_episode.air_date) && getDateDifference(media.next_episode.air_date) === 0;
+            }
+        });
+        const filteredWatchList = watchList.filter((media) => {
+            if (media.media_type === 'tv' && media.next_episode !== null) {
+                return !isDateInPast(media.next_episode.air_date) && getDateDifference(media.next_episode.air_date) === 0;
+            }
+        });
+
+        const newEpisodesList = [...filteredList, ...filteredWatchList];
+        if (newEpisodesList.length > 0) {
+            return true;
+        }
+
+        return false;
+    } 
+    catch (error) {
+        throw new Error('filterNewMediaToday Error: ' + error);
+    }
+};
+
+//===================================================================================================================================================================//
+
+export const areThereNewMoviesToday = () => {
+    try {
+        const mediaListPath = sessionStorage.getItem('mediaListPath');
+        const watchListPath = sessionStorage.getItem('watchListPath');
+        if (!mediaListPath && !watchListPath) {
+            return null;
+        }
+    
+        const mediaList = JSON.parse(fs.readFileSync(mediaListPath));
+        const watchList = JSON.parse(fs.readFileSync(watchListPath));
+
+        const filteredList = mediaList.filter((media) => {
+            if (media.media_type === 'movie') {
+                return !isDateInPast(media.release) && getDateDifference(media.release) === 0;
+            }
+        });
+        const filteredWatchList = watchList.filter((media) => {
+            if (media.media_type === 'movie') {
+                return !isDateInPast(media.release) && getDateDifference(media.release) === 0;
+            }
+        });
+
+        const newMoviesList = [...filteredList, ...filteredWatchList];
+        if (newMoviesList.length > 0) {
+            return true;
+        }
+
+        return false;
+    } 
+    catch (error) {
+        throw new Error('filterNewMediaToday Error: ' + error);
     }
 };
 

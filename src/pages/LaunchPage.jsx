@@ -30,6 +30,7 @@ const LaunchPage = () => {
                 payload: watchlist
             });
     
+            dispatch({type: 'SET_SIDEBAR_OPEN'});
             navigate('/results');
         }
     }

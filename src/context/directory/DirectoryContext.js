@@ -11,7 +11,7 @@ export const DirectoryProvider = ({children}) => {
     const initialState = {
         directories: directoriesFromStorage,
         watchlist: watchlistFromStorage,
-        loading: false
+        loading: false,
     }
 
     const [state, dispatch] = useReducer(directoryReducer, initialState);
