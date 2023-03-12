@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import DirectoryContext from '../context/directory/DirectoryContext';
 import { addDetailedDataToList, minutesToHours, addToWatchList, removeFromWatchList, dateNumbersToWords } from '../context/directory/DirectoryActions';
-import Slider from '../components/Slider.jsx';
+import Recommendations from '../components/Recommendations.jsx';
 import { MdPlaylistRemove, MdPlaylistAdd } from 'react-icons/md';
 
 const SearchedMovie = () => {
@@ -98,14 +98,10 @@ const SearchedMovie = () => {
                             <button className='add-btn' title='Add to Watch List' onClick={handleListAdd}><MdPlaylistAdd /></button>
                         )}
                     </div>
-                    {searchedMovie.recommendations ? 
-                        <div className='recommendations'>
-                            <h3 className='recommendations-title'>Recommendations</h3>
-                            <div className='slider-container'>
-                                <Slider directoryList={searchedMovie.recommendations} type='static' />
-                            </div>
-                        </div> 
-                    : null}
+                    <div className='tabs tabs-seasons'>
+                        <a className='episodes-header active'>Recommendations</a>
+                    </div>
+                    <Recommendations directoryList={searchedMovie.recommendations} />
                 </div>
             </div>
         )

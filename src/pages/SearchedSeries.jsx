@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import DirectoryContext from '../context/directory/DirectoryContext';
 import { addDetailedDataToList, addToWatchList, removeFromWatchList } from '../context/directory/DirectoryActions';
-import Slider from '../components/Slider.jsx';
+import Recommendations from '../components/Recommendations.jsx';
 import SeasonsList from '../components/SeasonsList.jsx';
 import { MdPlaylistRemove, MdPlaylistAdd } from "react-icons/md";
 
@@ -113,11 +113,7 @@ const SearchedSeries = () => {
                     <SeasonsList directory={searchedSeries} options={seasonsOptions} type='searched' />
                 )}
                 {active === 1 && (
-                    <div className='recommendations recommendations-series'>
-                        <div className='slider-container'>
-                            <Slider directoryList={searchedSeries.recommendations} type='static' />
-                        </div>
-                    </div> 
+                    <Recommendations directoryList={searchedSeries.recommendations} />
                 )}
             </div>
         )

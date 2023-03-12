@@ -4,7 +4,9 @@ import fs from 'fs';
 import { useParams } from 'react-router-dom';
 import DirectoryContext from '../context/directory/DirectoryContext';
 import { getMediaObjectFromList, minutesToHours, getOtherFoldersList, addToWatchList, removeFromWatchList, dateNumbersToWords } from '../context/directory/DirectoryActions';
-import Slider from '../components/Slider.jsx';
+import Recommendations from '../components/Recommendations.jsx';
+import OtherFilesList from '../components/OtherFilesList.jsx';
+import EpisodeCard from '../components/EpisodeCard.jsx';
 import EditModal from '../components/layout/EditModal.jsx';
 import { IoPlaySharp } from 'react-icons/io5';
 import { MdEdit, MdPlaylistRemove, MdPlaylistAdd } from 'react-icons/md';
@@ -13,8 +15,11 @@ const DirectoryMovie = () => {
 
     const params = useParams();
     const {watchlist, loading, dispatch} = useContext(DirectoryContext);
+    const [active, setActive] = useState(0);
     const [openModal, setOpenModal] = useState(false);
-    const [files, setFiles] = useState([]);
+    const [otherFoldersList, setOtherFoldersList] = useState([]);
+    const [otherFilesList, setOtherFilesList] = useState([]);
+    const [firstFile, setFirstFile] = useState({});
     const [directory, setDirectory] = useState({});
 
     useEffect(() => {
@@ -27,22 +32,26 @@ const DirectoryMovie = () => {
             const list = getOtherFoldersList(directoryItem.directory.path);
 
             if (list) {
-                setFiles(list.filter((item) => !item.is_directory));
+                const filteredList = list.filter((item) => !item.is_directory);
+                const file = filteredList.shift();
+
+                setFirstFile(file);
+                setOtherFilesList(filteredList);
+                setOtherFoldersList(list.filter((item) => item.is_directory));
             }
         }
 
         dispatch({ type: 'SET_LOADING_FALSE' });
 
         return () => {
-            setFiles([]);
             setDirectory({});
         }
     }, [dispatch, params.id]);
 
     const handlePlayBtnClick = () => {
-        if (Object.keys(files).length !== 0) {
-            if (fs.existsSync(files[0].path)) {
-                ipcRenderer.send('vlc:open', files[0].path);
+        if (Object.keys(firstFile).length !== 0) {
+            if (fs.existsSync(firstFile.path)) {
+                ipcRenderer.send('vlc:open', firstFile.path);
             }
             else {
                 console.log('No File Found');
@@ -113,7 +122,7 @@ const DirectoryMovie = () => {
                                 </p>
                             ) : null}
                         </div>
-                        {Object.keys(files).length !== 0 ? <button className='play-btn' onClick={handlePlayBtnClick}><IoPlaySharp />Play</button> : null}
+                        {Object.keys(firstFile).length !== 0 ? <button className='play-btn' onClick={handlePlayBtnClick}><IoPlaySharp />Play</button> : null}
                         {watchlist.find((file) => Number(file.id) === Number(directory.id) && file.media_type === directory.media_type) ? (
                             <button className='add-btn' title='Remove From Watch List' onClick={handleListRemove}><MdPlaylistRemove /></button>
                         ) : (
@@ -121,14 +130,24 @@ const DirectoryMovie = () => {
                         )}
                         {directory.directory && directory.directory.path ? <button className='edit-btn' title='Edit Entry' onClick={() => setOpenModal(true)}><MdEdit /></button> : null}
                     </div>
-                    {directory.recommendations ? 
-                        <div className='recommendations'>
-                            <h3 className='recommendations-title'>Recommendations</h3>
-                            <div className='slider-container'>
-                                <Slider directoryList={directory.recommendations} type='static' />
-                            </div>
-                        </div> 
-                    : null}
+                    <div className='tabs tabs-seasons'>
+                        {directory.recommendations ? <a className={active === 0 ? 'episodes-header active' : 'episodes-header'} onClick={(e) => setActive(0)}>Recommendations</a> : null}
+                        {otherFoldersList.length > 0 ? <a className={active === 1 ? 'episodes-header active' : 'episodes-header'} onClick={(e) => setActive(1)}>Other Folders</a> : null}
+                        {otherFilesList.length > 0 ? <a className={active === 2 ? 'episodes-header active' : 'episodes-header'} onClick={(e) => setActive(2)}>Other Files</a> : null}
+                    </div>
+                    {active === 0 && (
+                        <Recommendations directoryList={directory.recommendations} />
+                    )}
+                    {active === 1 && (
+                        <div className='season-container'>
+                            <OtherFilesList otherFiles={otherFoldersList} />
+                        </div>
+                    )}
+                    {active === 2 && (
+                        <div className='season-container'>
+                            <EpisodeCard episodes={otherFilesList} type='folders' />
+                        </div>
+                    )}
                 </div>
             </div>
         )

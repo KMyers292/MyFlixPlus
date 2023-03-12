@@ -615,10 +615,6 @@ html {
     padding-left: 5rem;
 }
 
-.recommendations-series {
-    background-color: #161F2B;
-}
-
 .episodes-container {
     background-color: #0B1016;
     padding-top: 4rem;
@@ -704,16 +700,6 @@ html {
     border-radius: 5px;
 }
 
-.recommendations {
-    padding-top: 2rem;
-}
-
-.recommendations-title {
-    color: #fff;
-    font-size: 2.5rem;
-    padding-left: 5rem;
-}
-
 .slider-container {
     width: 100%;
 }
@@ -734,6 +720,72 @@ html {
 
 .edit-btn:hover {
     color: #FFF;
+}
+
+/*===============================================================================================*/
+/*                                           Recommendations                                     */
+/*===============================================================================================*/
+
+.recommendations-container {
+    background-color: #161F2B;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+    overflow: hidden;
+}
+
+.recommendations-card {
+    width: 18rem;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    transition: all 0.3s;
+    cursor: pointer;
+    color: #FFF;
+}
+
+.recommendations-card:hover {
+    border: 2px solid #FFF;
+}
+
+.recommendations-card-img {
+    width: 100%;
+    height: 18rem;
+    border-radius: 8px 8px 0 0;
+}
+
+.recommendations-card-heading {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.recommendations-card-info {
+    background-color: #0B1016;
+    border-radius: 0 0 8px 8px;
+    padding: 1rem;
+    min-height: 6rem;
+    color: #FFF;
+}
+
+.recommendations-card-info > p {
+    margin-bottom: 0 !important;
+    border-radius: 8px !important;
+}
+
+.recommendations-card-title {
+    width: 80%;
+    overflow: hidden;
+    font-size: 1.6rem;
+}
+
+.recommendations-card-rating {
+    font-size: 1.2rem;
+}
+
+.recommendations-card-link {
+    text-decoration: none;
 }
 
 /*===============================================================================================*/
@@ -922,10 +974,6 @@ html {
 .provider_logo-searched {
     width: 6rem;
     border-radius: 3px;
-}
-
-.recommendations-searched {
-    padding-left: 5rem;
 }
 
 /*===============================================================================================*/

@@ -512,7 +512,7 @@ export const addDetailedDataToList = async (list) => {
                     for (let i = 0; i < list.recommendations.length; i++) {
                         if (list.recommendations[i]) {
                             list.recommendations[i] = {
-                                backdrop_path: list.recommendations[i].backdrop_path ? `https://image.tmdb.org/t/p/w200/${list.recommendations[i].backdrop_path}` : null,
+                                poster_path: list.recommendations[i].poster_path ? `https://image.tmdb.org/t/p/w500/${list.recommendations[i].poster_path}` : 'D:/Projects/MyFlix+/myflix+/src/assets/images/no_image.png',
                                 id: list.recommendations[i].id || null,
                                 media_type: list.recommendations[i].media_type || null,
                                 vote_average: list.recommendations[i].vote_average || null,
@@ -885,6 +885,9 @@ export const filterNewEpisodes = () => {
         return newEpisodesListFiltered;
     } 
     catch (error) {
+        if (error.code === 'ENOENT') {
+            return null;
+        }
         throw new Error('filterNewEpisodes Error: ' + error);
     }
 };
@@ -921,6 +924,9 @@ export const filterNewMovies = () => {
         return newMoviesListFiltered;
     } 
     catch (error) {
+        if (error.code === 'ENOENT') {
+            return null;
+        }
         throw new Error('filterNewMovies Error: ' + error);
     }
 };
