@@ -49,12 +49,26 @@ const DirectoryMovie = () => {
     }, [dispatch, params.id]);
 
     const handlePlayBtnClick = () => {
+        console.log(otherFilesList);
         if (Object.keys(firstFile).length !== 0) {
             if (fs.existsSync(firstFile.path)) {
                 ipcRenderer.send('vlc:open', firstFile.path);
             }
             else {
-                console.log('No File Found');
+                const list = getOtherFoldersList(directory.directory.path);
+                if (list) {
+                    const filteredList = list.filter((item) => !item.is_directory);
+                    const file = filteredList.shift();
+    
+                    setFirstFile(file);
+                    setOtherFilesList(filteredList);
+                    setOtherFoldersList(list.filter((item) => item.is_directory));
+
+                    ipcRenderer.send('vlc:open', file.path);
+                }
+                else {
+                    console.log('No File Found');
+                }
             }
         }
     }
