@@ -12,16 +12,6 @@ const directoryReducer = (state, action) => {
                 watchlist: action.payload,
                 loading: false
             }
-        case 'SET_LOADING':
-            return {
-                ...state,
-                loading: true
-            }
-        case 'SET_LOADING_FALSE':
-            return {
-                ...state,
-                loading: false
-            }
         default:
             return state
     }

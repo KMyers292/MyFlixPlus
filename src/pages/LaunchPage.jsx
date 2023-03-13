@@ -6,7 +6,7 @@ import { getFileDataInDirectory, getWatchList } from '../context/directory/Direc
 const LaunchPage = () => {
 
     const navigate = useNavigate();
-    const {dispatch, loading} = useContext(DirectoryContext);
+    const {dispatch} = useContext(DirectoryContext);
 
     const handleClick = async () => {
         const savedDirectory = sessionStorage.getItem('savedDirectory') || '';
@@ -15,8 +15,6 @@ const LaunchPage = () => {
             navigate('/getStarted');
         }
         else {
-            dispatch({type: 'SET_LOADING'});
-
             const directories = await getFileDataInDirectory(savedDirectory);
             const watchlist = getWatchList();
     
@@ -37,16 +35,9 @@ const LaunchPage = () => {
     return (
         <div className='launch-container'>
             <h1 className='launch-title'>MYFLIX+</h1>
-            {loading ? (
-                <div>
-                    <span className='loader'></span>
-                    <p>Reading Directory...</p>
-                </div>
-            ) : (
-                <div>
-                    <button className='launch-btn' onClick={handleClick}>Get Started</button>
-                </div>
-            )}
+            <div>
+                <button className='launch-btn' onClick={handleClick}>Get Started</button>
+            </div>
         </div>
     )
 };

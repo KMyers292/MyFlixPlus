@@ -24,8 +24,6 @@ const SearchCard = ({result, directoryItem, onClose}) => {
 
         await addDetailedDataToList(newItem);
 
-        dispatch({ type: 'SET_LOADING' });
-
         if (media_type === 'tv' && newItem.media_type === 'movie') {
             newItem.seasons ? delete newItem.seasons : null;
             newItem.number_of_seasons ? delete newItem.number_of_seasons : null;
@@ -46,8 +44,6 @@ const SearchCard = ({result, directoryItem, onClose}) => {
             navigate(`${newItem.media_type === 'movie' ? '/movie' : newItem.media_type === 'tv' ? '/series' : '/unknown'}/${newItem.id}`, {replace: true});
         }
         else {
-            console.log(directoryItem);
-            dispatch({ type: 'SET_LOADING_FALSE' });
             onClose();
         }
     }

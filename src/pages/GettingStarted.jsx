@@ -9,7 +9,7 @@ const GettingStarted = () => {
 
     const navigate = useNavigate();
     const {dispatch} = useContext(DirectoryContext);
-    const { setAlert } = useContext(AlertContext);
+    const {setAlert} = useContext(AlertContext);
     const [text, setText] = useState('');
 
     const handleSubmit = async (e) => {
