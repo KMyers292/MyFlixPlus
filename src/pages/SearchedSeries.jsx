@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import DirectoryContext from '../context/directory/DirectoryContext';
-import { addDetailedDataToList, addToWatchList, removeFromWatchList } from '../context/directory/DirectoryActions';
+import { addDetailedDataToList, addToWatchList, removeFromWatchList, fetchEpisodesData, createEpisodesList } from '../context/directory/DirectoryActions';
 import Recommendations from '../components/Recommendations.jsx';
 import SeasonsList from '../components/SeasonsList.jsx';
 import { MdPlaylistRemove, MdPlaylistAdd } from "react-icons/md";
@@ -11,6 +11,7 @@ const SearchedSeries = () => {
     const params = useParams();
     const {watchlist, dispatch} = useContext(DirectoryContext);
     const [active, setActive] = useState(0);
+    const [seasonObject, setSeasonObject] = useState({});
     const [seasonsOptions, setSeasonsOptions] = useState([]);
     const [searchedSeries, setSearchedSeries] = useState({});
 
@@ -33,6 +34,7 @@ const SearchedSeries = () => {
                 seasons.push(<option value={i} key={i}>Season {i}</option>);
             }
             setSeasonsOptions(seasons);
+            setSeasonObject(data.seasons[0]);
         });
     }, [params.id]);
 
@@ -53,6 +55,20 @@ const SearchedSeries = () => {
             payload: list
         });
     };
+
+    const handleChange = async (e) => {
+        const response = await fetchEpisodesData(searchedSeries.id, e.target.value);
+        const episodes = createEpisodesList(response);
+
+        if (episodes) {
+            const item = searchedSeries.seasons[e.target.value - 1];
+            item.episodes = [...episodes];
+            setSeasonObject(item);
+        }
+        else {
+            setSeasonObject(searchedSeries.seasons[e.target.value - 1]);
+        }
+    }
     
     if (Object.keys(searchedSeries).length !== 0) {
         return (
@@ -110,7 +126,12 @@ const SearchedSeries = () => {
                     {searchedSeries.recommendations ? <a className={active === 1 ? 'episodes-header active' : 'episodes-header'} onClick={(e) => setActive(1)}>Recommendations</a> : null}
                 </div>
                 {active === 0 && (
-                    <SeasonsList directory={searchedSeries} options={seasonsOptions} type='searched' />
+                    <div className='season-container'>
+                        <select className='seasons-select' onChange={handleChange}>
+                            {seasonsOptions}
+                        </select>
+                        <SeasonsList seasonObject={seasonObject}  id={params.id} />
+                    </div>
                 )}
                 {active === 1 && (
                     <Recommendations directoryList={searchedSeries.recommendations} />

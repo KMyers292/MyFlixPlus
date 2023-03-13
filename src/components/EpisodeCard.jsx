@@ -26,7 +26,7 @@ const EpisodeCard = ({episodes, type}) => {
         }
     }
 
-    if(episodes.length > 0 && type === 'episodes') {
+    if(episodes && episodes.length > 0 && type === 'episodes') {
         return (
             <>
                 {episodes.map((episode, i) => (
@@ -54,7 +54,7 @@ const EpisodeCard = ({episodes, type}) => {
             </>
         )
     }
-    else if (episodes.length > 0 && type === 'files') {
+    else if (episodes && episodes.length > 0 && type === 'files') {
         return (
             <>
                 {episodes.map((episode, i) => (

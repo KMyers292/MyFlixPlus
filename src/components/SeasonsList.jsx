@@ -1,6 +1,6 @@
 import React, { useEffect, useContext, useState } from 'react';
 import DirectoryContext from '../context/directory/DirectoryContext';
-import { addEpisodesInDirectoryToList, getOtherFilesInDirectory, addEpisodesToList, fetchEpisodesData, createEpisodesList } from '../context/directory/DirectoryActions';
+import { addEpisodesInDirectoryToList, getOtherFilesInDirectory } from '../context/directory/DirectoryActions';
 import EpisodeCard from './EpisodeCard.jsx';
 import { IoIosCheckmarkCircle } from 'react-icons/io';
 
@@ -8,7 +8,6 @@ const SeasonsList = ({seasonObject, id}) => {
 
     const {directories} = useContext(DirectoryContext);
     const [active, setActive] = useState(0);
-    const [loading, setLoading] = useState(false);
     const [episodes, setEpisodes] = useState([]);
     const [otherEpisodes, setOtherEpisodes] = useState([]);
 
@@ -39,40 +38,15 @@ const SeasonsList = ({seasonObject, id}) => {
         return availableEpisodes.length;
     }
 
-    // const handleChange = async (e) => {
-    //     if (type === 'directory') {
-    //         const seasonObject = await addEpisodesToList(e.target.value, directory, directories);
-    //         if (seasonObject) {
-    //             setSeasonObject(seasonObject);
-    //         }
-    //         else {
-    //             setSeasonObject(directory.seasons[e.target.value - 1]);
-    //         }
-    //     }
-    //     else if (type === 'searched') {
-    //         const response = await fetchEpisodesData(directory.id, e.target.value);
-    //         const episodes = createEpisodesList(response);
-    
-    //         if (episodes) {
-    //             const item = directory.seasons[e.target.value - 1];
-    //             item.episodes = [...episodes];
-    //             setSeasonObject(item);
-    //         }
-    //         else {
-    //             setSeasonObject(directory.seasons[e.target.value - 1]);
-    //         }
-    //     }
-    // };
-
-    if (Object.keys(seasonObject).length !== 0 && episodes.length > 0) {
+    if (Object.keys(seasonObject).length !== 0) {
         return (
             <>
                 <div className='season-info-container'>
                     <img className='season-img' loading='lazy' src={seasonObject.poster_path} />
                     <div className='season-info'>
                         {Object.hasOwn(seasonObject, 'directory') ? (
-                            seasonObject.name ? <p className='season-title'>{seasonObject.name} ({seasonObject.episodes.length > 0 && seasonObject.episodes[0].air_date ? seasonObject.episodes[0].air_date.substring(0,4) : 'Date Unavailable'}) <IoIosCheckmarkCircle className='checkmark-seasons' title='Season In Directory'/></p> : <p className='season-title'>No Season Name Available</p>
-                        ) : (seasonObject.name ? <p className='season-title'>{seasonObject.name} ({seasonObject.episodes.length > 0 && seasonObject.episodes[0].air_date ? seasonObject.episodes[0].air_date.substring(0,4) : 'Date Unavailable'})</p> : <p className='season-title'>No Season Name Available</p>)}
+                            seasonObject.name ? <p className='season-title'>{seasonObject.name} ({episodes && seasonObject.episodes.length > 0 && seasonObject.episodes[0].air_date ? seasonObject.episodes[0].air_date.substring(0,4) : 'Date Unavailable'}) <IoIosCheckmarkCircle className='checkmark-seasons' title='Season In Directory'/></p> : <p className='season-title'>No Season Name Available</p>
+                        ) : (seasonObject.name ? <p className='season-title'>{seasonObject.name} ({episodes && seasonObject.episodes.length > 0 && seasonObject.episodes[0].air_date ? seasonObject.episodes[0].air_date.substring(0,4) : 'Date Unavailable'})</p> : <p className='season-title'>No Season Name Available</p>)}
                         <p className='season-overview'>{seasonObject.overview}</p>
                     </div>
                 </div>
@@ -82,7 +56,7 @@ const SeasonsList = ({seasonObject, id}) => {
                 </div>
                 {active === 0 && (
                     <div className='episodes-container'>
-                        {seasonObject.episodes.length > 0 ? (
+                        {episodes && episodes.length > 0 ? (
                             <div className='episodes-list-info'>
                                 <p>Total Episodes: {seasonObject.episodes.length}</p>
                                 <p>Available To Play: {getEpisodesAvailable(seasonObject.episodes)}</p>
