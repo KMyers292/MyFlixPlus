@@ -4,18 +4,20 @@ import { addEpisodesInDirectoryToList, getOtherFilesInDirectory, addEpisodesToLi
 import EpisodeCard from './EpisodeCard.jsx';
 import { IoIosCheckmarkCircle } from 'react-icons/io';
 
-const SeasonsList = ({directory, options, type}) => {
+const SeasonsList = ({seasonObject, id}) => {
 
     const {directories} = useContext(DirectoryContext);
     const [active, setActive] = useState(0);
-    const [seasonObject, setSeasonObject] = useState(directory.seasons[0]);
+    const [loading, setLoading] = useState(false);
+    const [episodes, setEpisodes] = useState([]);
     const [otherEpisodes, setOtherEpisodes] = useState([]);
 
     useEffect(() => {
         if (Object.hasOwn(seasonObject, 'directory')) {
-            const episodesList = addEpisodesInDirectoryToList(seasonObject, directories, directory.id);
+            const episodesList = addEpisodesInDirectoryToList(seasonObject, directories, id);
 
             if (episodesList && episodesList.length > 0) {
+                setEpisodes(episodesList);
                 const otherFiles = getOtherFilesInDirectory(seasonObject, episodesList);
 
                 if (otherFiles) {
@@ -23,45 +25,48 @@ const SeasonsList = ({directory, options, type}) => {
                     setOtherEpisodes(otherFilesFiltered);
                 }
             }
+            else {
+                setEpisodes(seasonObject.episodes);
+            }
         }
-    }, [seasonObject]);
+        else {
+            setEpisodes(seasonObject.episodes);
+        }
+    }, [seasonObject, id]);
 
     const getEpisodesAvailable = (episodesList) => {
         const availableEpisodes = episodesList.filter((episode) => Object.hasOwn(episode, 'directory'));
         return availableEpisodes.length;
     }
 
-    const handleChange = async (e) => {
-        if (type === 'directory') {
-            const seasonObject = await addEpisodesToList(e.target.value, directory, directories);
-            if (seasonObject) {
-                setSeasonObject(seasonObject);
-            }
-            else {
-                setSeasonObject(directory.seasons[e.target.value - 1]);
-            }
-        }
-        else if (type === 'searched') {
-            const response = await fetchEpisodesData(directory.id, e.target.value);
-            const episodes = createEpisodesList(response);
+    // const handleChange = async (e) => {
+    //     if (type === 'directory') {
+    //         const seasonObject = await addEpisodesToList(e.target.value, directory, directories);
+    //         if (seasonObject) {
+    //             setSeasonObject(seasonObject);
+    //         }
+    //         else {
+    //             setSeasonObject(directory.seasons[e.target.value - 1]);
+    //         }
+    //     }
+    //     else if (type === 'searched') {
+    //         const response = await fetchEpisodesData(directory.id, e.target.value);
+    //         const episodes = createEpisodesList(response);
     
-            if (episodes) {
-                const item = directory.seasons[e.target.value - 1];
-                item.episodes = [...episodes];
-                setSeasonObject(item);
-            }
-            else {
-                setSeasonObject(directory.seasons[e.target.value - 1]);
-            }
-        }
-    };
+    //         if (episodes) {
+    //             const item = directory.seasons[e.target.value - 1];
+    //             item.episodes = [...episodes];
+    //             setSeasonObject(item);
+    //         }
+    //         else {
+    //             setSeasonObject(directory.seasons[e.target.value - 1]);
+    //         }
+    //     }
+    // };
 
-    if (Object.keys(seasonObject).length !== 0) {
+    if (Object.keys(seasonObject).length !== 0 && episodes.length > 0) {
         return (
-            <div className='season-container'>
-                <select className='seasons-select' onChange={handleChange}>
-                    {options}
-                </select>
+            <>
                 <div className='season-info-container'>
                     <img className='season-img' loading='lazy' src={seasonObject.poster_path} />
                     <div className='season-info'>
@@ -83,7 +88,7 @@ const SeasonsList = ({directory, options, type}) => {
                                 <p>Available To Play: {getEpisodesAvailable(seasonObject.episodes)}</p>
                             </div>
                         ) : null}
-                        <EpisodeCard episodes={seasonObject.episodes} />
+                        <EpisodeCard episodes={episodes} />
                     </div>
                 )}
                 {active === 1 && (
@@ -91,7 +96,7 @@ const SeasonsList = ({directory, options, type}) => {
                         <EpisodeCard episodes={otherEpisodes} type='files' />
                     </div>
                 )}
-            </div>
+            </>
         )
     }
     else {

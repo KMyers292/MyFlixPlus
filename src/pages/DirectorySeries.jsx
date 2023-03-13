@@ -1,7 +1,7 @@
 import React, { useEffect, useContext, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import DirectoryContext from '../context/directory/DirectoryContext';
-import { getMediaObjectFromList, addSeasonsInDirectoryToList, getOtherFilesInDirectory, addToWatchList, removeFromWatchList } from '../context/directory/DirectoryActions';
+import { getMediaObjectFromList, addSeasonsInDirectoryToList, getOtherFilesInDirectory, addToWatchList, removeFromWatchList, addEpisodesToList } from '../context/directory/DirectoryActions';
 import Recommendations from '../components/Recommendations.jsx';
 import SeasonsList from '../components/SeasonsList.jsx';
 import OtherFilesList from '../components/OtherFilesList.jsx';
@@ -12,24 +12,29 @@ const DirectorySeries = () => {
 
     const params = useParams();
     const {directories, watchlist, dispatch} = useContext(DirectoryContext);
-    const directory =  getMediaObjectFromList(params.id, 'tv');
     const [active, setActive] = useState(0);
     const [openModal, setOpenModal] = useState(false);
+    const [seasonObject, setSeasonObject] = useState({});
     const [seasonsOptions, setSeasonsOptions] = useState([]);
     const [otherFilesList, setOtherFilesList] = useState([]);
+    const [directory, setDirectory] = useState({});
 
     useEffect(() => {
+        const directoryItem = getMediaObjectFromList(params.id, 'tv');
+        setDirectory(directoryItem);
+
         let seasons = [];
 
-        for (let i = 1; i <= directory.number_of_seasons; i++) {
+        for (let i = 1; i <= directoryItem.number_of_seasons; i++) {
             seasons.push(<option value={i} key={i}>Season {i}</option>);
         }
 
         setSeasonsOptions(seasons);
+        setSeasonObject(directoryItem.seasons[0]);
 
-        if (directory.directory && directory.media_type === 'tv') {
-            const seasonsList = addSeasonsInDirectoryToList(directory, directories, params.id);
-            const otherFiles = getOtherFilesInDirectory(directory, seasonsList);
+        if (directoryItem.directory && directoryItem.media_type === 'tv') {
+            const seasonsList = addSeasonsInDirectoryToList(directoryItem, directories, params.id);
+            const otherFiles = getOtherFilesInDirectory(directoryItem, seasonsList);
 
             if(otherFiles) {
                 const otherFilesFiltered = otherFiles.filter((file) => file.is_directory);
@@ -54,6 +59,16 @@ const DirectorySeries = () => {
             type: 'GET_WATCHLIST',
             payload: list
         });
+    };
+
+    const handleChange = async (e) => {
+        const seasonObject = await addEpisodesToList(e.target.value, directory, directories);
+        if (seasonObject) {
+            setSeasonObject(seasonObject);
+        }
+        else {
+            setSeasonObject(directory.seasons[e.target.value - 1]);
+        }
     };
 
     if (Object.keys(directory).length !== 0) {
@@ -115,7 +130,12 @@ const DirectorySeries = () => {
                     {otherFilesList.length > 0 ? <a className={active === 2 ? 'episodes-header active' : 'episodes-header'} onClick={(e) => setActive(2)}>Other Folders</a> : null}
                 </div>
                 {active === 0 && (
-                    <SeasonsList directory={directory} options={seasonsOptions} type='directory' />
+                    <div className='season-container'>
+                        <select className='seasons-select' onChange={handleChange}>
+                            {seasonsOptions}
+                        </select>
+                        <SeasonsList seasonObject={seasonObject}  id={params.id} />
+                    </div>
                 )}
                 {active === 1 && (
                     <Recommendations directoryList={directory.recommendations} />

@@ -486,7 +486,6 @@ export const addDetailedDataToList = async (list) => {
         if ((list.tmdb_data === 'Yes' && !list.detailed_info) || list.searchedItem || !list.checked_episode) {
             if (list.media_type === 'movie' || list.media_type === 'tv') {
                 const info = await fetchDetailedData(list.media_type, list.id);
-                console.log(info);
                 list.title = list.media_type === 'movie' ? info.title : list.media_type === 'tv' ? info.name : 'No Title Available';
                 list.poster_path = info.poster_path ? `https://image.tmdb.org/t/p/w500/${info.poster_path}` : 'D:/Projects/MyFlix+/myflix+/src/assets/images/no_image.png';
                 list.backdrop_path = info.backdrop_path ? `https://image.tmdb.org/t/p/original/${info.backdrop_path}` : null;
@@ -1000,22 +999,6 @@ export const areThereNewMoviesToday = () => {
     } 
     catch (error) {
         throw new Error('filterNewMediaToday Error: ' + error);
-    }
-};
-
-//===================================================================================================================================================================//
-
-export const getFirstNumberDivisible = (num) => {
-    try {
-        for (let i = 6; i > 0; i--) {
-            if (num % i === 0) {
-                return i;
-            }
-        }
-        return 1;
-    } 
-    catch (error) {
-        throw new Error('getFirstNumberDivisible Error: ' + error);
     }
 };
 
