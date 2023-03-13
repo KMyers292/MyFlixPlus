@@ -4,7 +4,7 @@ import DirectoryContext from '../context/directory/DirectoryContext';
 import { addDetailedDataToList, addToWatchList, removeFromWatchList, fetchEpisodesData, createEpisodesList } from '../context/directory/DirectoryActions';
 import Recommendations from '../components/Recommendations.jsx';
 import SeasonsList from '../components/SeasonsList.jsx';
-import { MdPlaylistRemove, MdPlaylistAdd } from "react-icons/md";
+import { MdPlaylistRemove, MdPlaylistAdd } from 'react-icons/md';
 
 const SearchedSeries = () => {
 
@@ -93,8 +93,8 @@ const SearchedSeries = () => {
                                 <p>Starring:
                                     <span className='info-list'>
                                         {searchedSeries.credits[0] ? searchedSeries.credits[0] : null}
-                                        {searchedSeries.credits[1] ? ", " + searchedSeries.credits[1] : null}
-                                        {searchedSeries.credits[2] ? ", " + searchedSeries.credits[2] : null}
+                                        {searchedSeries.credits[1] ? ', ' + searchedSeries.credits[1] : null}
+                                        {searchedSeries.credits[2] ? ', ' + searchedSeries.credits[2] : null}
                                     </span>
                                 </p>
                             ) : null}
@@ -102,8 +102,8 @@ const SearchedSeries = () => {
                                 <p>Genres: 
                                     <span className='info-list'>
                                         {searchedSeries.genres[0] ? searchedSeries.genres[0].name : null}
-                                        {searchedSeries.genres[1] ? ", " + searchedSeries.genres[1].name : null}
-                                        {searchedSeries.genres[2] ? ", " + searchedSeries.genres[2].name : null}
+                                        {searchedSeries.genres[1] ? ', ' + searchedSeries.genres[1].name : null}
+                                        {searchedSeries.genres[2] ? ', ' + searchedSeries.genres[2].name : null}
                                     </span>
                                 </p>
                             ) : null}

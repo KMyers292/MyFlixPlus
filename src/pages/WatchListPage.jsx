@@ -30,8 +30,8 @@ const WatchListPage = () => {
                 <div className='browse-heading'>
                     <h1 className='browse-title'>Watch List</h1>
                     <div>
-                        <label className='browse-select-label' htmlFor="filter-watchlist">Filter </label>
-                        <select className='browse-select' name="filter-watchlist" id="filter-watchlist" onChange={handleChange}>
+                        <label className='browse-select-label' htmlFor='filter-watchlist'>Filter </label>
+                        <select className='browse-select' name='filter-watchlist' id='filter-watchlist' onChange={handleChange}>
                             <option value='all'>All Media</option>
                             <option value='tv'>Series</option>
                             <option value='movie'>Movies</option>

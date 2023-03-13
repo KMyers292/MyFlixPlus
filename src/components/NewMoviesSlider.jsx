@@ -2,8 +2,8 @@ import React, {useContext} from 'react';
 import { useNavigate } from 'react-router-dom';
 import DirectoryContext from '../context/directory/DirectoryContext';
 import { dateNumbersToWords } from '../context/directory/DirectoryActions';
-import { Swiper, SwiperSlide } from "swiper/react";
-import { A11y, Mousewheel, Navigation } from "swiper";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { A11y, Mousewheel, Navigation } from 'swiper';
 import '../assets/css/swiper/swiper.min.css';
 import '../assets/css/swiper/a11y.min.css';
 import '../assets/css/swiper/navigation.min.css';
@@ -23,8 +23,8 @@ const NewMoviesSlider = ({episodes}) => {
         observeParents: true,
         resistanceRatio: 0.8,
         navigation: {
-          prevEl: "#button-prev",
-          nextEl: "#button-next",
+          prevEl: '#button-prev',
+          nextEl: '#button-next',
         },
         observer: true,
         speed: 600,
@@ -47,17 +47,17 @@ const NewMoviesSlider = ({episodes}) => {
                     {episodes.map((episode, i) => (
                         episode ? (
                             <SwiperSlide key={i} className='swiper-slide-new-episodes'>
-                                <img onClick={() => handleClick(episode)} className="swiper-slide-new-episodes-image" loading="lazy" src={episode.poster_path} />
-                                <div className="swiper-lazy-preloader"></div>
-                                <div className="swiper-slide-new-episodes-content">
-                                    <div className="swiper-slide-new-episodes-title">{dateNumbersToWords(episode.release)}</div>
+                                <img onClick={() => handleClick(episode)} className='swiper-slide-new-episodes-image' loading='lazy' src={episode.poster_path} />
+                                <div className='swiper-lazy-preloader'></div>
+                                <div className='swiper-slide-new-episodes-content'>
+                                    <div className='swiper-slide-new-episodes-title'>{dateNumbersToWords(episode.release)}</div>
                                 </div>
                             </SwiperSlide>
                         ) : null
                     ))}
                 </Swiper>
-                <div id="button-prev" className="swiper-button-prev new-episodes-btn-prev" />
-                <div id="button-next" className="swiper-button-next new-episodes-btn-next" />
+                <div id='button-prev' className='swiper-button-prev new-episodes-btn-prev' />
+                <div id='button-next' className='swiper-button-next new-episodes-btn-next' />
             </div>
         )
     }

@@ -105,8 +105,8 @@ const UnknownFile = () => {
                                 <p>Starring:
                                     <span className='info-list'>
                                         {directory.credits[0] ? directory.credits[0] : null}
-                                        {directory.credits[1] ? ", " + directory.credits[1] : null}
-                                        {directory.credits[2] ? ", " + directory.credits[2] : null}
+                                        {directory.credits[1] ? ', ' + directory.credits[1] : null}
+                                        {directory.credits[2] ? ', ' + directory.credits[2] : null}
                                     </span>
                                 </p>
                             ) : null}
@@ -114,8 +114,8 @@ const UnknownFile = () => {
                                 <p>Genres: 
                                     <span className='info-list'>
                                         {directory.genres[0] ? directory.genres[0].name : null}
-                                        {directory.genres[1] ? ", " + directory.genres[1].name : null}
-                                        {directory.genres[2] ? ", " + directory.genres[2].name : null}
+                                        {directory.genres[1] ? ', ' + directory.genres[1].name : null}
+                                        {directory.genres[2] ? ', ' + directory.genres[2].name : null}
                                     </span>
                                 </p>
                             ) : null}

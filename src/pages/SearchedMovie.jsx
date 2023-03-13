@@ -63,8 +63,8 @@ const SearchedMovie = () => {
                                 <p>Starring:
                                     <span className='info-list'>
                                         {searchedMovie.credits[0] ? searchedMovie.credits[0] : null}
-                                        {searchedMovie.credits[1] ? ", " + searchedMovie.credits[1] : null}
-                                        {searchedMovie.credits[2] ? ", " + searchedMovie.credits[2] : null}
+                                        {searchedMovie.credits[1] ? ', ' + searchedMovie.credits[1] : null}
+                                        {searchedMovie.credits[2] ? ', ' + searchedMovie.credits[2] : null}
                                     </span>
                                 </p>
                             ) : null}
@@ -72,8 +72,8 @@ const SearchedMovie = () => {
                                 <p>Genres: 
                                     <span className='info-list'>
                                         {searchedMovie.genres[0] ? searchedMovie.genres[0].name : null}
-                                        {searchedMovie.genres[1] ? ", " + searchedMovie.genres[1].name : null}
-                                        {searchedMovie.genres[2] ? ", " + searchedMovie.genres[2].name : null}
+                                        {searchedMovie.genres[1] ? ', ' + searchedMovie.genres[1].name : null}
+                                        {searchedMovie.genres[2] ? ', ' + searchedMovie.genres[2].name : null}
                                     </span>
                                 </p>
                             ) : null}

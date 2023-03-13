@@ -4,7 +4,7 @@ import { filterNewEpisodes, filterNewMovies, areThereNewEpisodesToday, areThereN
 import NewEpisodesSlider from '../NewEpisodesSlider.jsx';
 import NewMoviesSlider from '../NewMoviesSlider.jsx'
 import { FaAngleDoubleLeft, FaAngleDoubleRight } from 'react-icons/fa';
-import { RiTvLine, RiMovie2Line } from "react-icons/ri";
+import { RiTvLine, RiMovie2Line } from 'react-icons/ri';
 
 const RightSidebar = ({toggleSidebar, isOpen}) => {
 
@@ -40,7 +40,7 @@ const RightSidebar = ({toggleSidebar, isOpen}) => {
                     {isOpen ? <FaAngleDoubleRight onClick={toggleSidebar} /> : <FaAngleDoubleLeft onClick={handleClick} />}
                 </div>
                 <div className={isOpen ? 'notify-container' : 'notify-container-closed'}>
-                    <RiTvLine className="notify-icon" />
+                    <RiTvLine className='notify-icon' />
                     {!viewed.current ? (
                         <p className={newEpisodesList.length > 9 ? 'notify-number-large' : 'notify-number'} title='New Episodes Out This Week'>{newEpisodesList.length}</p>
                     ) : areThereNewEpisodesToday() ? (
@@ -52,7 +52,7 @@ const RightSidebar = ({toggleSidebar, isOpen}) => {
                     <NewEpisodesSlider episodes={newEpisodesList} />
                 </div>
                 <div className={isOpen ? 'notify-container' : 'notify-container-closed notify-movie'}>
-                    <RiMovie2Line className="notify-icon" />
+                    <RiMovie2Line className='notify-icon' />
                     {!viewed.current ? (
                         <p className={newEpisodesList.length > 9 ? 'notify-number-large' : 'notify-number'} title='New Movies Out This Week'>{newEpisodesList.length}</p>
                     ) : areThereNewMoviesToday() ? (
@@ -68,7 +68,7 @@ const RightSidebar = ({toggleSidebar, isOpen}) => {
     }
     else {
         return (
-            <div className="sidebar-not-loaded">
+            <div className='sidebar-not-loaded'>
             </div>
         )
     }

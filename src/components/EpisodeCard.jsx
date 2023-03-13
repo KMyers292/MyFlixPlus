@@ -71,7 +71,7 @@ const EpisodeCard = ({episodes, type}) => {
                 {episodes.length > 0 ? (
                     episodes.map((episode, i) => (
                         <div key={i} className='files-container folders' onClick={!episode.is_directory ? () => handleClick(i) : undefined}>
-                            <p className='files-title' title={episode.file_name}>{episode.file_name.length > 22 ? episode.file_name.substring(0,22) + "..." : episode.file_name}</p>
+                            <p className='files-title' title={episode.file_name}>{episode.file_name.length > 22 ? episode.file_name.substring(0,22) + '...' : episode.file_name}</p>
                         </div>
                     ))
                 ) : (

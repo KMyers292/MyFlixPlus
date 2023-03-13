@@ -19,7 +19,7 @@ const Recommendations = ({directoryList}) => {
                                     {directories.find((file) => file.id === Number(directory.id) && file.media_type === directory.media_type) ? <IoIosCheckmarkCircle className='checkmark' title='In Directory'/> : null}
                                     <div className='recommendations-card-info'>
                                         <div className='recommendations-card-heading'>
-                                            <h3 className='recommendations-card-title' title={directory.title}>{directory.title.length > 22 ? directory.title.substring(0,22) + "..." : directory.title}</h3>
+                                            <h3 className='recommendations-card-title' title={directory.title}>{directory.title.length > 22 ? directory.title.substring(0,22) + '...' : directory.title}</h3>
                                             {directory.vote_average ? <p className='recommendations-card-rating'>{Math.round(directory.vote_average * 10)+ '%'}</p> : null}
                                         </div>
                                     </div>
@@ -30,7 +30,7 @@ const Recommendations = ({directoryList}) => {
                                     {directories.find((file) => file.id === Number(directory.id) && file.media_type === directory.media_type) ? <IoIosCheckmarkCircle className='checkmark' title='In Directory'/> : null}
                                     <div className='recommendations-card-info'>
                                         <div className='recommendations-card-heading'>
-                                            <h3 className='recommendations-card-title' title={directory.title}>{directory.title.length > 24 ? directory.title.substring(0,24) + "..." : directory.title}</h3>
+                                            <h3 className='recommendations-card-title' title={directory.title}>{directory.title.length > 24 ? directory.title.substring(0,24) + '...' : directory.title}</h3>
                                             {directory.vote_average ? <p className='recommendations-card-rating'>{Math.round(directory.vote_average * 10)+ '%'}</p> : null}
                                         </div>
                                     </div>

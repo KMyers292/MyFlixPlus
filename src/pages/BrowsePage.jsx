@@ -41,8 +41,8 @@ const BrowsePage = () => {
                 <div className='browse-heading'>
                     <h1 className='browse-title'>Browse Locally Stored Media - {sortType}</h1>
                     <div>
-                        <label className='browse-select-label' htmlFor="filter">Filter </label>
-                        <select className='browse-select' name="filter" id="filter" onChange={handleChange}>
+                        <label className='browse-select-label' htmlFor='filter'>Filter </label>
+                        <select className='browse-select' name='filter' id='filter' onChange={handleChange}>
                             <option value='All Media'>All Media</option>
                             <option value='Series'>Series</option>
                             <option value='Movies'>Movies</option>

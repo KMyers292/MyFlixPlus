@@ -52,11 +52,11 @@ const EditForm = ({directoryItem, onClose}) => {
 
     const handleFileChange = (e) => {
         if (e.target.files && e.target.id === 'backdrop') {
-            const newPath = e.target.files[0].path.replace(/\\/g,"/");
+            const newPath = e.target.files[0].path.replace(/\\/g,'/');
             setBackdrop(newPath);
         }
         else if (e.target.files && e.target.id === 'poster') {
-            const newPath = e.target.files[0].path.replace(/\\/g,"/");
+            const newPath = e.target.files[0].path.replace(/\\/g,'/');
             setPoster(newPath);
         }
     }
