@@ -120,7 +120,7 @@ function createMainWindow() {
 
 const launchVLC = (file) => {
   const path = 'D:/Projects/Electron/MyFlix_javascript/VLC/vlc.exe';
-  proc = spawn(`"${path}"`, [`"${file}"`], { shell: true });
+  proc = spawn(`'${path}'`, [`'${file}'`], { shell: true });
 };
 
 // This method will be called when Electron has finished
