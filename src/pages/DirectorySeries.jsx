@@ -112,7 +112,7 @@ const DirectorySeries = () => {
                             {directory.status ? <p>Status: <span className='info-list'>{directory.status}</span></p> : null}
                             {directory.providers ? (
                                 <p>Watch On: 
-                                    <img className='provider_logo' loading='lazy' title={directory.providers.provider_name} src={directory.providers.logo_path} />
+                                    <img className='provider_logo' loading='lazy' title={directory.providers.provider_name} src={directory.providers.logo_path} alt={`Logo For ${directory.providers.provider_name}`} />
                                 </p>
                             ) : null}
                         </div>

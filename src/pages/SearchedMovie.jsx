@@ -80,7 +80,7 @@ const SearchedMovie = () => {
                             {searchedMovie.status ? <p>Status: <span className='info-list'>{searchedMovie.status}</span></p> : null}
                             {searchedMovie.providers ? (
                                 <p>Watch On: 
-                                    <img className='provider_logo' loading='lazy' title={searchedMovie.providers.provider_name} src={searchedMovie.providers.logo_path} />
+                                    <img className='provider_logo' loading='lazy' title={searchedMovie.providers.provider_name} src={searchedMovie.providers.logo_path} alt={`Logo For ${searchedMovie.providers.provider_name}`} />
                                 </p>
                             ) : null}
                         </div>

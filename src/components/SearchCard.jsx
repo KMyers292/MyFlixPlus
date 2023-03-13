@@ -60,7 +60,7 @@ const SearchCard = ({result, directoryItem, onClose}) => {
     if (Object.keys(result).length !== 0) {
         return (
             <div className='search-card'>
-                <img className='search-card-image' loading='lazy' src={result.poster_path} />
+                <img className='search-card-image' loading='lazy' src={result.poster_path} alt={`Poster For ${result.title}`} />
                 <div className='search-card-info-container'>
                     <div className='search-card-info'>
                         <p className='search-card-title'>{result.title}</p>

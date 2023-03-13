@@ -21,7 +21,7 @@ const MediaCard = ({result}) => {
     if (Object.keys(result).length !== 0) {
         return (
             <div className='media-card' onClick={() => handleClick(result)}>
-                <img className='media-card-img' loading='lazy' src={result.poster_path ? `https://image.tmdb.org/t/p/w500/${result.poster_path}` : 'D:/Projects/MyFlix+/myflix+/src/assets/images/no_image.png'} alt='' />
+                <img className='media-card-img' loading='lazy' src={result.poster_path ? `https://image.tmdb.org/t/p/w500/${result.poster_path}` : 'D:/Projects/MyFlix+/myflix+/src/assets/images/no_image.png'} alt={`Poster For ${result.title}`} />
                 <div className='media-card-info'>
                     <div className='media-card-heading'>
                         <h3 className='media-card-title'>{result.media_type === 'tv' ? result.name : result.media_type === 'movie' ? result.title : 'No Title Available'} {directories.find((file) => file.id === Number(result.id) && file.media_type === result.media_type) ? <IoIosCheckmarkCircle className='checkmark-trending' title='In Directory'/> : null}</h3>

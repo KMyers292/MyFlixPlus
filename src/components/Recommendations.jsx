@@ -15,7 +15,7 @@ const Recommendations = ({directoryList}) => {
                         <div key={i} className='recommendations-card'>
                             {directories.find((file) => Number(file.id) === Number(directory.id) && file.media_type === directory.media_type) ? (
                                 <Link to={directory.media_type === 'tv' ? `/series/${directory.id}` : directory.media_type === 'movie' ? `/movie/${directory.id}` : `/unknown/${directory.id}`} className='recommendations-card-link'>
-                                    <img className='recommendations-card-img' loading='lazy' src={directory.poster_path} />
+                                    <img className='recommendations-card-img' loading='lazy' src={directory.poster_path} alt={`Poster For ${directory.title}`} />
                                     {directories.find((file) => file.id === Number(directory.id) && file.media_type === directory.media_type) ? <IoIosCheckmarkCircle className='checkmark' title='In Directory'/> : null}
                                     <div className='recommendations-card-info'>
                                         <div className='recommendations-card-heading'>
@@ -26,7 +26,7 @@ const Recommendations = ({directoryList}) => {
                                 </Link>
                             ) : (
                                 <Link to={directory.media_type === 'tv' ? `/searched/series/${directory.id}` : directory.media_type === 'movie' ? `/searched/movie/${directory.id}` : `/unknown/${directory.id}`} className='recommendations-card-link'>
-                                    <img className='recommendations-card-img' loading='lazy' src={directory.poster_path} />
+                                    <img className='recommendations-card-img' loading='lazy' src={directory.poster_path} alt={`Poster For ${directory.title}`}/>
                                     {directories.find((file) => file.id === Number(directory.id) && file.media_type === directory.media_type) ? <IoIosCheckmarkCircle className='checkmark' title='In Directory'/> : null}
                                     <div className='recommendations-card-info'>
                                         <div className='recommendations-card-heading'>

@@ -32,7 +32,7 @@ const EpisodeCard = ({episodes, type}) => {
                 {episodes.map((episode, i) => (
                     <div key={i} className={Object.hasOwn(episode, 'directory') ? 'card-container hasDirectory' : 'card-container'} onClick={Object.hasOwn(episode, 'directory') ? () => handleClick(i) : undefined}>
                         <div className='episode-image-container'>
-                            <img className='episode-image' loading='lazy' src={episode.still_path} />
+                            <img className='episode-image' loading='lazy' src={episode.still_path} alt={`Poster For ${episode.name}`} />
                             {Object.hasOwn(episode, 'directory') ? <BiPlayCircle className='episode-play-icon' /> : null}
                         </div>
                         <div className='episode-info-container'>

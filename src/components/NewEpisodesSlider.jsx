@@ -47,7 +47,7 @@ const NewEpisodesSlider = ({episodes}) => {
                     {episodes.map((episode, i) => (
                         episode ? (
                             <SwiperSlide key={i} className='swiper-slide-new-episodes'>
-                                <img onClick={() => handleClick(episode)} className='swiper-slide-new-episodes-image' loading='lazy' src={episode.poster_path} />
+                                <img onClick={() => handleClick(episode)} className='swiper-slide-new-episodes-image' loading='lazy' src={episode.poster_path} alt={`Poster For ${episode.name}`} />
                                 <div className='swiper-lazy-preloader'></div>
                                 <div className='swiper-slide-new-episodes-content'>
                                     <div className='content-text'>Episode. {episode.next_episode.episode_number}</div>

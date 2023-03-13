@@ -44,7 +44,7 @@ const WatchListPage = () => {
                             <div key={i} className='browse-card-container'>
                                 {directories.find((file) => Number(file.id) === Number(directory.id) && file.media_type === directory.media_type) ? (
                                     <Link to={directory.media_type === 'tv' ? `/series/${directory.id}` : directory.media_type === 'movie' ? `/movie/${directory.id}` : `/unknown/${directory.id}`} className='browse-card-link'>
-                                        <img className='browse-card-img' loading='lazy' src={directory.poster_path} />
+                                        <img className='browse-card-img' loading='lazy' src={directory.poster_path} alt={`Poster For ${directory.title}`} />
                                         <div className='browse-card-info'>
                                             <div className='browse-card-heading'>
                                                 <h3 className='browse-card-title'>{directory.title}</h3>
@@ -59,7 +59,7 @@ const WatchListPage = () => {
                                     </Link>
                                 ) : (
                                     <Link to={directory.media_type === 'tv' ? `/searched/series/${directory.id}` : directory.media_type === 'movie' ? `/searched/movie/${directory.id}` : `/unknown/${directory.id}`} className='browse-card-link'>
-                                        <img className='browse-card-img' loading='lazy' src={directory.poster_path} />
+                                        <img className='browse-card-img' loading='lazy' src={directory.poster_path} alt={`Poster For ${directory.title}`} />
                                         <div className='browse-card-info'>
                                             <div className='browse-card-heading'>
                                                 <h3 className='browse-card-title'>{directory.title}</h3>

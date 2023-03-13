@@ -110,7 +110,7 @@ const SearchedSeries = () => {
                             {searchedSeries.status ? <p>Status: <span className='info-list'>{searchedSeries.status}</span></p> : null}
                             {searchedSeries.providers ? (
                                 <p>Watch On: 
-                                    <img className='provider_logo' loading='lazy' title={searchedSeries.providers.provider_name} src={searchedSeries.providers.logo_path} />
+                                    <img className='provider_logo' loading='lazy' title={searchedSeries.providers.provider_name} src={searchedSeries.providers.logo_path} alt={`Logo For ${searchedSeries.providers.provider_name}`} />
                                 </p>
                             ) : null}
                         </div>

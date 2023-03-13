@@ -56,7 +56,7 @@ const TrendingSlider = ({trendingList}) => {
 					{trendingList.map((trending, i) => (
 						trending ? (
 							<SwiperSlide key={i} onClick={() => handleClick(trending)} className='trending-slide'>
-								<img className='swiper-slide-trending-image' loading='lazy' src={trending.backdrop_path ? `https://image.tmdb.org/t/p/original/${trending.backdrop_path}` : 'D:/Projects/MyFlix+/myflix+/src/assets/images/no_image.png'} />
+								<img className='swiper-slide-trending-image' loading='lazy' src={trending.backdrop_path ? `https://image.tmdb.org/t/p/original/${trending.backdrop_path}` : 'D:/Projects/MyFlix+/myflix+/src/assets/images/no_image.png'} alt={`Backdrop Poster For ${trending.title || trending.name}`} />
 								<div className='swiper-lazy-preloader'></div>
 								<div className='swiper-slide-trending-content'>
 									<div className={trending.media_type === 'tv' ? 'series-badge' : 'movie-badge'}><p>{trending.media_type === 'tv' ? 'Series' : trending.media_type === 'movie' ? 'Movie' : null}</p></div>

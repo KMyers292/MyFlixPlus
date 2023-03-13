@@ -54,7 +54,7 @@ const BrowsePage = () => {
                         directory ? (
                             <div key={i} className='browse-card-container'>
                                 <Link to={directory.media_type === 'tv' ? `/series/${directory.id}` : directory.media_type === 'movie' ? `/movie/${directory.id}` : `/unknown/${directory.id}`} className='browse-card-link'>
-                                    <img className='browse-card-img' loading='lazy' src={directory.poster_path} />
+                                    <img className='browse-card-img' loading='lazy' src={directory.poster_path} alt={`Poster For ${directory.title}`} />
                                     <div className='browse-card-info'>
                                         <div className='browse-card-heading'>
                                             <h3 className='browse-card-title'>{directory.title}</h3>
