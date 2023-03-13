@@ -40,7 +40,7 @@ const NewMoviesSlider = ({episodes}) => {
         }
     };
 
-    if(episodes.length > 0) {
+    if(episodes && episodes.length > 0) {
         return (
             <div className='new-episodes-slider-container'>
                 <Swiper {...swiperParameters} className='swiper-new-episodes'>
@@ -63,7 +63,7 @@ const NewMoviesSlider = ({episodes}) => {
     }
     else {
         return (
-            <div>
+            <div className='loader-container'>
                 <span className='loader'></span>
             </div>
         )

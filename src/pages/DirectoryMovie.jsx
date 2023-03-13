@@ -14,7 +14,7 @@ import { MdEdit, MdPlaylistRemove, MdPlaylistAdd } from 'react-icons/md';
 const DirectoryMovie = () => {
 
     const params = useParams();
-    const {watchlist, loading, dispatch} = useContext(DirectoryContext);
+    const {watchlist, dispatch} = useContext(DirectoryContext);
     const [active, setActive] = useState(0);
     const [openModal, setOpenModal] = useState(false);
     const [otherFoldersList, setOtherFoldersList] = useState([]);
@@ -23,8 +23,6 @@ const DirectoryMovie = () => {
     const [directory, setDirectory] = useState({});
 
     useEffect(() => {
-        dispatch({ type: 'SET_LOADING' });
-
         const directoryItem = getMediaObjectFromList(params.id, 'movie');
         setDirectory(directoryItem);
 
@@ -39,12 +37,6 @@ const DirectoryMovie = () => {
                 setOtherFilesList(filteredList);
                 setOtherFoldersList(list.filter((item) => item.is_directory));
             }
-        }
-
-        dispatch({ type: 'SET_LOADING_FALSE' });
-
-        return () => {
-            setDirectory({});
         }
     }, [dispatch, params.id]);
 
@@ -91,7 +83,7 @@ const DirectoryMovie = () => {
         });
     };
 
-    if (directory.media_type === 'movie' && !loading) {
+    if (Object.keys(directory).length !== 0) {
         return (
             <div>
                 <EditModal open={openModal} directoryItem={directory} onClose={() => setOpenModal(false)} />
@@ -168,7 +160,7 @@ const DirectoryMovie = () => {
     }
     else {
         return (
-            <div>
+            <div className='loader-container'>
                 <span className='loader'></span>
             </div>
         )

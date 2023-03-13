@@ -7,7 +7,7 @@ const Recommendations = ({directoryList}) => {
 
     const {directories} = useContext(DirectoryContext);
 
-    if (directoryList.length > 0) {
+    if (directoryList && directoryList.length > 0) {
         return (
             <div className='recommendations-container'>
                 {directoryList.map((directory, i) => (

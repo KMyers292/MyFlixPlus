@@ -38,7 +38,7 @@ const MediaCard = ({result}) => {
     }
     else {
         return (
-            <div>
+            <div className='loader-container'>
                 <span className='loader'></span>
             </div>
         )

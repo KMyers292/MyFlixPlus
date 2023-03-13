@@ -48,26 +48,35 @@ const Carousel = ({directoryList}) => {
         }
     };
 
-    return (
-        <div className='carousel-container'>
-            <Swiper {...swiperParameters} className='swiper-carousel'>
-                {smallerDirectoryList.length > 6 ? <div className="nav-background-carousel"></div> : null}
-                {smallerDirectoryList.length > 6 ? <div className="nav-background-carousel-right"></div> : null}
-                {smallerDirectoryList.map((directory, i) => (
-                    directory ? (
-                        <SwiperSlide key={i} onClick={() => handleClick(directory)} className='swiper-slide-carousel'>
-                            <img className="swiper-slide-carousel-image" loading="lazy" src={directory.poster_path ? directory.poster_path : 'D:/Projects/MyFlix+/myflix+/src/assets/images/no_image.png'} />
-                            <div className="swiper-lazy-preloader"></div>
-                            <div className="swiper-slide-carousel-content">
-                                <img className="content-image" loading="lazy" src={directory.poster_path ? directory.poster_path : 'D:/Projects/MyFlix+/myflix+/src/assets/images/no_image.png'} />
-                                <div className="swiper-slide-carousel-title">{directory.title}</div>
-                            </div>
-                        </SwiperSlide>
-                    ) : null
-                ))}
-            </Swiper>
-        </div>
-    )
+    if (directoryList && directoryList.length > 0) {
+        return (
+            <div className='carousel-container'>
+                <Swiper {...swiperParameters} className='swiper-carousel'>
+                    {smallerDirectoryList.length > 6 ? <div className="nav-background-carousel"></div> : null}
+                    {smallerDirectoryList.length > 6 ? <div className="nav-background-carousel-right"></div> : null}
+                    {smallerDirectoryList.map((directory, i) => (
+                        directory ? (
+                            <SwiperSlide key={i} onClick={() => handleClick(directory)} className='swiper-slide-carousel'>
+                                <img className="swiper-slide-carousel-image" loading="lazy" src={directory.poster_path ? directory.poster_path : 'D:/Projects/MyFlix+/myflix+/src/assets/images/no_image.png'} />
+                                <div className="swiper-lazy-preloader"></div>
+                                <div className="swiper-slide-carousel-content">
+                                    <img className="content-image" loading="lazy" src={directory.poster_path ? directory.poster_path : 'D:/Projects/MyFlix+/myflix+/src/assets/images/no_image.png'} />
+                                    <div className="swiper-slide-carousel-title">{directory.title}</div>
+                                </div>
+                            </SwiperSlide>
+                        ) : null
+                    ))}
+                </Swiper>
+            </div>
+        )
+    }
+    else {
+        return (
+            <div className='loader-container'>
+                <span className='loader'></span>
+            </div>
+        )
+    }
 };
 
 export default Carousel;

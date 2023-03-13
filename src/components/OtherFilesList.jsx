@@ -39,16 +39,25 @@ const OtherFilesList = ({otherFiles}) => {
         }
     }
 
-    return (
-        <div className='other-files-container'>
-            {otherFoldersOptions.length > 0 ? (
-                <select className='seasons-select' value={selectedFolder} onChange={handleChange}>
-                    {otherFoldersOptions}
-                </select>
-            ) : null}
-            <EpisodeCard episodes={fileList} type='folders' />
-        </div>
-    )
+    if (otherFiles && otherFiles.length > 0) {
+        return (
+            <div className='other-files-container'>
+                {otherFoldersOptions.length > 0 ? (
+                    <select className='seasons-select' value={selectedFolder} onChange={handleChange}>
+                        {otherFoldersOptions}
+                    </select>
+                ) : null}
+                <EpisodeCard episodes={fileList} type='folders' />
+            </div>
+        )
+    }
+    else {
+        return (
+            <div className='loader-container'>
+                <span className='loader'></span>
+            </div>
+        )
+    }
 };
 
 export default OtherFilesList;

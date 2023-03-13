@@ -1,13 +1,9 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import MediaCard from '../components/MediaCard.jsx';
 
 const SearchPage = ({searchResults, searchTitle}) => {
 
-    useEffect(() => {
-        console.log(searchResults);
-    }, []);
-
-    if (searchResults.length > 0) {
+    if (searchResults && searchResults.length > 0) {
         return (
             <div className='search-results-container'>
                 <h1 className='search-results-header'>Results for "{searchTitle}"</h1>

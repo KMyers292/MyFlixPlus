@@ -8,12 +8,10 @@ import { MdPlaylistRemove, MdPlaylistAdd } from 'react-icons/md';
 const SearchedMovie = () => {
 
     const params = useParams();
-    const {watchlist, dispatch, loading} = useContext(DirectoryContext);
+    const {watchlist, dispatch} = useContext(DirectoryContext);
     const [searchedMovie, setSearchedMovie] = useState({});
 
     useEffect(() => {
-        dispatch({ type: 'SET_LOADING' });
-
         const getData = async () => {
             let data = {
                 media_type: 'movie',
@@ -26,12 +24,6 @@ const SearchedMovie = () => {
         }
 
         getData();
-
-        dispatch({ type: 'SET_LOADING_FALSE' });
-
-        return () => {
-            setSearchedMovie({});
-        }
     }, [dispatch, params.id]);
 
     const handleListAdd = () => {
@@ -52,7 +44,7 @@ const SearchedMovie = () => {
         });
     };
     
-    if (Object.keys(searchedMovie).length !== 0 && !loading) {
+    if (Object.keys(searchedMovie).length !== 0) {
         return (
             <div>
                 <div className='media-container'>
@@ -108,7 +100,7 @@ const SearchedMovie = () => {
     }
     else {
         return (
-            <div>
+            <div className='loader-container'>
                 <span className='loader'></span>
             </div>
         )

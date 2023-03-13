@@ -13,7 +13,7 @@ import { MdEdit, MdPlaylistRemove, MdPlaylistAdd } from 'react-icons/md';
 const UnknownFile = () => {
 
     const params = useParams();
-    const {watchlist, loading, dispatch} = useContext(DirectoryContext);
+    const {watchlist, dispatch} = useContext(DirectoryContext);
     const [active, setActive] = useState(0);
     const [openModal, setOpenModal] = useState(false);
     const [otherFoldersList, setOtherFoldersList] = useState([]);
@@ -22,8 +22,6 @@ const UnknownFile = () => {
     const [directory, setDirectory] = useState({});
 
     useEffect(() => {
-        dispatch({ type: 'SET_LOADING' });
-
         const directoryItem = getMediaObjectFromList(params.id, null);
         setDirectory(directoryItem);
 
@@ -39,15 +37,7 @@ const UnknownFile = () => {
                 setOtherFoldersList(list.filter((item) => item.is_directory));
             }
         }
-
-        dispatch({ type: 'SET_LOADING_FALSE' });
-
-        return () => {
-            setOtherFilesList([]);
-            setOtherFoldersList([]);
-            setDirectory({});
-        }
-    }, [dispatch, params.id]);
+    }, [params.id]);
 
     const handleListAdd = () => {
         const list = addToWatchList(directory);
@@ -91,7 +81,7 @@ const UnknownFile = () => {
         }
     }
 
-    if (Object.keys(directory).length !== 0 && !loading) {
+    if (Object.keys(directory).length !== 0) {
         return (
             <div>
                 <EditModal open={openModal} directoryItem={directory} onClose={() => setOpenModal(false)} />
@@ -159,7 +149,7 @@ const UnknownFile = () => {
     }
     else {
         return (
-            <div>
+            <div className='loader-container'>
                 <span className='loader'></span>
             </div>
         )

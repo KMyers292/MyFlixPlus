@@ -61,24 +61,33 @@ const SearchCard = ({result, directoryItem, onClose}) => {
         }
     }, [result]);
 
-    return (
-        <div className='search-card'>
-            <img className='search-card-image' loading='lazy' src={result.poster_path} />
-            <div className='search-card-info-container'>
-                <div className='search-card-info'>
-                    <p className='search-card-title'>{result.title}</p>
-                    <p className='search-card-text'>{result.overview}</p>
-                </div>
-                <div className='search-card-btn-container'>
-                    <div>
-                        {result.release ? <p className='search-card-other-info'>{result.release.substring(0,4)}</p> : null}
-                        {result.media_type === 'movie' ? <p className='search-card-other-info'>Movie</p> : result.media_type === 'tv' ? <p className='search-card-other-info'>Series</p> : null}
+    if (Object.keys(result).length !== 0) {
+        return (
+            <div className='search-card'>
+                <img className='search-card-image' loading='lazy' src={result.poster_path} />
+                <div className='search-card-info-container'>
+                    <div className='search-card-info'>
+                        <p className='search-card-title'>{result.title}</p>
+                        <p className='search-card-text'>{result.overview}</p>
                     </div>
-                    <button className='search-card-btn' onClick={handleClick}>Replace</button>
+                    <div className='search-card-btn-container'>
+                        <div>
+                            {result.release ? <p className='search-card-other-info'>{result.release.substring(0,4)}</p> : null}
+                            {result.media_type === 'movie' ? <p className='search-card-other-info'>Movie</p> : result.media_type === 'tv' ? <p className='search-card-other-info'>Series</p> : null}
+                        </div>
+                        <button className='search-card-btn' onClick={handleClick}>Replace</button>
+                    </div>
                 </div>
             </div>
-        </div>
-    )
+        )
+    }
+    else {
+        return (
+            <div className='loader-container'>
+                <span className='loader'></span>
+            </div>
+        )
+    }
 };
 
 export default SearchCard;

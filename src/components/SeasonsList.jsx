@@ -75,7 +75,7 @@ const SeasonsList = ({seasonObject, id}) => {
     }
     else {
         return (
-            <div>
+            <div className='loader-container'>
                 <span className='loader'></span>
             </div>
         )

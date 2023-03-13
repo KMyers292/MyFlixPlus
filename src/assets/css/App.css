@@ -940,14 +940,20 @@ html {
 /*                                                Loader                                         */
 /*===============================================================================================*/
 
+.loader-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 30rem;
+}
+
 .loader {
-    width: 4.8rem;
-    height: 4.8rem;
-    border: 5px solid #FFF;
+    width: 10rem;
+    height: 10rem;
+    border: 8px solid #FFF;
     border-bottom-color: transparent;
     border-radius: 50%;
     display: inline-block;
-    box-sizing: border-box;
     animation: rotation 1s linear infinite;
 }
 

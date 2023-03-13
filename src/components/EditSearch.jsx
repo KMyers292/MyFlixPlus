@@ -18,31 +18,40 @@ const EditSearch = ({directoryItem, onClose, getResults, searchResults, savedTit
         }
     }
 
-    return (
-        <div>
-            <h2 className='edit-search-title'>Not The Results You Were Expecting? Search For What You Want Below:</h2>
-            <form onSubmit={submitHandler} className='edit-search-form'>
-                <div className='search-form-group'>
-                    <div>
-                        <input
-                            className='modal-search-input'
-                            type='text' 
-                            id='newMedia' 
-                            name='newMedia' 
-                            placeholder='Search...'
-                            value={title} 
-                            onChange={(e) => setTitle(e.target.value)}
-                            required 
-                        />
-                        <button type='submit' className='search-submit-btn' >
-                            <IoSearchSharp className='submit-icon' />
-                        </button>
+    if (Object.keys(directoryItem).length !== 0) {
+        return (
+            <div>
+                <h2 className='edit-search-title'>Not The Results You Were Expecting? Search For What You Want Below:</h2>
+                <form onSubmit={submitHandler} className='edit-search-form'>
+                    <div className='search-form-group'>
+                        <div>
+                            <input
+                                className='modal-search-input'
+                                type='text' 
+                                id='newMedia' 
+                                name='newMedia' 
+                                placeholder='Search...'
+                                value={title} 
+                                onChange={(e) => setTitle(e.target.value)}
+                                required 
+                            />
+                            <button type='submit' className='search-submit-btn' >
+                                <IoSearchSharp className='submit-icon' />
+                            </button>
+                        </div>
                     </div>
-                </div>
-            </form>
-            {results.length > 0 && <EditSearchResults onClose={onClose} results={results} directoryItem={directoryItem} />}
-        </div>
-    )
+                </form>
+                {results.length > 0 && <EditSearchResults onClose={onClose} results={results} directoryItem={directoryItem} />}
+            </div>
+        )
+    }
+    else {
+        return (
+            <div className='loader-container'>
+                <span className='loader'></span>
+            </div>
+        )
+    }
 };
 
 export default EditSearch;
